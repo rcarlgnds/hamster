@@ -80,8 +80,9 @@
 
         <View
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1" />
+            android:layout_height="1dp"
+            android:layout_marginTop="40dp"
+            android:background="@color/black" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/buttonLogin"
@@ -89,10 +90,11 @@
             android:layout_height="wrap_content"
             android:paddingVertical="14dp"
             android:text="LOG IN"
-            android:textSize="16sp"
             android:textColor="@color/black"
-            app:cornerRadius="12dp"
-            app:backgroundTint="@color/primary_95"/>
+            android:textSize="16sp"
+            android:layout_marginTop="24dp"
+            app:backgroundTint="@color/primary_95"
+            app:cornerRadius="12dp" />
 
         <ProgressBar
             android:id="@+id/progressBar"
@@ -105,4 +107,5 @@
             tools:visibility="visible"/>
 
     </LinearLayout>
+
 </androidx.constraintlayout.widget.ConstraintLayout>
