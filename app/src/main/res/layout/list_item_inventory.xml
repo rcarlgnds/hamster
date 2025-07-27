@@ -9,7 +9,7 @@
     android:layout_marginTop="12dp"
     app:cardCornerRadius="16dp"
     app:cardElevation="6dp"
-    app:cardBackgroundColor="@color/md_theme_surface_container_low"
+    app:cardBackgroundColor="@color/primary_99"
     app:strokeColor="@color/md_theme_outline_variant"
     app:strokeWidth="1dp">
 

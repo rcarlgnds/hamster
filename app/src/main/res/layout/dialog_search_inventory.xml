@@ -12,7 +12,8 @@
         android:layout_height="wrap_content"
         android:text="Search Inventory"
         android:textAppearance="?attr/textAppearanceHeadlineSmall"
-        android:textSize="22sp" android:textColor="@color/md_theme_on_surface"
+        android:textSize="22sp"
+        android:textColor="@color/md_theme_on_surface"
         android:layout_gravity="center_horizontal"
         android:layout_marginBottom="24dp"/>
 
@@ -30,4 +31,29 @@
             android:layout_height="wrap_content"
             android:hint="Inventory Code" />
     </com.google.android.material.textfield.TextInputLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="24dp">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/buttonCancel"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginEnd="8dp"
+            android:text="Cancel"
+            style="@style/Widget.Material3.Button.TextButton"/>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/buttonNext"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginStart="8dp"
+            android:text="Next"/>
+    </LinearLayout>
+
 </LinearLayout>

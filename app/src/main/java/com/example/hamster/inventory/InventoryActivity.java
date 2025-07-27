@@ -2,9 +2,13 @@ package com.example.hamster.inventory;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.Toast;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -13,6 +17,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.hamster.R;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.textfield.TextInputEditText;
 
 public class InventoryActivity extends AppCompatActivity {
 
@@ -38,6 +43,7 @@ public class InventoryActivity extends AppCompatActivity {
 
         viewModel = new ViewModelProvider(this).get(InventoryViewModel.class);
 
+        // FAB sekarang juga memanggil dialog yang sama
         fabSearch.setOnClickListener(v -> showSearchDialog());
 
         setupObservers();
@@ -61,18 +67,45 @@ public class InventoryActivity extends AppCompatActivity {
         });
     }
 
+    // DITAMBAHKAN: Method untuk menampilkan menu di Toolbar
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.inventory_menu, menu);
+        return true;
+    }
+
+    // DITAMBAHKAN: Method untuk menangani klik pada item menu
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId() == R.id.action_search) {
+            showSearchDialog();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
     private void showSearchDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         LayoutInflater inflater = this.getLayoutInflater();
         View dialogView = inflater.inflate(R.layout.dialog_search_inventory, null);
         builder.setView(dialogView);
 
-        builder.setPositiveButton("Next", (dialog, which) -> {
-            Toast.makeText(this, "Search button clicked", Toast.LENGTH_SHORT).show();
-        });
-        builder.setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss());
+        final AlertDialog dialog = builder.create();
 
-        AlertDialog dialog = builder.create();
+        // Ambil referensi dari layout dialog
+        TextInputEditText editTextCode = dialogView.findViewById(R.id.editTextInventoryCode);
+        Button buttonCancel = dialogView.findViewById(R.id.buttonCancel);
+        Button buttonNext = dialogView.findViewById(R.id.buttonNext);
+
+        buttonCancel.setOnClickListener(v -> dialog.dismiss());
+
+        buttonNext.setOnClickListener(v -> {
+            String code = editTextCode.getText().toString();
+            Toast.makeText(this, "Mencari kode: " + code, Toast.LENGTH_SHORT).show();
+            dialog.dismiss();
+            // TODO: Implementasikan logika pencarian di sini
+        });
+
         dialog.show();
     }
 
