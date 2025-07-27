@@ -2,10 +2,12 @@ package com.example.hamster.data.network;
 
 import com.example.hamster.data.model.Asset;
 import com.example.hamster.data.model.AssetCategory;
+import com.example.hamster.data.model.AssetDetailResponse;
 import com.example.hamster.data.model.AssetsResponse;
 import com.example.hamster.data.model.LoginRequest;
 import com.example.hamster.data.model.LoginResponse;
 import com.example.hamster.data.model.OptionItem;
+import com.example.hamster.data.model.UpdateAssetRequest;
 
 import java.util.List;
 
@@ -30,7 +32,7 @@ public interface ApiService {
     Call<AssetsResponse> getAssets(@Query("page") int page, @Query("limit") int limit);
 
     @GET("assets/{id}")
-    Call<Asset> getAssetById(@Path("id") String assetId);
+    Call<AssetDetailResponse> getAssetById(@Path("id") String assetId);
 
     @GET("assets/by-code/{code}")
     Call<Asset> getAssetByCode(@Path("code") String assetCode);
@@ -39,8 +41,8 @@ public interface ApiService {
     // @POST("assets")
     // Call<Asset> createAsset(@Body CreateAssetRequest request);
 
-    // @PATCH("assets/{id}")
-    // Call<Asset> updateAsset(@Path("id") String assetId, @Body UpdateAssetRequest request);
+    @PATCH("assets/{id}")
+    Call<Asset> updateAsset(@Path("id") String assetId, @Body UpdateAssetRequest request);
 
     @DELETE("assets/{id}")
     Call<Void> deleteAsset(@Path("id") String assetId);
@@ -62,6 +64,8 @@ public interface ApiService {
 
 
     // --- Asset Subcategories ---
+    @GET("asset-subcategories/options")
+    Call<List<OptionItem>> getAssetSubCategoryOptions();
     @GET("asset-categories/{id}/asset-subcategories/options")
     Call<List<OptionItem>> getAssetSubCategoryOptions(@Path("id") String categoryId);
 

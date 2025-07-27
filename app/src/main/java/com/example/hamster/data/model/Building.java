@@ -2,10 +2,10 @@ package com.example.hamster.data.model;
 
 import java.io.Serializable;
 
-public class Room implements Serializable {
+public class Building implements Serializable {
     private String id;
     private String name;
-    private Floor floor;
+    private Hospital hospital;
 
     // Getters
     public String getId() {
@@ -16,7 +16,7 @@ public class Room implements Serializable {
         return name;
     }
 
-    public Floor getFloor() {
-        return floor;
+    public Hospital getHospital() {
+        return hospital;
     }
 }

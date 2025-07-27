@@ -11,18 +11,19 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import com.example.hamster.R;
-import com.example.hamster.data.model.Asset;
 import com.example.hamster.data.model.OptionItem;
+import com.example.hamster.data.model.UpdateAssetRequest;
 import com.google.android.material.textfield.TextInputEditText;
-
 import java.util.List;
 
 public class AssetInfoFragment extends Fragment {
     private AssetDetailViewModel viewModel;
+    private TextInputEditText editTextCode, editTextName, editTextSerial, editTextTotal, editTextDescription;
+    private AutoCompleteTextView autoCompleteOwnership, autoCompleteCategory, autoCompleteSubCategory, autoCompleteUnit, autoCompleteBrand, autoCompleteCondition;
 
-    private TextInputEditText editTextCode, editTextName, editTextSerial, editTextDescription, editTextTotal;
-    private AutoCompleteTextView autoCompleteCategory, autoCompleteSubCategory, autoCompleteBrand, autoCompleteCondition, autoCompleteOwnership, autoCompleteUnit;
     private List<OptionItem> categoryList;
+    private List<OptionItem> subCategoryList;
+    private List<OptionItem> brandList; // Asumsi ada
 
     @Nullable
     @Override
@@ -39,71 +40,77 @@ public class AssetInfoFragment extends Fragment {
         setupObservers();
 
         viewModel.fetchCategoryOptions();
+        viewModel.fetchSubCategoryOptions();
     }
 
     private void initializeViews(View view) {
-        editTextName = view.findViewById(R.id.editTextName);
         editTextCode = view.findViewById(R.id.editTextCode);
+        editTextName = view.findViewById(R.id.editTextName);
         editTextSerial = view.findViewById(R.id.editTextSerial);
-        editTextDescription = view.findViewById(R.id.editTextDescription);
         editTextTotal = view.findViewById(R.id.editTextTotal);
+        editTextDescription = view.findViewById(R.id.editTextDescription);
+
+        autoCompleteOwnership = view.findViewById(R.id.autoCompleteOwnership);
+        autoCompleteUnit = view.findViewById(R.id.autoCompleteUnit);
+        autoCompleteCondition = view.findViewById(R.id.autoCompleteCondition);
         autoCompleteCategory = view.findViewById(R.id.autoCompleteCategory);
         autoCompleteSubCategory = view.findViewById(R.id.autoCompleteSubCategory);
         autoCompleteBrand = view.findViewById(R.id.autoCompleteBrand);
-        autoCompleteCondition = view.findViewById(R.id.autoCompleteCondition);
-        autoCompleteOwnership = view.findViewById(R.id.autoCompleteOwnership);
-        autoCompleteUnit = view.findViewById(R.id.autoCompleteUnit);
     }
 
+
     private void setupObservers() {
-        // Observer untuk data utama aset
         viewModel.getAssetData().observe(getViewLifecycleOwner(), asset -> {
             if (asset != null) {
-                editTextName.setText(asset.getName());
                 editTextCode.setText(asset.getCode());
-                // editTextSerial.setText(asset.getSerialNumber()); // Lengkapi model Asset.java jika perlu
-                // editTextDescription.setText(asset.getDescription());
-                // editTextTotal.setText(String.valueOf(asset.getTotal()));
+                editTextName.setText(asset.getName());
+                editTextSerial.setText(asset.getSerialNumber());
+                editTextTotal.setText(String.valueOf(asset.getTotal()));
+                editTextDescription.setText(asset.getDescription());
+                autoCompleteOwnership.setText(asset.getOwnership(), false);
+                autoCompleteUnit.setText(asset.getUnit(), false);
                 autoCompleteCondition.setText(asset.getCondition(), false);
-                if (asset.getCategory() != null) {
-                    autoCompleteCategory.setText(asset.getCategory().getName(), false);
-                    // Setelah kategori terisi, ambil data sub-kategori
-                    viewModel.fetchSubCategoryOptions(asset.getCategory().getId());
-                }
-                if (asset.getBrand() != null) {
-                    autoCompleteBrand.setText(asset.getBrand().getName(), false);
-                }
+                if(asset.getCategory() != null) autoCompleteCategory.setText(asset.getCategory().getName(), false);
+                if(asset.getSubcategory() != null) autoCompleteSubCategory.setText(asset.getSubcategory().getName(), false);
+                if(asset.getBrand() != null) autoCompleteBrand.setText(asset.getBrand().getName(), false);
             }
         });
 
-        // Observer untuk mengisi dropdown kategori
-        viewModel.getCategoryOptions().observe(getViewLifecycleOwner(), categories -> {
-            if (categories != null) {
-                this.categoryList = categories; // Simpan daftar kategori
-                ArrayAdapter<OptionItem> adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_dropdown_item_1line, categories);
-                autoCompleteCategory.setAdapter(adapter);
-            }
+        viewModel.getCategoryOptions().observe(getViewLifecycleOwner(), options -> {
+            categoryList = options;
+            ArrayAdapter<OptionItem> adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_dropdown_item_1line, options);
+            autoCompleteCategory.setAdapter(adapter);
         });
 
-        // Observer untuk mengisi dropdown sub-kategori
-        viewModel.getSubCategoryOptions().observe(getViewLifecycleOwner(), subCategories -> {
-            if (subCategories != null) {
-                ArrayAdapter<OptionItem> adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_dropdown_item_1line, subCategories);
-                autoCompleteSubCategory.setAdapter(adapter);
-                // Set nilai sub-kategori jika data aset sudah ada
-                Asset currentAsset = viewModel.getAssetData().getValue();
-                if (currentAsset != null && currentAsset.getSubcategory() != null) {
-                    autoCompleteSubCategory.setText(currentAsset.getSubcategory().getName(), false);
+        viewModel.getSubCategoryOptions().observe(getViewLifecycleOwner(), options -> {
+            subCategoryList = options;
+            ArrayAdapter<OptionItem> adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_dropdown_item_1line, options);
+            autoCompleteSubCategory.setAdapter(adapter);
+        });
+    }
+
+    public UpdateAssetRequest getUpdatedAssetData() {
+        UpdateAssetRequest request = new UpdateAssetRequest();
+        request.setName(editTextName.getText().toString());
+        request.setCode(editTextCode.getText().toString());
+        request.setSerialNumber(editTextSerial.getText().toString());
+        request.setCondition(autoCompleteCondition.getText().toString());
+        request.setOwnership(autoCompleteOwnership.getText().toString());
+        request.setTotal(Integer.parseInt(editTextTotal.getText().toString()));
+        request.setUnit(autoCompleteUnit.getText().toString());
+        request.setDescription(editTextDescription.getText().toString());
+
+        // Dapatkan ID dari dropdown yang dipilih
+        String selectedCategoryName = autoCompleteCategory.getText().toString();
+        if (categoryList != null) {
+            for (OptionItem item : categoryList) {
+                if (item.getName().equals(selectedCategoryName)) {
+                    request.setCategoryId(item.getId());
+                    break;
                 }
             }
-        });
-
-        // Listener untuk dropdown kategori
-        autoCompleteCategory.setOnItemClickListener((parent, view, position, id) -> {
-            OptionItem selectedCategory = (OptionItem) parent.getItemAtPosition(position);
-            // Saat kategori diubah, ambil sub-kategori yang sesuai
-            viewModel.fetchSubCategoryOptions(selectedCategory.getId());
-            autoCompleteSubCategory.setText(""); // Kosongkan sub-kategori
-        });
+        }
+        // Lakukan hal yang sama untuk subCategoryList dan brandList
+        return request;
     }
 }
