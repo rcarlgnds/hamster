@@ -63,11 +63,9 @@ public class AssetDetailActivity extends AppCompatActivity {
         public Fragment createFragment(int position) {
             switch (position) {
                 case 0: return new AssetInfoFragment();
-                // TODO: Ganti placeholder ini dengan Fragment yang sudah Anda buat
-                // case 1: return new AssetLocationFragment();
-                // case 2: return new AssetMaintenanceFragment();
-                case 3: return new AssetDocumentsFragment(); // Ini sudah ada dari sebelumnya
-                // case 4: return new AssetReviewFragment();
+                case 1: return new AssetLocationFragment();
+                case 2: return new AssetMaintenanceFragment();
+                case 3: return new AssetDocumentsFragment();
                 default: return new Fragment();
             }
         }

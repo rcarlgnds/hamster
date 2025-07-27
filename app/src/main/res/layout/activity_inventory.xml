@@ -11,24 +11,26 @@
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/primary_95"
-        android:theme="@style/ThemeOverlay.Material3.Light.ActionBar"
-        app:elevation="4dp"> <com.google.android.material.appbar.CollapsingToolbarLayout
-        android:layout_width="match_parent"
-        android:layout_height="112dp"
-        app:layout_scrollFlags="scroll|exitUntilCollapsed|snap"
-        app:contentScrim="@color/md_theme_surface"
-        app:title="Inventory"
-        app:expandedTitleTextColor="@color/md_theme_on_surface"
-        app:collapsedTitleTextColor="@color/md_theme_on_surface">
-
-        <com.google.android.material.appbar.MaterialToolbar
-            android:id="@+id/toolbar"
+        android:background="@color/md_theme_surface"
+        app:elevation="4dp">
+        <com.google.android.material.appbar.CollapsingToolbarLayout
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            app:layout_collapseMode="pin"
-            app:menu="@menu/inventory_menu"
-            app:titleTextColor="@color/md_theme_on_surface" /> </com.google.android.material.appbar.CollapsingToolbarLayout>
+            android:layout_height="112dp"
+            app:layout_scrollFlags="scroll|exitUntilCollapsed|snap"
+            app:contentScrim="@color/md_theme_surface"
+            app:title="Inventory"
+            app:expandedTitleTextColor="@color/md_theme_on_surface"
+            app:collapsedTitleTextColor="@color/md_theme_on_surface">
+
+            <com.google.android.material.appbar.MaterialToolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                app:layout_collapseMode="pin"
+                app:menu="@menu/inventory_menu"
+                app:titleTextColor="@color/md_theme_on_surface" />
+
+        </com.google.android.material.appbar.CollapsingToolbarLayout>
     </com.google.android.material.appbar.AppBarLayout>
 
     <FrameLayout

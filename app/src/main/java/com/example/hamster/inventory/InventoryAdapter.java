@@ -78,9 +78,6 @@ public class InventoryAdapter extends RecyclerView.Adapter<InventoryAdapter.View
             notifyItemChanged(copiedPosition);
         });
 
-        holder.detailsLayout.setOnClickListener(v -> {
-            Toast.makeText(context, "Buka detail untuk: " + asset.getName(), Toast.LENGTH_SHORT).show();
-        });
 
         holder.detailsLayout.setOnClickListener(v -> {
             Intent intent = new Intent(context, AssetDetailActivity.class);

@@ -12,7 +12,7 @@
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        app:title="Inventory Detail"/>
+        app:title="Edit Inventory Detail"/>
 
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/tab_layout"
@@ -32,13 +32,13 @@
         android:orientation="horizontal"
         android:padding="8dp">
 
-        <Button
-            android:id="@+id/buttonDelete"
-            style="@style/Widget.Material3.Button.TextButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="DELETE"
-            android:textColor="@color/error_40"/>
+<!--        <Button-->
+<!--            android:id="@+id/buttonDelete"-->
+<!--            style="@style/Widget.Material3.Button.TextButton"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:text="DELETE"-->
+<!--            android:textColor="@color/error_40"/>-->
 
         <View
             android:layout_width="0dp"

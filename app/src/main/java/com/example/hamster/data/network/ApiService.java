@@ -5,6 +5,7 @@ import com.example.hamster.data.model.AssetCategory;
 import com.example.hamster.data.model.AssetsResponse;
 import com.example.hamster.data.model.LoginRequest;
 import com.example.hamster.data.model.LoginResponse;
+import com.example.hamster.data.model.OptionItem;
 
 import java.util.List;
 
@@ -46,8 +47,8 @@ public interface ApiService {
 
 
     // --- Asset Categories ---
-    @GET("asset-categories")
-    Call<List<AssetCategory>> getAssetCategories(); // Asumsi respons berupa List
+    @GET("asset-categories/options")
+    Call<List<OptionItem>> getAssetCategoryOptions();
 
     @GET("asset-categories/{id}")
     Call<AssetCategory> getAssetCategoryById(@Path("id") String categoryId);
@@ -61,9 +62,8 @@ public interface ApiService {
 
 
     // --- Asset Subcategories ---
-    // TODO: Buat model data untuk AssetSubcategoryResponse
-    // @GET("asset-subcategories")
-    // Call<AssetSubcategoryResponse> getAssetSubcategories(@Query("page") int page, @Query("limit") int limit);
+    @GET("asset-categories/{id}/asset-subcategories/options")
+    Call<List<OptionItem>> getAssetSubCategoryOptions(@Path("id") String categoryId);
 
 
     // --- Asset Activation ---

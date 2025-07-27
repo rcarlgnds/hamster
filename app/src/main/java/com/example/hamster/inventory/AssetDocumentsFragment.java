@@ -1,4 +1,3 @@
-// Buat di dalam package inventory
 package com.example.hamster.inventory;
 
 import android.Manifest;
@@ -10,21 +9,31 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Toast;
+
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+
 import com.example.hamster.R;
+
 import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 
 public class AssetDocumentsFragment extends Fragment {
 
     private AssetDetailViewModel viewModel;
-    private ImageView imageViewAssetPhoto;
-    private Uri imageUri;
+    private ImageView imageViewSerialNumber;
+    private LinearLayout assetPhotosContainer;
+
+    private Uri currentImageUri;
+    private boolean isSerialPhoto;
 
     private final ActivityResultLauncher<String> requestPermissionLauncher =
             registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
@@ -37,8 +46,12 @@ public class AssetDocumentsFragment extends Fragment {
 
     private final ActivityResultLauncher<Uri> takePictureLauncher =
             registerForActivityResult(new ActivityResultContracts.TakePicture(), result -> {
-                if (result) {
-                    imageViewAssetPhoto.setImageURI(imageUri);
+                if (result && currentImageUri != null) {
+                    if (isSerialPhoto) {
+                        imageViewSerialNumber.setImageURI(currentImageUri);
+                    } else {
+                        addAssetPhotoToContainer(currentImageUri);
+                    }
                 }
             });
 
@@ -46,12 +59,21 @@ public class AssetDocumentsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_asset_documents, container, false);
 
-        imageViewAssetPhoto = view.findViewById(R.id.imageViewAssetPhoto);
-        Button buttonTakePhoto = view.findViewById(R.id.buttonTakePhoto);
-
         viewModel = new ViewModelProvider(requireActivity()).get(AssetDetailViewModel.class);
 
-        buttonTakePhoto.setOnClickListener(v -> {
+        imageViewSerialNumber = view.findViewById(R.id.imageViewSerialNumber);
+        assetPhotosContainer = view.findViewById(R.id.assetPhotosContainer);
+
+        Button buttonSerialPhoto = view.findViewById(R.id.buttonTakeSerialPhoto);
+        Button buttonAssetPhoto = view.findViewById(R.id.buttonTakeAssetPhoto);
+
+        buttonSerialPhoto.setOnClickListener(v -> {
+            isSerialPhoto = true;
+            checkCameraPermissionAndLaunch();
+        });
+
+        buttonAssetPhoto.setOnClickListener(v -> {
+            isSerialPhoto = false;
             checkCameraPermissionAndLaunch();
         });
 
@@ -59,7 +81,7 @@ public class AssetDocumentsFragment extends Fragment {
     }
 
     private void checkCameraPermissionAndLaunch() {
-        if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
+        if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
             launchCamera();
         } else {
             requestPermissionLauncher.launch(Manifest.permission.CAMERA);
@@ -67,10 +89,30 @@ public class AssetDocumentsFragment extends Fragment {
     }
 
     private void launchCamera() {
-        File imagePath = new File(getContext().getFilesDir(), "images");
-        if (!imagePath.exists()) imagePath.mkdirs();
-        File newFile = new File(imagePath, "asset_photo.jpg");
-        imageUri = FileProvider.getUriForFile(getContext(), getContext().getPackageName() + ".provider", newFile);
-        takePictureLauncher.launch(imageUri);
+        File imageDir = new File(requireContext().getFilesDir(), "images");
+        if (!imageDir.exists()) imageDir.mkdirs();
+
+        String fileName = (isSerialPhoto ? "serial_" : "asset_") +
+                new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(new Date()) + ".jpg";
+
+        File imageFile = new File(imageDir, fileName);
+        currentImageUri = FileProvider.getUriForFile(
+                requireContext(),
+                requireContext().getPackageName() + ".provider",
+                imageFile
+        );
+
+        takePictureLauncher.launch(currentImageUri);
+    }
+
+    private void addAssetPhotoToContainer(Uri uri) {
+        ImageView imageView = new ImageView(requireContext());
+        int size = getResources().getDimensionPixelSize(R.dimen.asset_image_size);
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(size, size);
+        params.setMargins(0, 0, 16, 0);
+        imageView.setLayoutParams(params);
+        imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+        imageView.setImageURI(uri);
+        assetPhotosContainer.addView(imageView);
     }
 }
