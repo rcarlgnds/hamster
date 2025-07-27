@@ -7,5 +7,6 @@
         <item name="colorSecondaryVariant">@color/secondary_20</item>
         <item name="colorOnSecondary">@color/black</item>
         <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
+        <item name="colorControlNormal">@color/black</item>
     </style>
 </resources>
