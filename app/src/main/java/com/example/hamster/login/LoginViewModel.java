@@ -1,21 +1,24 @@
 package com.example.hamster.login;
 
+import android.app.Application;
+
 import androidx.annotation.NonNull;
+import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.ViewModel;
 
 import com.example.hamster.data.model.LoginRequest;
 import com.example.hamster.data.model.LoginResponse;
 import com.example.hamster.data.model.User;
 import com.example.hamster.data.network.ApiClient;
 import com.example.hamster.data.network.ApiService;
+import com.example.hamster.utils.SessionManager;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class LoginViewModel extends ViewModel {
+public class LoginViewModel extends AndroidViewModel {
 
     public enum LoginResult {
         SUCCESS,
@@ -26,6 +29,12 @@ public class LoginViewModel extends ViewModel {
 
     private final MutableLiveData<LoginResult> loginResult = new MutableLiveData<>();
     private final MutableLiveData<User> userData = new MutableLiveData<>();
+    private final SessionManager sessionManager; //
+
+    public LoginViewModel(@NonNull Application application) {
+        super(application);
+        this.sessionManager = new SessionManager(application);
+    }
 
     public LiveData<LoginResult> getLoginResult() { return loginResult; }
     public LiveData<User> getUser() { return userData; }
@@ -33,7 +42,7 @@ public class LoginViewModel extends ViewModel {
     public void login(String email, String password) {
         loginResult.setValue(LoginResult.LOADING);
 
-        ApiService apiService = ApiClient.getClient().create(ApiService.class);
+        ApiService apiService = ApiClient.getClient(getApplication()).create(ApiService.class);
         Call<LoginResponse> call = apiService.login(new LoginRequest(email, password));
 
         call.enqueue(new Callback<LoginResponse>() {
@@ -42,6 +51,9 @@ public class LoginViewModel extends ViewModel {
                 if (response.isSuccessful() && response.body() != null) {
                     LoginResponse loginResponse = response.body();
                     if (loginResponse.isSuccess()) {
+                        String token = loginResponse.getData().getAccessToken();
+                        sessionManager.saveAuthToken(token);
+
                         userData.setValue(loginResponse.getData().getUser());
                         loginResult.setValue(LoginResult.SUCCESS);
                     } else {

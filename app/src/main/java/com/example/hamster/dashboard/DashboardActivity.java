@@ -1,5 +1,6 @@
 package com.example.hamster.dashboard;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -12,6 +13,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.example.hamster.R;
 import com.example.hamster.data.model.User;
+import com.example.hamster.inventory.InventoryActivity;
 import com.google.android.material.navigation.NavigationView;
 
 public class DashboardActivity extends AppCompatActivity {
@@ -38,10 +40,10 @@ public class DashboardActivity extends AppCompatActivity {
         navigationView.setNavigationItemSelectedListener(item -> {
             int itemId = item.getItemId();
             if (itemId == R.id.nav_inventory) {
-                Toast.makeText(DashboardActivity.this, "Menu Inventory diklik", Toast.LENGTH_SHORT).show();
-            } else if (itemId == R.id.nav_activation) {
-                Toast.makeText(DashboardActivity.this, "Menu Aktivasi diklik", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(DashboardActivity.this, InventoryActivity.class);
+                startActivity(intent);
             }
+
 
             drawerLayout.closeDrawer(GravityCompat.START);
             return true;
