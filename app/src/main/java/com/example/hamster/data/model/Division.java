@@ -1,6 +1,8 @@
 package com.example.hamster.data.model;
 
-public class Division {
+import java.io.Serializable;
+
+public class Division implements Serializable {
     private String id;
     private String name;
 

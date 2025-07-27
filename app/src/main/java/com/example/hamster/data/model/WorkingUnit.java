@@ -1,6 +1,8 @@
 package com.example.hamster.data.model;
 
-public class WorkingUnit {
+import java.io.Serializable;
+
+public class WorkingUnit implements Serializable {
     private String id;
     private String name;
 

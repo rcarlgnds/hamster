@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/background"
+    android:background="@color/white"
     tools:context=".login.LoginActivity">
 
     <ImageView
@@ -15,7 +15,6 @@
         android:scaleType="fitXY"
         android:src="@drawable/login_header_wave"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -33,26 +32,28 @@
             android:id="@+id/text_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="24dp"
             android:text="SIGN IN"
-            android:textColor="@color/text_dark"
-            android:textSize="40sp"
+            android:textColor="@color/black"
+            android:textSize="32sp"
             android:textStyle="bold"
-            android:layout_gravity="end" />
+            android:layout_gravity="start" />
         <View
-            android:layout_width="160dp"
-            android:layout_height="3dp"
+            android:layout_width="80dp"
+            android:layout_height="4dp"
             android:layout_marginTop="8dp"
-            android:background="@color/button_blue"
-            android:layout_gravity="end" />
+            android:background="@color/primary_40"
+            android:layout_gravity="start" />
 
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="32dp"
-            app:startIconDrawable="@android:drawable/ic_menu_myplaces"
-            app:startIconTint="@color/text_light"
-            android:hint="Email">
+            android:hint="Email"
+            app:startIconDrawable="@android:drawable/ic_dialog_email"
+            app:boxStrokeColor="@drawable/text_input_box_stroke"
+            app:hintTextColor="@drawable/text_input_box_stroke"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/editTextEmail"
                 android:layout_width="match_parent"
@@ -64,10 +65,12 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
+            android:hint="Password"
             app:passwordToggleEnabled="true"
             app:startIconDrawable="@android:drawable/ic_lock_lock"
-            app:startIconTint="@color/text_light"
-            android:hint="Password">
+            app:boxStrokeColor="@drawable/text_input_box_stroke"
+            app:hintTextColor="@drawable/text_input_box_stroke"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/editTextPassword"
                 android:layout_width="match_parent"
@@ -75,18 +78,21 @@
                 android:inputType="textPassword"/>
         </com.google.android.material.textfield.TextInputLayout>
 
-
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/buttonLogin"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingVertical="14dp"
-            android:layout_marginTop="40dp"
             android:text="LOG IN"
             android:textSize="16sp"
+            android:textColor="@color/black"
             app:cornerRadius="12dp"
-            app:backgroundTint="@color/button_blue"/>
+            app:backgroundTint="@color/primary_95"/>
 
         <ProgressBar
             android:id="@+id/progressBar"
@@ -99,5 +105,4 @@
             tools:visibility="visible"/>
 
     </LinearLayout>
-
 </androidx.constraintlayout.widget.ConstraintLayout>
