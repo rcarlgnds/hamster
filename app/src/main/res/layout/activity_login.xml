@@ -51,8 +51,8 @@
             android:layout_marginTop="32dp"
             android:hint="Email"
             app:startIconDrawable="@android:drawable/ic_dialog_email"
-            app:boxStrokeColor="@drawable/text_input_box_stroke"
-            app:hintTextColor="@drawable/text_input_box_stroke"
+            app:boxStrokeColor="@color/text_input_box_stroke"
+            app:hintTextColor="@color/text_input_box_stroke"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/editTextEmail"
@@ -68,8 +68,8 @@
             android:hint="Password"
             app:passwordToggleEnabled="true"
             app:startIconDrawable="@android:drawable/ic_lock_lock"
-            app:boxStrokeColor="@drawable/text_input_box_stroke"
-            app:hintTextColor="@drawable/text_input_box_stroke"
+            app:boxStrokeColor="@color/text_input_box_stroke"
+            app:hintTextColor="@color/text_input_box_stroke"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/editTextPassword"
@@ -80,9 +80,8 @@
 
         <View
             android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_marginTop="40dp"
-            android:background="@color/black" />
+            android:layout_height="0dp"
+            android:layout_weight="1" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/buttonLogin"
@@ -90,11 +89,10 @@
             android:layout_height="wrap_content"
             android:paddingVertical="14dp"
             android:text="LOG IN"
-            android:textColor="@color/black"
             android:textSize="16sp"
-            android:layout_marginTop="24dp"
-            app:backgroundTint="@color/primary_95"
-            app:cornerRadius="12dp" />
+            android:textColor="@color/white"
+            app:cornerRadius="12dp"
+            app:backgroundTint="@color/primary_40"/>
 
         <ProgressBar
             android:id="@+id/progressBar"
@@ -107,5 +105,4 @@
             tools:visibility="visible"/>
 
     </LinearLayout>
-
 </androidx.constraintlayout.widget.ConstraintLayout>

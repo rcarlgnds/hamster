@@ -11,32 +11,25 @@ import androidx.lifecycle.ViewModelProvider;
 import com.example.hamster.R;
 import com.example.hamster.dashboard.DashboardActivity;
 import com.example.hamster.data.model.User;
+import com.example.hamster.databinding.ActivityLoginBinding;
 import com.google.android.material.textfield.TextInputEditText;
 
 public class LoginActivity extends AppCompatActivity {
 
     private LoginViewModel loginViewModel;
-
-    private TextInputEditText editTextEmail;
-    private TextInputEditText editTextPassword;
-    private Button buttonLogin;
-    private ProgressBar progressBar;
+    private ActivityLoginBinding binding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login);
+        binding = ActivityLoginBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
 
         loginViewModel = new ViewModelProvider(this).get(LoginViewModel.class);
 
-        editTextEmail = findViewById(R.id.editTextEmail);
-        editTextPassword = findViewById(R.id.editTextPassword);
-        buttonLogin = findViewById(R.id.buttonLogin);
-        progressBar = findViewById(R.id.progressBar);
-
-        buttonLogin.setOnClickListener(v -> {
-            String email = editTextEmail.getText().toString();
-            String password = editTextPassword.getText().toString();
+        binding.buttonLogin.setOnClickListener(v -> {
+            String email = binding.editTextEmail.getText().toString();
+            String password = binding.editTextPassword.getText().toString();
             loginViewModel.login(email, password);
         });
 
@@ -45,13 +38,13 @@ public class LoginActivity extends AppCompatActivity {
 
     private void setupObservers() {
         loginViewModel.getLoginResult().observe(this, result -> {
-            progressBar.setVisibility(View.GONE);
-            buttonLogin.setEnabled(true);
+            binding.progressBar.setVisibility(View.GONE);
+            binding.buttonLogin.setEnabled(true);
 
             switch (result) {
                 case LOADING:
-                    progressBar.setVisibility(View.VISIBLE);
-                    buttonLogin.setEnabled(false);
+                    binding.progressBar.setVisibility(View.VISIBLE);
+                    binding.buttonLogin.setEnabled(false);
                     break;
                 case INVALID_CREDENTIALS:
                     Toast.makeText(this, "Email atau Password Salah", Toast.LENGTH_SHORT).show();
@@ -71,6 +64,7 @@ public class LoginActivity extends AppCompatActivity {
                 intent.putExtra("USER_DATA", user);
                 startActivity(intent);
 
+                overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
             }
         });
     }

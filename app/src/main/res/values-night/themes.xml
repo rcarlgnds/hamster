@@ -8,4 +8,7 @@
         <item name="colorOnSecondary">@color/black</item>
         <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
     </style>
+
+    <style name="ThemeOverlay.Material3.Light.ActionBar" parent="ThemeOverlay.Material3.ActionBar">
+    </style>
 </resources>

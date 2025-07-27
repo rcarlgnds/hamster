@@ -89,7 +89,7 @@ public class InventoryAdapter extends RecyclerView.Adapter<InventoryAdapter.View
             super(itemView);
             itemName = itemView.findViewById(R.id.textViewItemName);
             itemCode = itemView.findViewById(R.id.textViewItemCode);
-            itemStatus = itemView.findViewById(R.id.chipStatus);
+//            itemStatus = itemView.findViewById(R.id.chipStatus);
             codeLayout = itemView.findViewById(R.id.layoutCode);
             detailsLayout = itemView.findViewById(R.id.layoutClickForDetails);
             iconCopy = itemView.findViewById(R.id.iconCopy);

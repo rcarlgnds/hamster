@@ -5,20 +5,30 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/md_theme_background"
     tools:context=".inventory.InventoryActivity">
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+        android:background="@color/md_theme_surface"
+        android:theme="@style/ThemeOverlay.Material3.Light.ActionBar"
+        app:elevation="4dp"> <com.google.android.material.appbar.CollapsingToolbarLayout
+        android:layout_width="match_parent"
+        android:layout_height="112dp"
+        app:layout_scrollFlags="scroll|exitUntilCollapsed|snap"
+        app:contentScrim="@color/md_theme_surface"
+        app:title="Inventory"
+        app:expandedTitleTextColor="@color/md_theme_on_surface"
+        app:collapsedTitleTextColor="@color/md_theme_on_surface">
 
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            app:title="Inventory"
-            app:menu="@menu/inventory_menu" />
-
+            app:layout_collapseMode="pin"
+            app:menu="@menu/inventory_menu"
+            app:titleTextColor="@color/md_theme_on_surface" /> </com.google.android.material.appbar.CollapsingToolbarLayout>
     </com.google.android.material.appbar.AppBarLayout>
 
     <FrameLayout
@@ -32,7 +42,7 @@
             android:layout_height="match_parent"
             tools:listitem="@layout/list_item_inventory"
             android:clipToPadding="false"
-            android:paddingBottom="80dp"/>
+            android:paddingBottom="80dp" />
 
         <ProgressBar
             android:id="@+id/progressBar"
@@ -50,7 +60,9 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_margin="16dp"
-        android:src="@android:drawable/ic_menu_search"
-        android:contentDescription="Search Inventory"/>
+        android:src="@drawable/baseline_search_24"
+        app:tint="@color/md_theme_on_primary_container"
+        app:backgroundTint="@color/md_theme_primary_container"
+        android:contentDescription="Add New Inventory Item"/>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
