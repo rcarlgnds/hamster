@@ -28,16 +28,33 @@
             android:layout_marginEnd="8dp"
             tools:text="PATIENT MONITOR MINDRAY UMEC-10" />
 
-        <TextView
-            android:id="@+id/textViewItemCode"
+        <LinearLayout
+            android:id="@+id/layoutCode"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:textColor="@color/black"
-            android:textSize="14sp"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginTop="10dp"
+            android:background="?attr/selectableItemBackground"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/textViewItemName"
-            tools:text="04-C10118-000111" />
+            app:layout_constraintTop_toBottomOf="@id/textViewItemName">
+
+            <TextView
+                android:id="@+id/textViewItemCode"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/yellow_10"
+                android:textSize="14sp"
+                tools:text="04-C10118-000111" />
+
+            <ImageView
+                android:id="@+id/iconCopy"
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:layout_marginStart="8dp"
+                android:src="@android:drawable/ic_menu_save"
+                app:tint="@color/yellow_10"/>
+        </LinearLayout>
 
         <com.google.android.material.chip.Chip
             android:id="@+id/chipStatus"
@@ -46,20 +63,38 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             android:text="Inactive"
+            android:clickable="false"
+            app:closeIconVisible="false"
+            android:textColor="@color/neutral_20"
+            app:chipBackgroundColor="@color/neutral_90"
             style="@style/Widget.MaterialComponents.Chip.Entry"/>
 
-        <TextView
-            android:id="@+id/textViewClickForDetails"
+        <LinearLayout
+            android:id="@+id/layoutClickForDetails"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
             android:layout_marginTop="16dp"
-            android:text="Click for details"
-            android:textColor="@color/yellow_10"
-            android:drawableEnd="@android:drawable/ic_media_play"
-            android:drawablePadding="4dp"
-            app:drawableTint="@color/yellow_10"
+            android:background="?attr/selectableItemBackground"
+
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/textViewItemCode"/>
+            app:layout_constraintTop_toBottomOf="@id/layoutCode">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Click for details"
+                android:textColor="@color/primary_10" />
+
+            <ImageView
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:layout_marginStart="5dp"
+                android:layout_marginTop="1dp"
+                android:src="@android:drawable/ic_media_play"
+                app:tint="@color/primary_10" />
+        </LinearLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </com.google.android.material.card.MaterialCardView>
