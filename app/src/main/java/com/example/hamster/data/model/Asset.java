@@ -1,24 +1,11 @@
 package com.example.hamster.data.model;
 
 import java.io.Serializable;
-import java.util.List;
 
 public class Asset implements Serializable {
-    private long createdAt;
-    private long updatedAt;
-    private String id;
-    private String code;
-    private String code2;
-    private String code3;
-    private String name;
-    private String type;
-    private String serialNumber;
-    private String description;
+    private String id, code, code2, code3, name, type, serialNumber, description, unit, status, condition, ownership;
     private int total;
-    private String unit;
-    private String status;
-    private String condition;
-    private String ownership;
+    private Long procurementDate, warrantyExpirationDate;
     private AssetCategory category;
     private AssetSubcategory subcategory;
     private Brand brand;
@@ -27,11 +14,8 @@ public class Asset implements Serializable {
     private SubRoom subRoom;
     private Division responsibleDivision;
     private WorkingUnit responsibleWorkingUnit;
-    private List<Object> children;
 
     // Getters
-    public long getCreatedAt() { return createdAt; }
-    public long getUpdatedAt() { return updatedAt; }
     public String getId() { return id; }
     public String getCode() { return code; }
     public String getCode2() { return code2; }
@@ -45,6 +29,8 @@ public class Asset implements Serializable {
     public String getStatus() { return status; }
     public String getCondition() { return condition; }
     public String getOwnership() { return ownership; }
+    public Long getProcurementDate() { return procurementDate; }
+    public Long getWarrantyExpirationDate() { return warrantyExpirationDate; }
     public AssetCategory getCategory() { return category; }
     public AssetSubcategory getSubcategory() { return subcategory; }
     public Brand getBrand() { return brand; }
@@ -53,5 +39,4 @@ public class Asset implements Serializable {
     public SubRoom getSubRoom() { return subRoom; }
     public Division getResponsibleDivision() { return responsibleDivision; }
     public WorkingUnit getResponsibleWorkingUnit() { return responsibleWorkingUnit; }
-    public List<Object> getChildren() { return children; }
 }

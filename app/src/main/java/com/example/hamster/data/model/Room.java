@@ -5,18 +5,11 @@ import java.io.Serializable;
 public class Room implements Serializable {
     private String id;
     private String name;
+    private String code;
     private Floor floor;
 
     // Getters
-    public String getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public Floor getFloor() {
-        return floor;
-    }
+    public String getId() { return id; }
+    public String getName() { return name; }
+    public Floor getFloor() { return floor; }
 }

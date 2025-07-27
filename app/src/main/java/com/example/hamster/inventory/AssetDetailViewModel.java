@@ -21,6 +21,8 @@ public class AssetDetailViewModel extends AndroidViewModel {
     private final MutableLiveData<List<OptionItem>> categoryOptions = new MutableLiveData<>();
     private final MutableLiveData<List<OptionItem>> subCategoryOptions = new MutableLiveData<>();
     private final MutableLiveData<Boolean> isSaveSuccess = new MutableLiveData<>();
+    private final MutableLiveData<Boolean> isLoading = new MutableLiveData<>();
+
     private final MutableLiveData<Boolean> isError = new MutableLiveData<>();
 
 
@@ -34,11 +36,13 @@ public class AssetDetailViewModel extends AndroidViewModel {
 
 
     public void fetchAssetById(String assetId) {
+        isLoading.setValue(true);
         ApiService apiService = ApiClient.getClient(getApplication()).create(ApiService.class);
 
         apiService.getAssetById(assetId).enqueue(new Callback<AssetDetailResponse>() {
             @Override
             public void onResponse(Call<AssetDetailResponse> call, Response<AssetDetailResponse> response) {
+                isLoading.setValue(false);
                 if (response.isSuccessful() && response.body() != null) {
                     assetData.setValue(response.body().getData());
                 } else {
@@ -47,6 +51,7 @@ public class AssetDetailViewModel extends AndroidViewModel {
             }
             @Override
             public void onFailure(Call<AssetDetailResponse> call, Throwable t) {
+                isLoading.setValue(false);
                 isError.setValue(true);
             }
         });
