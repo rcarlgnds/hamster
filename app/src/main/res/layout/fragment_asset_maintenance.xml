@@ -23,10 +23,12 @@
                 android:layout_weight="1"
                 android:layout_height="wrap_content">
                 <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/editTextProcurementDate"
+                    android:id="@+id/etProcurementDate"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="date" />
+                    android:hint="Procurement Date"
+                    android:inputType="date"
+                    android:focusable="false"  android:clickable="true"   />
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout

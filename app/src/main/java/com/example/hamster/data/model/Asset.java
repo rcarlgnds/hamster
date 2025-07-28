@@ -27,13 +27,13 @@ public class Asset implements Serializable {
     private String responsibleWorkingUnitId;
     private String responsibleUserId;
     private Long procurementDate;
-    private Float purchasePrice;
+    private Double purchasePrice;
     private String vendorId;
     private String poNumber;
     private String invoiceNumber;
     private Long warrantyExpirationDate;
-    private Float depreciation;
-    private Float depreciationValue;
+    private Double depreciation;
+    private Double depreciationValue;
     private Long depreciationStartDate;
     private Integer depreciationDurationMonth;
     private String parentId;
@@ -147,7 +147,7 @@ public class Asset implements Serializable {
         return procurementDate;
     }
 
-    public Float getPurchasePrice() {
+    public Double getPurchasePrice() {
         return purchasePrice;
     }
 
@@ -167,11 +167,11 @@ public class Asset implements Serializable {
         return warrantyExpirationDate;
     }
 
-    public Float getDepreciation() {
+    public Double getDepreciation() {
         return depreciation;
     }
 
-    public Float getDepreciationValue() {
+    public Double getDepreciationValue() {
         return depreciationValue;
     }
 

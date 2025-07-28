@@ -39,7 +39,7 @@ public class AssetDetailViewModel extends AndroidViewModel {
     private final MutableLiveData<Boolean> isLoading = new MutableLiveData<>();
     private final MutableLiveData<String> errorMessage = new MutableLiveData<>();
 
-    private final UpdateAssetRequest pendingUpdateRequest = new UpdateAssetRequest();
+    private UpdateAssetRequest pendingUpdateRequest = new UpdateAssetRequest();
     private final List<Uri> newSerialNumberPhotoUris = new ArrayList<>();
     private final List<Uri> newAssetPhotoUris = new ArrayList<>();
 
@@ -150,28 +150,91 @@ public class AssetDetailViewModel extends AndroidViewModel {
     }
 
     private void initializePendingUpdate(Asset asset) {
-        if (asset == null) return;
-        // Salin semua data awal ke 'draft'
+        if (asset == null) {
+            // Jika tidak ada data aset sama sekali, pastikan request kosong
+            pendingUpdateRequest = new UpdateAssetRequest();
+            return;
+        }
+
+        // --- Salin Properti dari 'Asset' ke 'pendingUpdateRequest' ---
+
+        // 1. Info Aset
         pendingUpdateRequest.setName(asset.getName());
         pendingUpdateRequest.setCode(asset.getCode());
         pendingUpdateRequest.setOwnership(asset.getOwnership());
         pendingUpdateRequest.setCondition(asset.getCondition());
+        pendingUpdateRequest.setType(asset.getType());
+        pendingUpdateRequest.setSerialNumber(asset.getSerialNumber());
+        pendingUpdateRequest.setDescription(asset.getDescription());
+        pendingUpdateRequest.setTotal(asset.getTotal());
+        pendingUpdateRequest.setUnit(asset.getUnit());
+
+        // Relasi dengan null check
         if (asset.getCategory() != null) pendingUpdateRequest.setCategoryId(asset.getCategory().getId());
         if (asset.getSubcategory() != null) pendingUpdateRequest.setSubcategoryId(asset.getSubcategory().getId());
         if (asset.getBrand() != null) pendingUpdateRequest.setBrandId(asset.getBrand().getId());
-        if (asset.getRoom() != null) pendingUpdateRequest.setRoomId(asset.getRoom().getId());
-        // ... dan semua field lainnya
 
-        // *** PENTING: Langsung simpan ID file yang ada ***
-        if (asset.getMediaFiles() != null) {
-            List<String> serialIds = new ArrayList<>();
+        // 2. Lokasi Aset
+        // Relasi dengan null check
+        if (asset.getRoom() != null) pendingUpdateRequest.setRoomId(asset.getRoom().getId());
+        if (asset.getSubRoom() != null) pendingUpdateRequest.setSubRoomId(asset.getSubRoom().getId());
+        if (asset.getResponsibleDivision() != null) pendingUpdateRequest.setResponsibleDivisionId(asset.getResponsibleDivision().getId());
+        if (asset.getResponsibleWorkingUnit() != null) pendingUpdateRequest.setResponsibleWorkingUnitId(asset.getResponsibleWorkingUnit().getId());
+        if (asset.getResponsibleUser() != null) pendingUpdateRequest.setResponsibleUserId(asset.getResponsibleUser().getId());
+
+        // 3. Maintenance Aset
+        pendingUpdateRequest.setProcurementDate(asset.getProcurementDate());
+        pendingUpdateRequest.setWarrantyExpirationDate(asset.getWarrantyExpirationDate());
+        pendingUpdateRequest.setPurchasePrice(asset.getPurchasePrice());
+        pendingUpdateRequest.setPoNumber(asset.getPoNumber());
+        pendingUpdateRequest.setInvoiceNumber(asset.getInvoiceNumber());
+        pendingUpdateRequest.setDepreciation(asset.getDepreciation());
+        pendingUpdateRequest.setDepreciationValue(asset.getDepreciationValue());
+        pendingUpdateRequest.setDepreciationStartDate(asset.getDepreciationStartDate());
+        pendingUpdateRequest.setDepreciationDurationMonth(asset.getDepreciationDurationMonth());
+
+        // Relasi dengan null check
+        if (asset.getVendor() != null) pendingUpdateRequest.setVendorId(asset.getVendor().getId());
+
+        // 4. Dokumen & Foto (Menyimpan ID file yang sudah ada)
+        // Inisialisasi list untuk menyimpan ID file yang akan dipertahankan
+        if (asset.getMediaFiles() != null && !asset.getMediaFiles().isEmpty()) {
+            List<String> serialNumberPhotoIds = new ArrayList<>();
             List<String> assetPhotoIds = new ArrayList<>();
+            List<String> poDocumentIds = new ArrayList<>();
+            List<String> invoiceDocumentIds = new ArrayList<>();
+            List<String> otherDocumentIds = new ArrayList<>();
+
+            // Loop melalui semua file media yang ada
             for (AssetMediaFile media : asset.getMediaFiles()) {
-                if ("SERIAL_NUMBER_PHOTO".equals(media.getType())) serialIds.add(media.getId());
-                else if ("ASSET_PHOTO".equals(media.getType())) assetPhotoIds.add(media.getId());
+                if (media == null || media.getId() == null) continue; // Lewati jika media atau ID-nya null
+
+                // Pisahkan ID berdasarkan tipe file
+                switch (media.getType()) {
+                    case "SERIAL_NUMBER_PHOTO":
+                        serialNumberPhotoIds.add(media.getId());
+                        break;
+                    case "ASSET_PHOTO":
+                        assetPhotoIds.add(media.getId());
+                        break;
+                    case "PO_DOCUMENT":
+                        poDocumentIds.add(media.getId());
+                        break;
+                    case "INVOICE_DOCUMENT":
+                        invoiceDocumentIds.add(media.getId());
+                        break;
+                    case "OTHER_DOCUMENT":
+                        otherDocumentIds.add(media.getId());
+                        break;
+                }
             }
-            pendingUpdateRequest.setKeepSerialNumberPhotos(serialIds);
+
+            // Set ID yang sudah ada ke pendingUpdateRequest agar tidak terhapus saat update
+            pendingUpdateRequest.setKeepSerialNumberPhotos(serialNumberPhotoIds);
             pendingUpdateRequest.setKeepAssetPhotos(assetPhotoIds);
+            pendingUpdateRequest.setKeepPoDocuments(poDocumentIds);
+            pendingUpdateRequest.setKeepInvoiceDocuments(invoiceDocumentIds);
+//            pendingUpdateRequest.setKeepOtherDocuments(otherDocumentIds);
         }
     }
 
@@ -207,14 +270,64 @@ public class AssetDetailViewModel extends AndroidViewModel {
 
     private Map<String, RequestBody> buildFieldsMap() {
         Map<String, RequestBody> fields = new HashMap<>();
-        addPart(fields, "code", pendingUpdateRequest.getCode());
-        addPart(fields, "name", pendingUpdateRequest.getName());
-        addPart(fields, "ownership", pendingUpdateRequest.getOwnership());
-        addPart(fields, "categoryId", pendingUpdateRequest.getCategoryId());
-        // ...dan seterusnya
+        UpdateAssetRequest request = pendingUpdateRequest;
 
-        addMultipleTextPart(fields, "keepSerialNumberPhotos", pendingUpdateRequest.getKeepSerialNumberPhotos());
-        addMultipleTextPart(fields, "keepAssetPhotos", pendingUpdateRequest.getKeepAssetPhotos());
+        // --- Asset Info Fragment ---
+        addPart(fields, "code", request.getCode());
+        addPart(fields, "code2", request.getCode2());
+        addPart(fields, "code3", request.getCode3());
+        addPart(fields, "name", request.getName());
+        addPart(fields, "parentId", request.getParentId());
+        addPart(fields, "type", request.getType());
+        addPart(fields, "serialNumber", request.getSerialNumber());
+        addPart(fields, "ownership", request.getOwnership());
+        addPart(fields, "categoryId", request.getCategoryId());
+        addPart(fields, "subcategoryId", request.getSubcategoryId());
+        if (request.getTotal() != null) {
+            addPart(fields, "total", String.valueOf(request.getTotal()));
+        }
+        addPart(fields, "unit", request.getUnit());
+        addPart(fields, "description", request.getDescription());
+        addPart(fields, "brandId", request.getBrandId());
+        addPart(fields, "condition", request.getCondition());
+
+        // --- Asset Location Fragment ---
+        addPart(fields, "roomId", request.getRoomId());
+        addPart(fields, "subRoomId", request.getSubRoomId());
+        addPart(fields, "responsibleDivisionId", request.getResponsibleDivisionId());
+        addPart(fields, "responsibleWorkingUnitId", request.getResponsibleWorkingUnitId());
+        addPart(fields, "responsibleUserId", request.getResponsibleUserId());
+
+        // --- Asset Maintenance Fragment ---
+        addPart(fields, "vendorId", request.getVendorId());
+        if (request.getProcurementDate() != null) {
+            addPart(fields, "procurementDate", String.valueOf(request.getProcurementDate()));
+        }
+        if (request.getWarrantyExpirationDate() != null) {
+            addPart(fields, "warrantyExpirationDate", String.valueOf(request.getWarrantyExpirationDate()));
+        }
+        if (request.getPurchasePrice() != null) {
+            addPart(fields, "purchasePrice", String.valueOf(request.getPurchasePrice()));
+        }
+        addPart(fields, "poNumber", request.getPoNumber());
+        addPart(fields, "invoiceNumber", request.getInvoiceNumber());
+        if (request.getDepreciation() != null) {
+            addPart(fields, "depreciation", String.valueOf(request.getDepreciation()));
+        }
+        if (request.getDepreciationValue() != null) {
+            addPart(fields, "depreciationValue", String.valueOf(request.getDepreciationValue()));
+        }
+        if (request.getDepreciationStartDate() != null) {
+            addPart(fields, "depreciationStartDate", String.valueOf(request.getDepreciationStartDate()));
+        }
+        if (request.getDepreciationDurationMonth() != null) {
+            addPart(fields, "depreciationDurationMonth", String.valueOf(request.getDepreciationDurationMonth()));
+        }
+
+        // --- Asset Documents Fragment (Keep Existing Photos) ---
+        addMultipleTextPart(fields, "keepSerialNumberPhotos", request.getKeepSerialNumberPhotos());
+        addMultipleTextPart(fields, "keepAssetPhotos", request.getKeepAssetPhotos());
+
         return fields;
     }
 
