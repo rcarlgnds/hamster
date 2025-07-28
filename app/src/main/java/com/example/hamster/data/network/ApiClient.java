@@ -11,6 +11,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class ApiClient {
     public static final String BASE_URL = "http://195.35.20.102:9180/api/";
+    public static final String BASE_MEDIA_URL = "http://195.35.20.102:9180";
 
     private static Retrofit retrofit = null;
 
