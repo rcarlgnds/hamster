@@ -83,6 +83,8 @@ public class AssetDetailViewModel extends AndroidViewModel {
     public LiveData<List<String>> getOwnershipOptions() { return ownershipOptions; }
     public LiveData<List<String>> getConditionOptions() { return conditionOptions; }
     public LiveData<List<String>> getUnitOptions() { return unitOptions; }
+    private List<String> idsToKeepSerial = new ArrayList<>();
+    private List<String> idsToKeepAsset = new ArrayList<>();
 
 
     // --- Metode spesifik untuk menerima data dari setiap fragment ---
@@ -227,22 +229,29 @@ public class AssetDetailViewModel extends AndroidViewModel {
             if (part != null) fileParts.add(part);
         }
 
-        apiService.updateAsset(assetId, fields, fileParts).enqueue(new Callback<Asset>() {
-            @Override
-            public void onResponse(@NonNull Call<Asset> call, @NonNull Response<Asset> response) {
-                isLoading.setValue(false);
-                isSaveSuccess.setValue(response.isSuccessful());
-                if (!response.isSuccessful()){
-                    errorMessage.setValue("Gagal menyimpan: " + response.code() + " " + response.message());
-                }
-            }
-            @Override
-            public void onFailure(@NonNull Call<Asset> call, @NonNull Throwable t) {
-                isLoading.setValue(false);
-                isSaveSuccess.setValue(false);
-                errorMessage.setValue("Koneksi error: " + t.getMessage());
-            }
-        });
+        apiService.updateAsset(assetId, fields, fileParts, idsToKeepAsset, idsToKeepSerial)
+                .enqueue(new Callback<Asset>() {
+                    @Override
+                    public void onResponse(@NonNull Call<Asset> call, @NonNull Response<Asset> response) {
+                        isLoading.setValue(false);
+                        if (response.isSuccessful()) {
+                            isSaveSuccess.setValue(true);
+                            // Bersihkan URI setelah berhasil
+                            newSerialNumberPhotoUri = null;
+                            newAssetPhotoUris.clear();
+                        } else {
+                            isSaveSuccess.setValue(false);
+                            errorMessage.setValue("Gagal menyimpan: " + response.code() + " " + response.message());
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(@NonNull Call<Asset> call, @NonNull Throwable t) {
+                        isLoading.setValue(false);
+                        isSaveSuccess.setValue(false);
+                        errorMessage.setValue("Koneksi error: " + t.getMessage());
+                    }
+                });
     }
 
     private void addPart(Map<String, RequestBody> map, String key, String value) {

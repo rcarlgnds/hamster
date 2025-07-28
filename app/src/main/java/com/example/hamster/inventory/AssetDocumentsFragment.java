@@ -127,11 +127,36 @@ public class AssetDocumentsFragment extends Fragment implements FragmentDataColl
     @Override
     public void collectDataForSave() {
         List<String> keepSerialIds = new ArrayList<>();
-        if (existingSerialPhotoId != null && newSerialNumberUri == null) {
+        if (newSerialNumberUri == null && existingSerialPhotoId != null) {
             keepSerialIds.add(existingSerialPhotoId);
         }
 
         viewModel.updateDocumentUris(newSerialNumberUri, newAssetPhotosUris, keepSerialIds, existingAssetPhotoIds);
+    }
+
+    private void addAssetPhotoToContainer(Uri localUri, String remoteUrl, String mediaId) {
+        if (getContext() == null) return;
+
+        LayoutInflater inflater = LayoutInflater.from(getContext());
+        View photoView = inflater.inflate(R.layout.item_asset_photo, assetPhotosContainer, false);
+
+        ImageView imageView = photoView.findViewById(R.id.imageViewAsset);
+        ImageView deleteButton = photoView.findViewById(R.id.buttonDeletePhoto);
+
+        if (localUri != null) {
+            Glide.with(this).load(localUri).into(imageView);
+            deleteButton.setOnClickListener(v -> {
+                assetPhotosContainer.removeView(photoView);
+                newAssetPhotosUris.remove(localUri);
+            });
+        } else if (remoteUrl != null) {
+            Glide.with(this).load(remoteUrl).into(imageView);
+            deleteButton.setOnClickListener(v -> {
+                assetPhotosContainer.removeView(photoView);
+                existingAssetPhotoIds.remove(mediaId);
+            });
+        }
+        assetPhotosContainer.addView(photoView);
     }
 
     private void checkCameraPermissionAndLaunch() {
