@@ -347,7 +347,7 @@ public class AssetDetailViewModel extends AndroidViewModel {
     }
 
     private void addPart(Map<String, RequestBody> map, String key, String value) {
-        if (value != null && !value.isEmpty()) {
+        if (value != null) {
             map.put(key, RequestBody.create(MediaType.parse("text/plain"), value));
         }
     }

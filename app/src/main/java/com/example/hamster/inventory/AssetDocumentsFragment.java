@@ -15,6 +15,7 @@ import android.widget.Toast;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
@@ -70,9 +71,15 @@ public class AssetDocumentsFragment extends Fragment implements FragmentDataColl
             });
 
     @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        viewModel = new ViewModelProvider(requireActivity()).get(AssetDetailViewModel.class);
+    }
+
+    @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_asset_documents, container, false);
-        viewModel = new ViewModelProvider(requireActivity()).get(AssetDetailViewModel.class);
+        // Hapus inisialisasi dari sini
         initializeViews(view);
         setupListeners(view);
         setupObservers();
