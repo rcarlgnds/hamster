@@ -461,13 +461,13 @@ public interface ApiService {
     Call<AssetDetailResponse> getAssetById(@Path("id") String assetId);
 
     @Multipart
-    @PUT("api/assets/{id}")
+    @PATCH("assets/{id}")
     Call<Asset> updateAsset(
             @Path("id") String assetId,
             @PartMap Map<String, RequestBody> fields,
-            @Part List<MultipartBody.Part> files,
-            @Part("keepAssetPhotos") List<String> keepAssetPhotos,
-            @Part("keepSerialNumberPhotos") List<String> keepSerialNumberPhotos
+            @Part List<MultipartBody.Part> fileParts,
+            @Part List<MultipartBody.Part> keepAssetPhotos,
+            @Part List<MultipartBody.Part> keepSerialNumberPhotos
     );
 
     @DELETE("assets/{id}")

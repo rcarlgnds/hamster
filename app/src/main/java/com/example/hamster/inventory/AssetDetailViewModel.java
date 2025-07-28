@@ -4,6 +4,8 @@ package com.example.hamster.inventory;
 import android.app.Application;
 import android.net.Uri;
 import android.text.TextUtils;
+import android.util.Log;
+
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
@@ -130,12 +132,30 @@ public class AssetDetailViewModel extends AndroidViewModel {
     public void updateDocumentUris(Uri serialUri, List<Uri> assetUris, List<String> keepSerialIds, List<String> keepAssetPhotoIds) {
         this.newSerialNumberPhotoUri = serialUri;
         this.newAssetPhotoUris.clear();
+
+        this.idsToKeepAsset = cleanUuidList(keepAssetPhotoIds);
+        this.idsToKeepSerial = cleanUuidList(keepSerialIds);
+
         if (assetUris != null) {
             this.newAssetPhotoUris.addAll(assetUris);
         }
-        pendingUpdateRequest.setKeepSerialNumberPhotos(keepSerialIds);
-        pendingUpdateRequest.setKeepAssetPhotos(keepAssetPhotoIds);
+
+        pendingUpdateRequest.setKeepSerialNumberPhotos(idsToKeepSerial);
+        pendingUpdateRequest.setKeepAssetPhotos(idsToKeepAsset);
     }
+
+    private List<String> cleanUuidList(List<String> rawList) {
+        List<String> cleaned = new ArrayList<>();
+        if (rawList != null) {
+            for (String id : rawList) {
+                if (id != null) {
+                    cleaned.add(id.replace("\"", "").trim());
+                }
+            }
+        }
+        return cleaned;
+    }
+
 
     // --- Metode Fetch ---
     public void fetchAllOptions() {
@@ -199,6 +219,7 @@ public class AssetDetailViewModel extends AndroidViewModel {
         isLoading.setValue(true);
 
         Map<String, RequestBody> fields = new HashMap<>();
+
         addPart(fields, "code", pendingUpdateRequest.getCode());
         addPart(fields, "name", pendingUpdateRequest.getName());
         addPart(fields, "ownership", pendingUpdateRequest.getOwnership());
@@ -218,47 +239,110 @@ public class AssetDetailViewModel extends AndroidViewModel {
         addPart(fields, "code3", pendingUpdateRequest.getCode3());
         addPart(fields, "parentId", pendingUpdateRequest.getParentId());
         addPart(fields, "description", pendingUpdateRequest.getDescription());
+        addPart(fields, "procurementDate", pendingUpdateRequest.getProcurementDate());
+        addPart(fields, "warrantyExpirationDate", pendingUpdateRequest.getWarrantyExpirationDate());
+        addPart(fields, "purchasePrice", pendingUpdateRequest.getPurchasePrice());
+        addPart(fields, "poNumber", pendingUpdateRequest.getPoNumber());
+        addPart(fields, "invoiceNumber", pendingUpdateRequest.getInvoiceNumber());
+        addPart(fields, "depreciation", pendingUpdateRequest.getDepreciation());
+        addPart(fields, "depreciationValue", pendingUpdateRequest.getDepreciationValue());
+        addPart(fields, "depreciationStartDate", pendingUpdateRequest.getDepreciationStartDate());
+        addPart(fields, "depreciationDurationMonth", pendingUpdateRequest.getDepreciationDurationMonth());
+        addPart(fields, "unit", pendingUpdateRequest.getUnit());
 
         List<MultipartBody.Part> fileParts = new ArrayList<>();
+
         if (newSerialNumberPhotoUri != null) {
             MultipartBody.Part part = createFilePart("serialNumberPhoto", newSerialNumberPhotoUri);
             if (part != null) fileParts.add(part);
         }
+
         for (Uri uri : newAssetPhotoUris) {
             MultipartBody.Part part = createFilePart("assetPhotos", uri);
             if (part != null) fileParts.add(part);
         }
 
-        apiService.updateAsset(assetId, fields, fileParts, idsToKeepAsset, idsToKeepSerial)
-                .enqueue(new Callback<Asset>() {
-                    @Override
-                    public void onResponse(@NonNull Call<Asset> call, @NonNull Response<Asset> response) {
-                        isLoading.setValue(false);
-                        if (response.isSuccessful()) {
-                            isSaveSuccess.setValue(true);
-                            // Bersihkan URI setelah berhasil
-                            newSerialNumberPhotoUri = null;
-                            newAssetPhotoUris.clear();
-                        } else {
-                            isSaveSuccess.setValue(false);
-                            errorMessage.setValue("Gagal menyimpan: " + response.code() + " " + response.message());
-                        }
-                    }
+        List<MultipartBody.Part> keepSerialParts = new ArrayList<>();
+        if (newSerialNumberPhotoUri == null && pendingUpdateRequest.getKeepSerialNumberPhotos() != null) {
+            for (String id : pendingUpdateRequest.getKeepSerialNumberPhotos()) {
+                if (!TextUtils.isEmpty(id)) {
+                    RequestBody body = RequestBody.create(MediaType.parse("text/plain"), id);
+                    keepSerialParts.add(MultipartBody.Part.createFormData("keepSerialNumberPhotos", null, body));
+                }
+            }
+        }
 
-                    @Override
-                    public void onFailure(@NonNull Call<Asset> call, @NonNull Throwable t) {
-                        isLoading.setValue(false);
-                        isSaveSuccess.setValue(false);
-                        errorMessage.setValue("Koneksi error: " + t.getMessage());
-                    }
-                });
+        List<MultipartBody.Part> keepAssetParts = new ArrayList<>();
+        if (pendingUpdateRequest.getKeepAssetPhotos() != null) {
+            for (String id : pendingUpdateRequest.getKeepAssetPhotos()) {
+                if (!TextUtils.isEmpty(id)) {
+                    RequestBody body = RequestBody.create(MediaType.parse("text/plain"), id);
+                    keepAssetParts.add(MultipartBody.Part.createFormData("keepAssetPhotos", null, body));
+                }
+            }
+        }
+
+        Log.d("SubmitCheck", "Submitting with fields: " + fields.keySet());
+        Log.d("SubmitCheck", "Asset Photos New: " + newAssetPhotoUris.size());
+        Log.d("SubmitCheck", "Keep Asset IDs: " + pendingUpdateRequest.getKeepAssetPhotos());
+        Log.d("SubmitCheck", "Keep Serial IDs: " + pendingUpdateRequest.getKeepSerialNumberPhotos());
+
+        apiService.updateAsset(
+                assetId,
+                fields,
+                fileParts,
+                keepAssetParts,
+                keepSerialParts
+        ).enqueue(new Callback<Asset>() {
+            @Override
+            public void onResponse(@NonNull Call<Asset> call, @NonNull Response<Asset> response) {
+                isLoading.setValue(false);
+                if (response.isSuccessful()) {
+                    isSaveSuccess.setValue(true);
+                    newSerialNumberPhotoUri = null;
+                    newAssetPhotoUris.clear();
+                } else {
+                    isSaveSuccess.setValue(false);
+                    errorMessage.setValue("Gagal menyimpan: " + response.code() + " - " + response.message());
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<Asset> call, @NonNull Throwable t) {
+                isLoading.setValue(false);
+                isSaveSuccess.setValue(false);
+                errorMessage.setValue("Koneksi error: " + t.getMessage());
+            }
+        });
     }
+
+
+
 
     private void addPart(Map<String, RequestBody> map, String key, String value) {
         if (value != null && !value.isEmpty()) {
             map.put(key, RequestBody.create(MediaType.parse("text/plain"), value));
         }
     }
+
+    private void addPart(Map<String, RequestBody> map, String key, Long value) {
+        if (value != null) {
+            map.put(key, RequestBody.create(MediaType.parse("text/plain"), String.valueOf(value)));
+        }
+    }
+
+    private void addPart(Map<String, RequestBody> map, String key, Integer value) {
+        if (value != null) {
+            map.put(key, RequestBody.create(MediaType.parse("text/plain"), String.valueOf(value)));
+        }
+    }
+
+    private void addPart(Map<String, RequestBody> map, String key, Double value) {
+        if (value != null) {
+            map.put(key, RequestBody.create(MediaType.parse("text/plain"), String.valueOf(value)));
+        }
+    }
+
 
     private MultipartBody.Part createFilePart(String partName, Uri fileUri) {
         try {
