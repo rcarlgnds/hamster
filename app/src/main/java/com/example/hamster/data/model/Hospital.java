@@ -1,15 +1,18 @@
 package com.example.hamster.data.model;
 
 import java.io.Serializable;
+import java.util.List;
 
 public class Hospital implements Serializable {
     private String id;
     private String name;
     private String city;
     private String location;
+    private String code;
+    private String address;
+    private String contact;
+    private List<Building> buildings;
 
-    public String getId() { return id; }
+    // Getters
     public String getName() { return name; }
-    public String getCity() { return city; }
-    public String getLocation() { return location; }
 }

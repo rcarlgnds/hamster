@@ -6,6 +6,6 @@ public class Division implements Serializable {
     private String id;
     private String name;
 
-    public String getId() { return id; }
+    // Getters
     public String getName() { return name; }
 }
