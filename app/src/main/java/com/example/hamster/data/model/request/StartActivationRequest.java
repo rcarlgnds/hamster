@@ -1,33 +1,19 @@
+// File: app/src/main/java/com/example/hamster/data/model/request/StartActivationRequest.java
 package com.example.hamster.data.model.request;
 
 public class StartActivationRequest {
-    private String assetId;
-    private String initiatorId;
-    private String notes;
+    // Diubah dari assetId, initiatorId, notes
+    private String assetCode;
 
-    public StartActivationRequest(String assetId, String initiatorId, String notes) {
-        this.assetId = assetId;
-        this.initiatorId = initiatorId;
-        this.notes = notes;
+    public StartActivationRequest(String assetCode) {
+        this.assetCode = assetCode;
     }
 
-    public String getAssetId() {
-        return assetId;
+    public String getAssetCode() {
+        return assetCode;
     }
-    public void setAssetId(String assetId) {
-        this.assetId = assetId;
-    }
-    public String getInitiatorId() {
-        return initiatorId;
-    }
-    public void setInitiatorId(String initiatorId) {
-        this.initiatorId = initiatorId;
-    }
-    public String getNotes() {
-        return notes;
-    }
-    public void setNotes(String notes) {
-        this.notes = notes;
+
+    public void setAssetCode(String assetCode) {
+        this.assetCode = assetCode;
     }
 }
-

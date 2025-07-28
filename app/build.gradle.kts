@@ -55,4 +55,14 @@ dependencies {
     // Untuk Gambar
     implementation(libs.glide)
     annotationProcessor(libs.compiler)
+
+    // Untuk QR
+    implementation(libs.barcode.scanning)
+
+    // Untuk preview kamera dan image analysis
+    val cameraxVersion = "1.3.1"
+    implementation(libs.camera.core)
+    implementation(libs.androidx.camera.camera2)
+    implementation(libs.androidx.camera.lifecycle)
+    implementation(libs.androidx.camera.view)
 }

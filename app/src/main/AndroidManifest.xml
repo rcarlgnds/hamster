@@ -39,6 +39,14 @@
         <activity android:name=".inventory.InventoryActivity" />
         <activity android:name=".inventory.AssetDetailActivity" />
 
+        <activity
+            android:name=".activation.ActivationActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".activation.ScannerActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.Design.NoActionBar" />
 
         <provider
             android:name="androidx.core.content.FileProvider"

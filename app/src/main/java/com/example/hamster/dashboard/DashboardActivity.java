@@ -14,6 +14,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.example.hamster.R;
 import com.example.hamster.SplashActivity;
+import com.example.hamster.activation.ActivationActivity;
 import com.example.hamster.data.model.User;
 import com.example.hamster.inventory.InventoryActivity;
 import com.example.hamster.utils.SessionManager;
@@ -49,7 +50,12 @@ public class DashboardActivity extends AppCompatActivity {
             if (itemId == R.id.nav_inventory) {
                 Intent intent = new Intent(DashboardActivity.this, InventoryActivity.class);
                 startActivity(intent);
-            }  else if (itemId == R.id.nav_logout) {
+            }
+            else if (itemId == R.id.nav_activation) {
+                Intent intent = new Intent(DashboardActivity.this, ActivationActivity.class);
+                startActivity(intent);
+            }
+            else if (itemId == R.id.nav_logout) {
                 logoutUser();
             }
 
