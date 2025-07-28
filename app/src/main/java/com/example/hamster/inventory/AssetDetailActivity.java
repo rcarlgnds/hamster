@@ -1,19 +1,16 @@
+// File: app/src/main/java/com/example/hamster/inventory/AssetDetailActivity.java
 package com.example.hamster.inventory;
 
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
-
 import com.example.hamster.R;
-import com.example.hamster.data.model.UpdateAssetRequest;
 import com.example.hamster.databinding.ActivityAssetDetailBinding;
 import com.google.android.material.tabs.TabLayoutMediator;
 
@@ -21,7 +18,8 @@ public class AssetDetailActivity extends AppCompatActivity {
 
     private AssetDetailViewModel viewModel;
     private ActivityAssetDetailBinding binding;
-    private String assetId; // <-- MOVED: assetId is now a member variable
+    private String assetId;
+    private AssetDetailPagerAdapter pagerAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,17 +28,20 @@ public class AssetDetailActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
 
         setSupportActionBar(binding.toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
-        // Initialize the member variable
-        assetId = getIntent().getStringExtra("ASSET_ID");
-
-        viewModel = new ViewModelProvider(this).get(AssetDetailViewModel.class);
-        if (assetId != null) {
-            viewModel.fetchAssetById(assetId);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
 
-        binding.viewPager.setAdapter(new AssetDetailPagerAdapter(this));
+        assetId = getIntent().getStringExtra("ASSET_ID");
+        viewModel = new ViewModelProvider(this).get(AssetDetailViewModel.class);
+
+        if (assetId != null) {
+            viewModel.fetchAssetById(assetId);
+            viewModel.fetchAllOptions(); // Muat semua data dropdown sekali saja
+        }
+
+        pagerAdapter = new AssetDetailPagerAdapter(this);
+        binding.viewPager.setAdapter(pagerAdapter);
 
         new TabLayoutMediator(binding.tabLayout, binding.viewPager, (tab, position) -> {
             switch (position) {
@@ -52,7 +53,6 @@ public class AssetDetailActivity extends AppCompatActivity {
             }
         }).attach();
 
-        // Setup the save button listener
         Button buttonSave = findViewById(R.id.buttonEdit);
         buttonSave.setOnClickListener(v -> saveChanges());
 
@@ -60,8 +60,12 @@ public class AssetDetailActivity extends AppCompatActivity {
             if (isSuccess) {
                 Toast.makeText(this, "Data berhasil disimpan!", Toast.LENGTH_SHORT).show();
                 finish();
-            } else {
-                Toast.makeText(this, "Gagal menyimpan data.", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        viewModel.getIsError().observe(this, isError -> {
+            if (isError != null && isError) {
+                Toast.makeText(this, "Gagal menyimpan data. Periksa kembali isian Anda.", Toast.LENGTH_LONG).show();
             }
         });
     }
@@ -73,22 +77,22 @@ public class AssetDetailActivity extends AppCompatActivity {
     }
 
     private void saveChanges() {
-        // Now this method can access the assetId member variable
         if (assetId == null) return;
 
-        Fragment currentFragment = getSupportFragmentManager().findFragmentByTag("f" + binding.viewPager.getCurrentItem());
-
-        if (currentFragment instanceof AssetInfoFragment) {
-            UpdateAssetRequest request = ((AssetInfoFragment) currentFragment).getUpdatedAssetData();
-            viewModel.saveAsset(assetId, request);
+        // 1. Panggil metode pengumpulan data di semua fragment yang aktif.
+        for (Fragment fragment : getSupportFragmentManager().getFragments()) {
+            if (fragment instanceof FragmentDataCollector && fragment.isAdded()) {
+                ((FragmentDataCollector) fragment).collectDataForSave();
+            }
         }
-        // TODO: Add 'else if' blocks here for your other fragments (Location, Maintenance, etc.)
+
+        // 2. Setelah semua data dijamin terkumpul di ViewModel, panggil save.
+        viewModel.saveChanges(assetId);
     }
 
-    private static class AssetDetailPagerAdapter extends FragmentStateAdapter {
-        public AssetDetailPagerAdapter(FragmentActivity fa) {
-            super(fa);
-        }
+    // Adapter dibuat sebagai inner class non-statis
+    private class AssetDetailPagerAdapter extends FragmentStateAdapter {
+        public AssetDetailPagerAdapter(FragmentActivity fa) { super(fa); }
 
         @NonNull
         @Override
@@ -98,13 +102,11 @@ public class AssetDetailActivity extends AppCompatActivity {
                 case 1: return new AssetLocationFragment();
                 case 2: return new AssetMaintenanceFragment();
                 case 3: return new AssetDocumentsFragment();
-                default: return new Fragment();
+                default: return new Fragment(); // Untuk tab "Review"
             }
         }
 
         @Override
-        public int getItemCount() {
-            return 5;
-        }
+        public int getItemCount() { return 5; }
     }
 }

@@ -72,6 +72,7 @@ import com.example.hamster.data.model.response.FloorResponse;
 import com.example.hamster.data.model.response.HospitalResponse;
 import com.example.hamster.data.model.response.MediaFileResponse;
 import com.example.hamster.data.model.response.NotificationResponse;
+import com.example.hamster.data.model.response.OptionsResponse;
 import com.example.hamster.data.model.response.PendingApprovalsResponse;
 import com.example.hamster.data.model.response.PositionResponse;
 import com.example.hamster.data.model.response.PrinterStatusResponse;
@@ -114,7 +115,7 @@ public interface ApiService {
 
     // --- Users ---
     @GET("users/options")
-    Call<List<OptionItem>> getUserOptions();
+    Call<OptionsResponse> getUserOptions();
 
     @GET("users")
     Call<UserResponse> getUsers(@Query("page") int page, @Query("limit") int limit);
@@ -142,10 +143,10 @@ public interface ApiService {
 
     // --- Hospitals ---
     @GET("hospitals/options")
-    Call<List<OptionItem>> getHospitalOptions();
+    Call<OptionsResponse> getHospitalOptions();
 
     @GET("hospitals/{id}/buildings/options")
-    Call<List<OptionItem>> getBuildingOptionsForHospital(@Path("id") String hospitalId);
+    Call<OptionsResponse> getBuildingOptionsForHospital(@Path("id") String hospitalId);
 
     @GET("hospitals")
     Call<HospitalResponse> getHospitals(@Query("page") int page, @Query("limit") int limit);
@@ -174,7 +175,7 @@ public interface ApiService {
 
     // --- Buildings ---
     @GET("buildings/options")
-    Call<List<OptionItem>> getBuildingOptions();
+    Call<OptionsResponse> getBuildingOptions();
 
     @GET("buildings")
     Call<BuildingResponse> getBuildings(@Query("page") int page, @Query("limit") int limit);
@@ -201,7 +202,7 @@ public interface ApiService {
     Call<Void> hardDeleteBuilding(@Path("id") String buildingId);
 
     @GET("buildings/{buildingId}/floors/options")
-    Call<List<OptionItem>> getFloorOptionsForBuilding(@Path("buildingId") String buildingId);
+    Call<OptionsResponse> getFloorOptionsForBuilding(@Path("buildingId") String buildingId);
 
     // --- Floors ---
     @GET("floors")
@@ -225,7 +226,7 @@ public interface ApiService {
     Call<Void> softDeleteFloor(@Path("id") String floorId);
 
     @GET("floors/{id}/rooms/options")
-    Call<List<OptionItem>> getRoomOptionsByFloor(@Path("id") String floorId);
+    Call<OptionsResponse> getRoomOptionsByFloor(@Path("id") String floorId);
 
     @PATCH("floors/{id}/restore")
     Call<Void> restoreFloor(@Path("id") String floorId);
@@ -254,7 +255,7 @@ public interface ApiService {
     Call<Void> deleteRoom(@Path("id") String roomId);
 
     @GET("rooms/{id}/sub-rooms/options")
-    Call<List<OptionItem>> getSubRoomOptionsByRoom(@Path("id") String roomId);
+    Call<OptionsResponse> getSubRoomOptionsByRoom(@Path("id") String roomId);
 
     @PATCH("rooms/{id}/restore")
     Call<Void> restoreRoom(@Path("id") String roomId);
@@ -293,7 +294,7 @@ public interface ApiService {
 
     // --- Divisions ---
     @GET("divisions/options")
-    Call<List<OptionItem>> getDivisionOptions();
+    Call<OptionsResponse> getDivisionOptions();
 
     @GET("divisions")
     Call<DivisionResponse> getDivisions(@Query("page") int page, @Query("limit") int limit);
@@ -330,7 +331,7 @@ public interface ApiService {
     Call<Position> updatePosition(@Path("id") String positionId, @Body UpdatePositionRequest request);
 
     @GET("positions/options")
-    Call<List<OptionItem>> getPositionOptions();
+    Call<OptionsResponse> getPositionOptions();
 
     @GET("positions")
     Call<PositionResponse> getPositions(@Query("page") int page, @Query("limit") int limit);
@@ -349,7 +350,7 @@ public interface ApiService {
 
     // --- Working Units ---
     @GET("working-units/options")
-    Call<List<OptionItem>> getWorkingUnitOptions();
+    Call<OptionsResponse> getWorkingUnitOptions();
 
     @GET("working-units")
     Call<WorkingUnitResponse> getWorkingUnits(@Query("page") int page, @Query("limit") int limit);
@@ -378,7 +379,7 @@ public interface ApiService {
 
     // --- Asset Categories ---
     @GET("asset-categories/options")
-    Call<List<OptionItem>> getAssetCategoryOptions();
+    Call<OptionsResponse> getAssetCategoryOptions();
 
     @GET("asset-categories")
     Call<AssetCategoryResponse> getAssetCategories(@Query("page") int page, @Query("limit") int limit);
@@ -405,7 +406,7 @@ public interface ApiService {
     Call<Void> hardDeleteAssetCategory(@Path("id") String categoryId);
 
     @GET("asset-categories/{id}/asset-subcategories/options")
-    Call<List<OptionItem>> getAssetSubCategoryOptions(@Path("id") String categoryId);
+    Call<OptionsResponse> getAssetSubCategoryOptions(@Path("id") String categoryId);
 
     // --- Asset Subcategories ---
     @GET("asset-subcategories")
@@ -435,7 +436,7 @@ public interface ApiService {
 
     // --- Assets ---
     @GET("assets/options")
-    Call<List<OptionItem>> getAssetOptions();
+    Call<OptionsResponse> getAssetOptions();
 
     @GET("assets/print")
     Call<List<Asset>> getAssetsForPrinting();
@@ -511,7 +512,7 @@ public interface ApiService {
 
     // --- Vendors ---
     @GET("vendors/options")
-    Call<List<OptionItem>> getVendorOptions();
+    Call<OptionsResponse> getVendorOptions();
 
     @GET("vendors")
     Call<VendorResponse> getVendors(@Query("page") int page, @Query("limit") int limit);
@@ -539,7 +540,7 @@ public interface ApiService {
 
     // --- Brands ---
     @GET("brands/options")
-    Call<List<OptionItem>> getBrandOptions();
+    Call<OptionsResponse> getBrandOptions();
 
     @GET("brands")
     Call<BrandResponse> getBrands(@Query("page") int page, @Query("limit") int limit);

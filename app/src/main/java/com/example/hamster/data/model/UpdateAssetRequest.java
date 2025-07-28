@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName;
 
 public class UpdateAssetRequest {
 
-    // --- Basic Info ---
+    // --- Dari AssetInfoFragment ---
     private String code;
     private String code2;
     private String code3;
@@ -16,8 +16,6 @@ public class UpdateAssetRequest {
     private String unit;
     private String condition;
     private String ownership;
-
-    // --- Relational IDs ---
     @SerializedName("parentId")
     private String parentId;
     @SerializedName("categoryId")
@@ -26,8 +24,8 @@ public class UpdateAssetRequest {
     private String subcategoryId;
     @SerializedName("brandId")
     private String brandId;
-    @SerializedName("vendorId")
-    private String vendorId;
+
+    // --- Dari AssetLocationFragment ---
     @SerializedName("roomId")
     private String roomId;
     @SerializedName("subRoomId")
@@ -39,7 +37,9 @@ public class UpdateAssetRequest {
     @SerializedName("responsibleUserId")
     private String responsibleUserId;
 
-    // --- Procurement & Financial Info ---
+    // --- Dari AssetMaintenanceFragment ---
+    @SerializedName("vendorId")
+    private String vendorId;
     private Long procurementDate;
     private Long warrantyExpirationDate;
     private Double purchasePrice;
@@ -51,7 +51,130 @@ public class UpdateAssetRequest {
     private Integer depreciationDurationMonth;
 
 
-    // --- Setters ---
+    // Getter
+
+    public String getCode() {
+        return code;
+    }
+
+    public String getCode2() {
+        return code2;
+    }
+
+    public String getCode3() {
+        return code3;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public String getSerialNumber() {
+        return serialNumber;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public Integer getTotal() {
+        return total;
+    }
+
+    public String getUnit() {
+        return unit;
+    }
+
+    public String getCondition() {
+        return condition;
+    }
+
+    public String getOwnership() {
+        return ownership;
+    }
+
+    public String getParentId() {
+        return parentId;
+    }
+
+    public String getCategoryId() {
+        return categoryId;
+    }
+
+    public String getSubcategoryId() {
+        return subcategoryId;
+    }
+
+    public String getBrandId() {
+        return brandId;
+    }
+
+    public String getRoomId() {
+        return roomId;
+    }
+
+    public String getSubRoomId() {
+        return subRoomId;
+    }
+
+    public String getResponsibleDivisionId() {
+        return responsibleDivisionId;
+    }
+
+    public String getResponsibleWorkingUnitId() {
+        return responsibleWorkingUnitId;
+    }
+
+    public String getResponsibleUserId() {
+        return responsibleUserId;
+    }
+
+    public String getVendorId() {
+        return vendorId;
+    }
+
+    public Long getProcurementDate() {
+        return procurementDate;
+    }
+
+    public Long getWarrantyExpirationDate() {
+        return warrantyExpirationDate;
+    }
+
+    public Double getPurchasePrice() {
+        return purchasePrice;
+    }
+
+    public String getPoNumber() {
+        return poNumber;
+    }
+
+    public String getInvoiceNumber() {
+        return invoiceNumber;
+    }
+
+    public Double getDepreciation() {
+        return depreciation;
+    }
+
+    public Double getDepreciationValue() {
+        return depreciationValue;
+    }
+
+    public Long getDepreciationStartDate() {
+        return depreciationStartDate;
+    }
+
+    public Integer getDepreciationDurationMonth() {
+        return depreciationDurationMonth;
+    }
+
+    // --- Setter untuk semua field ---
+
     public void setCode(String code) { this.code = code; }
     public void setCode2(String code2) { this.code2 = code2; }
     public void setCode3(String code3) { this.code3 = code3; }
@@ -67,12 +190,12 @@ public class UpdateAssetRequest {
     public void setCategoryId(String categoryId) { this.categoryId = categoryId; }
     public void setSubcategoryId(String subcategoryId) { this.subcategoryId = subcategoryId; }
     public void setBrandId(String brandId) { this.brandId = brandId; }
-    public void setVendorId(String vendorId) { this.vendorId = vendorId; }
     public void setRoomId(String roomId) { this.roomId = roomId; }
     public void setSubRoomId(String subRoomId) { this.subRoomId = subRoomId; }
     public void setResponsibleDivisionId(String responsibleDivisionId) { this.responsibleDivisionId = responsibleDivisionId; }
     public void setResponsibleWorkingUnitId(String responsibleWorkingUnitId) { this.responsibleWorkingUnitId = responsibleWorkingUnitId; }
     public void setResponsibleUserId(String responsibleUserId) { this.responsibleUserId = responsibleUserId; }
+    public void setVendorId(String vendorId) { this.vendorId = vendorId; }
     public void setProcurementDate(Long procurementDate) { this.procurementDate = procurementDate; }
     public void setWarrantyExpirationDate(Long warrantyExpirationDate) { this.warrantyExpirationDate = warrantyExpirationDate; }
     public void setPurchasePrice(Double purchasePrice) { this.purchasePrice = purchasePrice; }
