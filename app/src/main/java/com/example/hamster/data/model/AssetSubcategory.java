@@ -12,6 +12,27 @@ public class AssetSubcategory implements Serializable {
     private List<Asset> assets;
 
     // Getters
-    public String getId() { return id; }
-    public String getName() { return name; }
+    public String getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public String getCategoryId() {
+        return categoryId;
+    }
+
+    public AssetCategory getCategory() {
+        return category;
+    }
+
+    public List<Asset> getAssets() {
+        return assets;
+    }
 }

@@ -15,11 +15,39 @@ public class MediaFile implements Serializable {
     private Date updatedAt;
 
     // Getters
-    public String getId() { return id; }
-    public String getFilename() { return filename; }
-    public String getOriginalName() { return originalName; }
-    public String getMimeType() { return mimeType; }
-    public int getSize() { return size; }
-    public String getPath() { return path; }
-    public String getUrl() { return url; }
+    public String getId() {
+        return id;
+    }
+
+    public String getFilename() {
+        return filename;
+    }
+
+    public String getOriginalName() {
+        return originalName;
+    }
+
+    public String getMimeType() {
+        return mimeType;
+    }
+
+    public int getSize() {
+        return size;
+    }
+
+    public String getPath() {
+        return path;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public Date getCreatedAt() {
+        return createdAt;
+    }
+
+    public Date getUpdatedAt() {
+        return updatedAt;
+    }
 }

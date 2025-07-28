@@ -9,8 +9,19 @@ public class Pagination implements Serializable {
     private int totalPages;
 
     // Getters
-    public int getCurrentPage() { return currentPage; }
-    public int getPerPage() { return perPage; }
-    public int getTotal() { return total; }
-    public int getTotalPages() { return totalPages; }
+    public int getCurrentPage() {
+        return currentPage;
+    }
+
+    public int getPerPage() {
+        return perPage;
+    }
+
+    public int getTotal() {
+        return total;
+    }
+
+    public int getTotalPages() {
+        return totalPages;
+    }
 }

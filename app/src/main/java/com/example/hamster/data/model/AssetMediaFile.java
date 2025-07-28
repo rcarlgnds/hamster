@@ -16,8 +16,39 @@ public class AssetMediaFile implements Serializable {
     private MediaFile mediaFile;
 
     // Getters
-    public String getId() { return id; }
-    public String getType() { return type; }
-    public String getName() { return name; }
-    public MediaFile getMediaFile() { return mediaFile; }
+    public String getId() {
+        return id;
+    }
+
+    public String getAssetId() {
+        return assetId;
+    }
+
+    public String getMediaFileId() {
+        return mediaFileId;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public Date getCreatedAt() {
+        return createdAt;
+    }
+
+    public Date getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public Asset getAsset() {
+        return asset;
+    }
+
+    public MediaFile getMediaFile() {
+        return mediaFile;
+    }
 }

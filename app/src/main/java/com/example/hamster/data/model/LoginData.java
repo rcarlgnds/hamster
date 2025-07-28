@@ -17,10 +17,27 @@ public class LoginData {
     private User user;
 
     // Getters
-    public String getAccessToken() { return accessToken; }
-    public String getRefreshToken() { return refreshToken; }
-    public String getTokenType() { return tokenType; }
-    public int getExpiresIn() { return expiresIn; }
-    public long getExpiresAt() { return expiresAt; }
-    public User getUser() { return user; }
+    public String getAccessToken() {
+        return accessToken;
+    }
+
+    public String getRefreshToken() {
+        return refreshToken;
+    }
+
+    public String getTokenType() {
+        return tokenType;
+    }
+
+    public int getExpiresIn() {
+        return expiresIn;
+    }
+
+    public long getExpiresAt() {
+        return expiresAt;
+    }
+
+    public User getUser() {
+        return user;
+    }
 }

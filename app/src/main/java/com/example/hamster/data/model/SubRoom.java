@@ -12,5 +12,27 @@ public class SubRoom implements Serializable {
     private List<Asset> assets;
 
     // Getters
-    public String getName() { return name; }
+    public String getId() {
+        return id;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getRoomId() {
+        return roomId;
+    }
+
+    public Room getRoom() {
+        return room;
+    }
+
+    public List<Asset> getAssets() {
+        return assets;
+    }
 }

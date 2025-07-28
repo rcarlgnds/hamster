@@ -59,12 +59,203 @@ public class Asset implements Serializable {
     private List<AssetApprovalTransaction> approvalTransactions;
 
     // Getters
-    public String getId() { return id; }
-    public String getCode() { return code; }
-    public String getName() { return name; }
-    public String getStatus() { return status; }
-    public AssetCategory getCategory() { return category; }
-    public AssetSubcategory getSubcategory() { return subcategory; }
-    public Brand getBrand() { return brand; }
-    public Room getRoom() { return room; }
+    public String getId() {
+        return id;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public String getCode2() {
+        return code2;
+    }
+
+    public String getCode3() {
+        return code3;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public String getSerialNumber() {
+        return serialNumber;
+    }
+
+    public String getOwnership() {
+        return ownership;
+    }
+
+    public String getCategoryId() {
+        return categoryId;
+    }
+
+    public String getSubcategoryId() {
+        return subcategoryId;
+    }
+
+    public Integer getTotal() {
+        return total;
+    }
+
+    public String getUnit() {
+        return unit;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public String getBrandId() {
+        return brandId;
+    }
+
+    public String getCondition() {
+        return condition;
+    }
+
+    public String getRoomId() {
+        return roomId;
+    }
+
+    public String getSubRoomId() {
+        return subRoomId;
+    }
+
+    public String getResponsibleDivisionId() {
+        return responsibleDivisionId;
+    }
+
+    public String getResponsibleWorkingUnitId() {
+        return responsibleWorkingUnitId;
+    }
+
+    public String getResponsibleUserId() {
+        return responsibleUserId;
+    }
+
+    public Date getProcurementDate() {
+        return procurementDate;
+    }
+
+    public Float getPurchasePrice() {
+        return purchasePrice;
+    }
+
+    public String getVendorId() {
+        return vendorId;
+    }
+
+    public String getPoNumber() {
+        return poNumber;
+    }
+
+    public String getInvoiceNumber() {
+        return invoiceNumber;
+    }
+
+    public Date getWarrantyExpirationDate() {
+        return warrantyExpirationDate;
+    }
+
+    public Float getDepreciation() {
+        return depreciation;
+    }
+
+    public Float getDepreciationValue() {
+        return depreciationValue;
+    }
+
+    public Date getDepreciationStartDate() {
+        return depreciationStartDate;
+    }
+
+    public Integer getDepreciationDurationMonth() {
+        return depreciationDurationMonth;
+    }
+
+    public String getParentId() {
+        return parentId;
+    }
+
+    public Date getDeletedAt() {
+        return deletedAt;
+    }
+
+    public String getDeletedBy() {
+        return deletedBy;
+    }
+
+    public String getCreatedVia() {
+        return createdVia;
+    }
+
+    public Date getCreatedAt() {
+        return createdAt;
+    }
+
+    public Date getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public AssetCategory getCategory() {
+        return category;
+    }
+
+    public AssetSubcategory getSubcategory() {
+        return subcategory;
+    }
+
+    public Brand getBrand() {
+        return brand;
+    }
+
+    public Room getRoom() {
+        return room;
+    }
+
+    public SubRoom getSubRoom() {
+        return subRoom;
+    }
+
+    public Division getResponsibleDivision() {
+        return responsibleDivision;
+    }
+
+    public WorkingUnit getResponsibleWorkingUnit() {
+        return responsibleWorkingUnit;
+    }
+
+    public User getResponsibleUser() {
+        return responsibleUser;
+    }
+
+    public Vendor getVendor() {
+        return vendor;
+    }
+
+    public Asset getParent() {
+        return parent;
+    }
+
+    public List<Asset> getChildren() {
+        return children;
+    }
+
+    public List<AssetMediaFile> getMediaFiles() {
+        return mediaFiles;
+    }
+
+    public List<AssetApprovalTransaction> getApprovalTransactions() {
+        return approvalTransactions;
+    }
 }

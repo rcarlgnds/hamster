@@ -19,9 +19,47 @@ public class Notification implements Serializable {
     private User user;
 
     // Getters
-    public String getId() { return id; }
-    public String getTitle() { return title; }
-    public String getBody() { return body; }
-    public NotificationType getType() { return type; }
-    public boolean isRead() { return isRead; }
+    public String getId() {
+        return id;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public String getBody() {
+        return body;
+    }
+
+    public String getLink() {
+        return link;
+    }
+
+    public NotificationType getType() {
+        return type;
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public boolean isRead() {
+        return isRead;
+    }
+
+    public Date getReadAt() {
+        return readAt;
+    }
+
+    public Date getCreatedAt() {
+        return createdAt;
+    }
+
+    public Date getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public User getUser() {
+        return user;
+    }
 }

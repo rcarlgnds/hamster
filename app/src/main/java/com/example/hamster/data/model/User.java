@@ -36,10 +36,111 @@ public class User implements Serializable {
     private List<Notification> notifications;
 
     // Getters
-    public String getId() { return id; }
-    public String getFirstName() { return firstName; }
-    public String getLastName() { return lastName; }
-    public String getEmail() { return email; }
-    public Division getDivision() { return division; }
-    public Position getPosition() { return position; }
+    public String getId() {
+        return id;
+    }
+
+    public String getEmployeeId() {
+        return employeeId;
+    }
+
+    public String getPrefix() {
+        return prefix;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public String getMiddleName() {
+        return middleName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public String getSuffix() {
+        return suffix;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public String getDivisionId() {
+        return divisionId;
+    }
+
+    public String getPositionId() {
+        return positionId;
+    }
+
+    public String getHospitalId() {
+        return hospitalId;
+    }
+
+    public String getWorkingUnitId() {
+        return workingUnitId;
+    }
+
+    public String getRoomId() {
+        return roomId;
+    }
+
+    public Date getDeletedAt() {
+        return deletedAt;
+    }
+
+    public String getDeletedBy() {
+        return deletedBy;
+    }
+
+    public Date getCreatedAt() {
+        return createdAt;
+    }
+
+    public Date getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public Division getDivision() {
+        return division;
+    }
+
+    public Position getPosition() {
+        return position;
+    }
+
+    public Hospital getHospital() {
+        return hospital;
+    }
+
+    public WorkingUnit getWorkingUnit() {
+        return workingUnit;
+    }
+
+    public Room getRoom() {
+        return room;
+    }
+
+    public List<Asset> getResponsibleAssets() {
+        return responsibleAssets;
+    }
+
+    public List<AssetApprovalTransaction> getApprovalTransactions() {
+        return approvalTransactions;
+    }
+
+    public List<Notification> getNotifications() {
+        return notifications;
+    }
 }

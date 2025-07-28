@@ -3,21 +3,15 @@ package com.example.hamster.data.model;
 import java.io.Serializable;
 import java.util.Date;
 
-public class AssetApprovalTransaction implements Serializable {
+public class AssetApprovalSetting implements Serializable {
     private String id;
-    private String assetId;
     private int step;
-    private String approverId;
     private String divisionId;
     private String positionId;
-    private String status;
-    private String remarks;
-    private Date approvedAt;
     private Date createdAt;
     private Date updatedAt;
 
-    private Asset asset;
-    private User approver;
+    // Relasi
     private Division division;
     private Position position;
 
@@ -26,16 +20,8 @@ public class AssetApprovalTransaction implements Serializable {
         return id;
     }
 
-    public String getAssetId() {
-        return assetId;
-    }
-
     public int getStep() {
         return step;
-    }
-
-    public String getApproverId() {
-        return approverId;
     }
 
     public String getDivisionId() {
@@ -46,32 +32,12 @@ public class AssetApprovalTransaction implements Serializable {
         return positionId;
     }
 
-    public String getStatus() {
-        return status;
-    }
-
-    public String getRemarks() {
-        return remarks;
-    }
-
-    public Date getApprovedAt() {
-        return approvedAt;
-    }
-
     public Date getCreatedAt() {
         return createdAt;
     }
 
     public Date getUpdatedAt() {
         return updatedAt;
-    }
-
-    public Asset getAsset() {
-        return asset;
-    }
-
-    public User getApprover() {
-        return approver;
     }
 
     public Division getDivision() {
