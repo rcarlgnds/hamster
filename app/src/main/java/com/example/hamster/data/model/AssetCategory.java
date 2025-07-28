@@ -10,7 +10,7 @@ public class AssetCategory implements Serializable {
     private String code;
     private Date createdAt;
     private Date updatedAt;
-    private List<AssetSubcategory> subcategories;
+    private List<AssetSubCategory> subcategories;
     private List<Asset> assets;
 
     // Getters
@@ -34,7 +34,7 @@ public class AssetCategory implements Serializable {
         return updatedAt;
     }
 
-    public List<AssetSubcategory> getSubcategories() {
+    public List<AssetSubCategory> getSubcategories() {
         return subcategories;
     }
 

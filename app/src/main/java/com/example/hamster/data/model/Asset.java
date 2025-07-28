@@ -45,7 +45,7 @@ public class Asset implements Serializable {
 
     // Relasi
     private AssetCategory category;
-    private AssetSubcategory subcategory;
+    private AssetSubCategory subcategory;
     private Brand brand;
     private Room room;
     private SubRoom subRoom;
@@ -211,7 +211,7 @@ public class Asset implements Serializable {
         return category;
     }
 
-    public AssetSubcategory getSubcategory() {
+    public AssetSubCategory getSubcategory() {
         return subcategory;
     }
 

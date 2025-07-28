@@ -1,0 +1,435 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CopilotDiffPersistence">
+    <option name="pendingDiffs">
+      <map>
+        <entry key="$PROJECT_DIR$/app/src/main/java/com/example/hamster/data/model/AssetActivationSetting.java">
+          <value>
+            <PendingDiffInfo>
+              <option name="filePath" value="$PROJECT_DIR$/app/src/main/java/com/example/hamster/data/model/AssetActivationSetting.java" />
+              <option name="updatedContent" value="package com.example.hamster.data.model;&#10;&#10;public class AssetActivationSetting {&#10;    private String id;&#10;    private String divisionId;&#10;    private String positionId;&#10;    private int order;&#10;    private boolean isFinalApprover;&#10;&#10;    public AssetActivationSetting(String id, String divisionId, String positionId, int order, boolean isFinalApprover) {&#10;        this.id = id;&#10;        this.divisionId = divisionId;&#10;        this.positionId = positionId;&#10;        this.order = order;&#10;        this.isFinalApprover = isFinalApprover;&#10;    }&#10;&#10;    public String getId() {&#10;        return id;&#10;    }&#10;    public void setId(String id) {&#10;        this.id = id;&#10;    }&#10;    public String getDivisionId() {&#10;        return divisionId;&#10;    }&#10;    public void setDivisionId(String divisionId) {&#10;        this.divisionId = divisionId;&#10;    }&#10;    public String getPositionId() {&#10;        return positionId;&#10;    }&#10;    public void setPositionId(String positionId) {&#10;        this.positionId = positionId;&#10;    }&#10;    public int getOrder() {&#10;        return order;&#10;    }&#10;    public void setOrder(int order) {&#10;        this.order = order;&#10;    }&#10;    public boolean isFinalApprover() {&#10;        return isFinalApprover;&#10;    }&#10;    public void setFinalApprover(boolean finalApprover) {&#10;        isFinalApprover = finalApprover;&#10;    }&#10;}&#10;" />
+            </PendingDiffInfo>
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/java/com/example/hamster/data/model/request/ApproveActivationRequest.java">
+          <value>
+            <PendingDiffInfo>
+              <option name="filePath" value="$PROJECT_DIR$/app/src/main/java/com/example/hamster/data/model/request/ApproveActivationRequest.java" />
+              <option name="updatedContent" value="package com.example.hamster.data.model.request;&#10;&#10;public class ApproveActivationRequest {&#10;    private String assetId;&#10;    private String approverId;&#10;    private boolean approved;&#10;    private String notes;&#10;&#10;    public ApproveActivationRequest(String assetId, String approverId, boolean approved, String notes) {&#10;        this.assetId = assetId;&#10;        this.approverId = approverId;&#10;        this.approved = approved;&#10;        this.notes = notes;&#10;    }&#10;&#10;    public String getAssetId() {&#10;        return assetId;&#10;    }&#10;    public void setAssetId(String assetId) {&#10;        this.assetId = assetId;&#10;    }&#10;    public String getApproverId() {&#10;        return approverId;&#10;    }&#10;    public void setApproverId(String approverId) {&#10;        this.approverId = approverId;&#10;    }&#10;    public boolean isApproved() {&#10;        return approved;&#10;    }&#10;    public void setApproved(boolean approved) {&#10;        this.approved = approved;&#10;    }&#10;    public String getNotes() {&#10;        return notes;&#10;    }&#10;    public void setNotes(String notes) {&#10;        this.notes = notes;&#10;    }&#10;}&#10;" />
+            </PendingDiffInfo>
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/java/com/example/hamster/data/model/request/CreateAssetActivationSettingRequest.java">
+          <value>
+            <PendingDiffInfo>
+              <option name="filePath" value="$PROJECT_DIR$/app/src/main/java/com/example/hamster/data/model/request/CreateAssetActivationSettingRequest.java" />
+              <option name="updatedContent" value="package com.example.hamster.data.model.request;&#10;&#10;public class CreateAssetActivationSettingRequest {&#10;    private String divisionId;&#10;    private String positionId;&#10;    private int order;&#10;    private boolean isFinalApprover;&#10;&#10;    public CreateAssetActivationSettingRequest(String divisionId, String positionId, int order, boolean isFinalApprover) {&#10;        this.divisionId = divisionId;&#10;        this.positionId = positionId;&#10;        this.order = order;&#10;        this.isFinalApprover = isFinalApprover;&#10;    }&#10;&#10;    public String getDivisionId() {&#10;        return divisionId;&#10;    }&#10;    public void setDivisionId(String divisionId) {&#10;        this.divisionId = divisionId;&#10;    }&#10;    public String getPositionId() {&#10;        return positionId;&#10;    }&#10;    public void setPositionId(String positionId) {&#10;        this.positionId = positionId;&#10;    }&#10;    public int getOrder() {&#10;        return order;&#10;    }&#10;    public void setOrder(int order) {&#10;        this.order = order;&#10;    }&#10;    public boolean isFinalApprover() {&#10;        return isFinalApprover;&#10;    }&#10;    public void setFinalApprover(boolean finalApprover) {&#10;        isFinalApprover = finalApprover;&#10;    }&#10;}&#10;" />
+            </PendingDiffInfo>
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/java/com/example/hamster/data/model/request/CreateAssetCategoryRequest.java">
+          <value>
+            <PendingDiffInfo>
+              <option name="filePath" value="$PROJECT_DIR$/app/src/main/java/com/example/hamster/data/model/request/CreateAssetCategoryRequest.java" />
+              <option name="updatedContent" value="package com.example.hamster.data.model.request;&#10;&#10;public class CreateAssetCategoryRequest {&#10;    private String name;&#10;    private String code;&#10;    private String description;&#10;&#10;    public CreateAssetCategoryRequest(String name, String code, String description) {&#10;        this.name = name;&#10;        this.code = code;&#10;        this.description = description;&#10;    }&#10;&#10;    public String getName() {&#10;        return name;&#10;    }&#10;    public void setName(String name) {&#10;        this.name = name;&#10;    }&#10;    public String getCode() {&#10;        return code;&#10;    }&#10;    public void setCode(String code) {&#10;        this.code = code;&#10;    }&#10;    public String getDescription() {&#10;        return description;&#10;    }&#10;    public void setDescription(String description) {&#10;        this.description = description;&#10;    }&#10;}&#10;" />
+            </PendingDiffInfo>
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/java/com/example/hamster/data/model/request/CreateAssetSubCategoryRequest.java">
+          <value>
+            <PendingDiffInfo>
+              <option name="filePath" value="$PROJECT_DIR$/app/src/main/java/com/example/hamster/data/model/request/CreateAssetSubCategoryRequest.java" />
+              <option name="updatedContent" value="package com.example.hamster.data.model.request;&#10;&#10;public class CreateAssetSubCategoryRequest {&#10;    private String name;&#10;    private String code;&#10;    private String assetCategoryId;&#10;    private String description;&#10;&#10;    public CreateAssetSubCategoryRequest(String name, String code, String assetCategoryId, String description) {&#10;        this.name = name;&#10;        this.code = code;&#10;        this.assetCategoryId = assetCategoryId;&#10;        this.description = description;&#10;    }&#10;&#10;    public String getName() {&#10;        return name;&#10;    }&#10;    public void setName(String name) {&#10;        this.name = name;&#10;    }&#10;    public String getCode() {&#10;        return code;&#10;    }&#10;    public void setCode(String code) {&#10;        this.code = code;&#10;    }&#10;    public String getAssetCategoryId() {&#10;        return assetCategoryId;&#10;    }&#10;    public void setAssetCategoryId(String assetCategoryId) {&#10;        this.assetCategoryId = assetCategoryId;&#10;    }&#10;    public String getDescription() {&#10;        return description;&#10;    }&#10;    public void setDescription(String description) {&#10;        this.description = description;&#10;    }&#10;}&#10;" />
+            </PendingDiffInfo>
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/java/com/example/hamster/data/model/request/CreateBrandRequest.java">
+          <value>
+            <PendingDiffInfo>
+              <option name="filePath" value="$PROJECT_DIR$/app/src/main/java/com/example/hamster/data/model/request/CreateBrandRequest.java" />
+              <option name="updatedContent" value="package com.example.hamster.data.model.request;&#10;&#10;public class CreateBrandRequest {&#10;    private String name;&#10;    private String code;&#10;    private String description;&#10;&#10;    public CreateBrandRequest(String name, String code, String description) {&#10;        this.name = name;&#10;        this.code = code;&#10;        this.description = description;&#10;    }&#10;&#10;    public String getName() {&#10;        return name;&#10;    }&#10;    public void setName(String name) {&#10;        this.name = name;&#10;    }&#10;    public String getCode() {&#10;        return code;&#10;    }&#10;    public void setCode(String code) {&#10;        this.code = code;&#10;    }&#10;    public String getDescription() {&#10;        return description;&#10;    }&#10;    public void setDescription(String description) {&#10;        this.description = description;&#10;    }&#10;}&#10;" />
+            </PendingDiffInfo>
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/java/com/example/hamster/data/model/request/CreateBuildingRequest.java">
+          <value>
+            <PendingDiffInfo>
+              <option name="filePath" value="$PROJECT_DIR$/app/src/main/java/com/example/hamster/data/model/request/CreateBuildingRequest.java" />
+              <option name="originalContent" value="package com.example.hamster.data.model.request;&#10;&#10;public class CreateBuildingRequest {&#10;    // TODO: Add fields&#10;}&#10;&#10;" />
+              <option name="updatedContent" value="package com.example.hamster.data.model.request;&#10;&#10;public class CreateBuildingRequest {&#10;    private String name;&#10;    private String code;&#10;    private String hospitalId;&#10;    private String address;&#10;&#10;    public CreateBuildingRequest(String name, String code, String hospitalId, String address) {&#10;        this.name = name;&#10;        this.code = code;&#10;        this.hospitalId = hospitalId;&#10;        this.address = address;&#10;    }&#10;&#10;    // Getters &amp; Setters&#10;    public String getName() {&#10;        return name;&#10;    }&#10;    public void setName(String name) {&#10;        this.name = name;&#10;    }&#10;    public String getCode() {&#10;        return code;&#10;    }&#10;    public void setCode(String code) {&#10;        this.code = code;&#10;    }&#10;    public String getHospitalId() {&#10;        return hospitalId;&#10;    }&#10;    public void setHospitalId(String hospitalId) {&#10;        this.hospitalId = hospitalId;&#10;    }&#10;    public String getAddress() {&#10;        return address;&#10;    }&#10;    public void setAddress(String address) {&#10;        this.address = address;&#10;    }&#10;}" />
+            </PendingDiffInfo>
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/java/com/example/hamster/data/model/request/CreateDivisionRequest.java">
+          <value>
+            <PendingDiffInfo>
+              <option name="filePath" value="$PROJECT_DIR$/app/src/main/java/com/example/hamster/data/model/request/CreateDivisionRequest.java" />
+              <option name="updatedContent" value="package com.example.hamster.data.model.request;&#10;&#10;public class CreateDivisionRequest {&#10;    private String name;&#10;    private String code;&#10;    private String description;&#10;&#10;    public CreateDivisionRequest(String name, String code, String description) {&#10;        this.name = name;&#10;        this.code = code;&#10;        this.description = description;&#10;    }&#10;&#10;    public String getName() {&#10;        return name;&#10;    }&#10;    public void setName(String name) {&#10;        this.name = name;&#10;    }&#10;    public String getCode() {&#10;        return code;&#10;    }&#10;    public void setCode(String code) {&#10;        this.code = code;&#10;    }&#10;    public String getDescription() {&#10;        return description;&#10;    }&#10;    public void setDescription(String description) {&#10;        this.description = description;&#10;    }&#10;}&#10;" />
+            </PendingDiffInfo>
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/java/com/example/hamster/data/model/request/CreateHospitalRequest.java">
+          <value>
+            <PendingDiffInfo>
+              <option name="filePath" value="$PROJECT_DIR$/app/src/main/java/com/example/hamster/data/model/request/CreateHospitalRequest.java" />
+              <option name="originalContent" value="package com.example.hamster.data.model.request;&#10;&#10;public class CreateHospitalRequest {&#10;    // TODO: Add fields&#10;}&#10;&#10;" />
+              <option name="updatedContent" value="package com.example.hamster.data.model.request;&#10;&#10;public class CreateHospitalRequest {&#10;    private String name;&#10;    private String address;&#10;    private String code;&#10;    private String phone;&#10;    private String email;&#10;&#10;    public CreateHospitalRequest(String name, String address, String code, String phone, String email) {&#10;        this.name = name;&#10;        this.address = address;&#10;        this.code = code;&#10;        this.phone = phone;&#10;        this.email = email;&#10;    }&#10;&#10;    // Getters &amp; Setters&#10;    public String getName() {&#10;        return name;&#10;    }&#10;    public void setName(String name) {&#10;        this.name = name;&#10;    }&#10;    public String getAddress() {&#10;        return address;&#10;    }&#10;    public void setAddress(String address) {&#10;        this.address = address;&#10;    }&#10;    public String getCode() {&#10;        return code;&#10;    }&#10;    public void setCode(String code) {&#10;        this.code = code;&#10;    }&#10;    public String getPhone() {&#10;        return phone;&#10;    }&#10;    public void setPhone(String phone) {&#10;        this.phone = phone;&#10;    }&#10;    public String getEmail() {&#10;        return email;&#10;    }&#10;    public void setEmail(String email) {&#10;        this.email = email;&#10;    }&#10;}" />
+            </PendingDiffInfo>
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/java/com/example/hamster/data/model/request/CreateNotificationRequest.java">
+          <value>
+            <PendingDiffInfo>
+              <option name="filePath" value="$PROJECT_DIR$/app/src/main/java/com/example/hamster/data/model/request/CreateNotificationRequest.java" />
+              <option name="updatedContent" value="package com.example.hamster.data.model.request;&#10;&#10;public class CreateNotificationRequest {&#10;    private String title;&#10;    private String message;&#10;    private String userId;&#10;    private String type;&#10;&#10;    public CreateNotificationRequest(String title, String message, String userId, String type) {&#10;        this.title = title;&#10;        this.message = message;&#10;        this.userId = userId;&#10;        this.type = type;&#10;    }&#10;&#10;    public String getTitle() {&#10;        return title;&#10;    }&#10;    public void setTitle(String title) {&#10;        this.title = title;&#10;    }&#10;    public String getMessage() {&#10;        return message;&#10;    }&#10;    public void setMessage(String message) {&#10;        this.message = message;&#10;    }&#10;    public String getUserId() {&#10;        return userId;&#10;    }&#10;    public void setUserId(String userId) {&#10;        this.userId = userId;&#10;    }&#10;    public String getType() {&#10;        return type;&#10;    }&#10;    public void setType(String type) {&#10;        this.type = type;&#10;    }&#10;}&#10;" />
+            </PendingDiffInfo>
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/java/com/example/hamster/data/model/request/CreatePositionRequest.java">
+          <value>
+            <PendingDiffInfo>
+              <option name="filePath" value="$PROJECT_DIR$/app/src/main/java/com/example/hamster/data/model/request/CreatePositionRequest.java" />
+              <option name="updatedContent" value="package com.example.hamster.data.model.request;&#10;&#10;public class CreatePositionRequest {&#10;    private String name;&#10;    private String code;&#10;    private String description;&#10;&#10;    public CreatePositionRequest(String name, String code, String description) {&#10;        this.name = name;&#10;        this.code = code;&#10;        this.description = description;&#10;    }&#10;&#10;    public String getName() {&#10;        return name;&#10;    }&#10;    public void setName(String name) {&#10;        this.name = name;&#10;    }&#10;    public String getCode() {&#10;        return code;&#10;    }&#10;    public void setCode(String code) {&#10;        this.code = code;&#10;    }&#10;    public String getDescription() {&#10;        return description;&#10;    }&#10;    public void setDescription(String description) {&#10;        this.description = description;&#10;    }&#10;}&#10;" />
+            </PendingDiffInfo>
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/java/com/example/hamster/data/model/request/CreateRoomRequest.java">
+          <value>
+            <PendingDiffInfo>
+              <option name="filePath" value="$PROJECT_DIR$/app/src/main/java/com/example/hamster/data/model/request/CreateRoomRequest.java" />
+              <option name="originalContent" value="package com.example.hamster.data.model.request;&#10;&#10;public class CreateRoomRequest {&#10;    // TODO: Add fields&#10;}&#10;&#10;" />
+              <option name="updatedContent" value="package com.example.hamster.data.model.request;&#10;&#10;public class CreateRoomRequest {&#10;    private String name;&#10;    private String code;&#10;    private String floorId;&#10;    private String description;&#10;&#10;    public CreateRoomRequest(String name, String code, String floorId, String description) {&#10;        this.name = name;&#10;        this.code = code;&#10;        this.floorId = floorId;&#10;        this.description = description;&#10;    }&#10;&#10;    // Getters &amp; Setters&#10;    public String getName() {&#10;        return name;&#10;    }&#10;    public void setName(String name) {&#10;        this.name = name;&#10;    }&#10;    public String getCode() {&#10;        return code;&#10;    }&#10;    public void setCode(String code) {&#10;        this.code = code;&#10;    }&#10;    public String getFloorId() {&#10;        return floorId;&#10;    }&#10;    public void setFloorId(String floorId) {&#10;        this.floorId = floorId;&#10;    }&#10;    public String getDescription() {&#10;        return description;&#10;    }&#10;    public void setDescription(String description) {&#10;        this.description = description;&#10;    }&#10;}" />
+            </PendingDiffInfo>
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/java/com/example/hamster/data/model/request/CreateSubRoomRequest.java">
+          <value>
+            <PendingDiffInfo>
+              <option name="filePath" value="$PROJECT_DIR$/app/src/main/java/com/example/hamster/data/model/request/CreateSubRoomRequest.java" />
+              <option name="originalContent" value="package com.example.hamster.data.model.request;&#10;&#10;public class CreateSubRoomRequest {&#10;    // TODO: Add fields&#10;}&#10;&#10;" />
+              <option name="updatedContent" value="package com.example.hamster.data.model.request;&#10;&#10;public class CreateSubRoomRequest {&#10;    private String name;&#10;    private String code;&#10;    private String roomId;&#10;    private String description;&#10;&#10;    public CreateSubRoomRequest(String name, String code, String roomId, String description) {&#10;        this.name = name;&#10;        this.code = code;&#10;        this.roomId = roomId;&#10;        this.description = description;&#10;    }&#10;&#10;    // Getters &amp; Setters&#10;    public String getName() {&#10;        return name;&#10;    }&#10;    public void setName(String name) {&#10;        this.name = name;&#10;    }&#10;    public String getCode() {&#10;        return code;&#10;    }&#10;    public void setCode(String code) {&#10;        this.code = code;&#10;    }&#10;    public String getRoomId() {&#10;        return roomId;&#10;    }&#10;    public void setRoomId(String roomId) {&#10;        this.roomId = roomId;&#10;    }&#10;    public String getDescription() {&#10;        return description;&#10;    }&#10;    public void setDescription(String description) {&#10;        this.description = description;&#10;    }&#10;}" />
+            </PendingDiffInfo>
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/java/com/example/hamster/data/model/request/CreateVendorRequest.java">
+          <value>
+            <PendingDiffInfo>
+              <option name="filePath" value="$PROJECT_DIR$/app/src/main/java/com/example/hamster/data/model/request/CreateVendorRequest.java" />
+              <option name="updatedContent" value="package com.example.hamster.data.model.request;&#10;&#10;public class CreateVendorRequest {&#10;    private String name;&#10;    private String code;&#10;    private String address;&#10;    private String phone;&#10;    private String email;&#10;    private String description;&#10;&#10;    public CreateVendorRequest(String name, String code, String address, String phone, String email, String description) {&#10;        this.name = name;&#10;        this.code = code;&#10;        this.address = address;&#10;        this.phone = phone;&#10;        this.email = email;&#10;        this.description = description;&#10;    }&#10;&#10;    public String getName() {&#10;        return name;&#10;    }&#10;    public void setName(String name) {&#10;        this.name = name;&#10;    }&#10;    public String getCode() {&#10;        return code;&#10;    }&#10;    public void setCode(String code) {&#10;        this.code = code;&#10;    }&#10;    public String getAddress() {&#10;        return address;&#10;    }&#10;    public void setAddress(String address) {&#10;        this.address = address;&#10;    }&#10;    public String getPhone() {&#10;        return phone;&#10;    }&#10;    public void setPhone(String phone) {&#10;        this.phone = phone;&#10;    }&#10;    public String getEmail() {&#10;        return email;&#10;    }&#10;    public void setEmail(String email) {&#10;        this.email = email;&#10;    }&#10;    public String getDescription() {&#10;        return description;&#10;    }&#10;    public void setDescription(String description) {&#10;        this.description = description;&#10;    }&#10;}&#10;" />
+            </PendingDiffInfo>
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/java/com/example/hamster/data/model/request/CreateWorkingUnitRequest.java">
+          <value>
+            <PendingDiffInfo>
+              <option name="filePath" value="$PROJECT_DIR$/app/src/main/java/com/example/hamster/data/model/request/CreateWorkingUnitRequest.java" />
+              <option name="updatedContent" value="package com.example.hamster.data.model.request;&#10;&#10;public class CreateWorkingUnitRequest {&#10;    private String name;&#10;    private String code;&#10;    private String description;&#10;&#10;    public CreateWorkingUnitRequest(String name, String code, String description) {&#10;        this.name = name;&#10;        this.code = code;&#10;        this.description = description;&#10;    }&#10;&#10;    public String getName() {&#10;        return name;&#10;    }&#10;    public void setName(String name) {&#10;        this.name = name;&#10;    }&#10;    public String getCode() {&#10;        return code;&#10;    }&#10;    public void setCode(String code) {&#10;        this.code = code;&#10;    }&#10;    public String getDescription() {&#10;        return description;&#10;    }&#10;    public void setDescription(String description) {&#10;        this.description = description;&#10;    }&#10;}&#10;" />
+            </PendingDiffInfo>
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/java/com/example/hamster/data/model/request/ExternalAssetRequest.java">
+          <value>
+            <PendingDiffInfo>
+              <option name="filePath" value="$PROJECT_DIR$/app/src/main/java/com/example/hamster/data/model/request/ExternalAssetRequest.java" />
+              <option name="updatedContent" value="package com.example.hamster.data.model.request;&#10;&#10;public class ExternalAssetRequest {&#10;    private String name;&#10;    private String code;&#10;    private String categoryId;&#10;    private String vendorId;&#10;    private String brandId;&#10;    private String serialNumber;&#10;    private String description;&#10;&#10;    public ExternalAssetRequest(String name, String code, String categoryId, String vendorId, String brandId, String serialNumber, String description) {&#10;        this.name = name;&#10;        this.code = code;&#10;        this.categoryId = categoryId;&#10;        this.vendorId = vendorId;&#10;        this.brandId = brandId;&#10;        this.serialNumber = serialNumber;&#10;        this.description = description;&#10;    }&#10;&#10;    public String getName() {&#10;        return name;&#10;    }&#10;    public void setName(String name) {&#10;        this.name = name;&#10;    }&#10;    public String getCode() {&#10;        return code;&#10;    }&#10;    public void setCode(String code) {&#10;        this.code = code;&#10;    }&#10;    public String getCategoryId() {&#10;        return categoryId;&#10;    }&#10;    public void setCategoryId(String categoryId) {&#10;        this.categoryId = categoryId;&#10;    }&#10;    public String getVendorId() {&#10;        return vendorId;&#10;    }&#10;    public void setVendorId(String vendorId) {&#10;        this.vendorId = vendorId;&#10;    }&#10;    public String getBrandId() {&#10;        return brandId;&#10;    }&#10;    public void setBrandId(String brandId) {&#10;        this.brandId = brandId;&#10;    }&#10;    public String getSerialNumber() {&#10;        return serialNumber;&#10;    }&#10;    public void setSerialNumber(String serialNumber) {&#10;        this.serialNumber = serialNumber;&#10;    }&#10;    public String getDescription() {&#10;        return description;&#10;    }&#10;    public void setDescription(String description) {&#10;        this.description = description;&#10;    }&#10;}&#10;" />
+            </PendingDiffInfo>
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/java/com/example/hamster/data/model/request/PrintByIdsRequest.java">
+          <value>
+            <PendingDiffInfo>
+              <option name="filePath" value="$PROJECT_DIR$/app/src/main/java/com/example/hamster/data/model/request/PrintByIdsRequest.java" />
+              <option name="updatedContent" value="package com.example.hamster.data.model.request;&#10;&#10;import java.util.List;&#10;&#10;public class PrintByIdsRequest {&#10;    private List&lt;String&gt; assetIds;&#10;&#10;    public PrintByIdsRequest(List&lt;String&gt; assetIds) {&#10;        this.assetIds = assetIds;&#10;    }&#10;&#10;    public List&lt;String&gt; getAssetIds() {&#10;        return assetIds;&#10;    }&#10;    public void setAssetIds(List&lt;String&gt; assetIds) {&#10;        this.assetIds = assetIds;&#10;    }&#10;}&#10;" />
+            </PendingDiffInfo>
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/java/com/example/hamster/data/model/request/PrintLabelRequest.java">
+          <value>
+            <PendingDiffInfo>
+              <option name="filePath" value="$PROJECT_DIR$/app/src/main/java/com/example/hamster/data/model/request/PrintLabelRequest.java" />
+              <option name="updatedContent" value="package com.example.hamster.data.model.request;&#10;&#10;import java.util.List;&#10;&#10;public class PrintLabelRequest {&#10;    private List&lt;String&gt; assetCodes;&#10;    private String templateId;&#10;&#10;    public PrintLabelRequest(List&lt;String&gt; assetCodes, String templateId) {&#10;        this.assetCodes = assetCodes;&#10;        this.templateId = templateId;&#10;    }&#10;&#10;    public List&lt;String&gt; getAssetCodes() {&#10;        return assetCodes;&#10;    }&#10;    public void setAssetCodes(List&lt;String&gt; assetCodes) {&#10;        this.assetCodes = assetCodes;&#10;    }&#10;    public String getTemplateId() {&#10;        return templateId;&#10;    }&#10;    public void setTemplateId(String templateId) {&#10;        this.templateId = templateId;&#10;    }&#10;}&#10;" />
+            </PendingDiffInfo>
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/java/com/example/hamster/data/model/request/StartActivationRequest.java">
+          <value>
+            <PendingDiffInfo>
+              <option name="filePath" value="$PROJECT_DIR$/app/src/main/java/com/example/hamster/data/model/request/StartActivationRequest.java" />
+              <option name="updatedContent" value="package com.example.hamster.data.model.request;&#10;&#10;public class StartActivationRequest {&#10;    private String assetId;&#10;    private String initiatorId;&#10;    private String notes;&#10;&#10;    public StartActivationRequest(String assetId, String initiatorId, String notes) {&#10;        this.assetId = assetId;&#10;        this.initiatorId = initiatorId;&#10;        this.notes = notes;&#10;    }&#10;&#10;    public String getAssetId() {&#10;        return assetId;&#10;    }&#10;    public void setAssetId(String assetId) {&#10;        this.assetId = assetId;&#10;    }&#10;    public String getInitiatorId() {&#10;        return initiatorId;&#10;    }&#10;    public void setInitiatorId(String initiatorId) {&#10;        this.initiatorId = initiatorId;&#10;    }&#10;    public String getNotes() {&#10;        return notes;&#10;    }&#10;    public void setNotes(String notes) {&#10;        this.notes = notes;&#10;    }&#10;}&#10;" />
+            </PendingDiffInfo>
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/java/com/example/hamster/data/model/request/UpdateAssetActivationSettingRequest.java">
+          <value>
+            <PendingDiffInfo>
+              <option name="filePath" value="$PROJECT_DIR$/app/src/main/java/com/example/hamster/data/model/request/UpdateAssetActivationSettingRequest.java" />
+              <option name="updatedContent" value="package com.example.hamster.data.model.request;&#10;&#10;public class UpdateAssetActivationSettingRequest {&#10;    private String divisionId;&#10;    private String positionId;&#10;    private int order;&#10;    private boolean isFinalApprover;&#10;&#10;    public UpdateAssetActivationSettingRequest(String divisionId, String positionId, int order, boolean isFinalApprover) {&#10;        this.divisionId = divisionId;&#10;        this.positionId = positionId;&#10;        this.order = order;&#10;        this.isFinalApprover = isFinalApprover;&#10;    }&#10;&#10;    public String getDivisionId() {&#10;        return divisionId;&#10;    }&#10;    public void setDivisionId(String divisionId) {&#10;        this.divisionId = divisionId;&#10;    }&#10;    public String getPositionId() {&#10;        return positionId;&#10;    }&#10;    public void setPositionId(String positionId) {&#10;        this.positionId = positionId;&#10;    }&#10;    public int getOrder() {&#10;        return order;&#10;    }&#10;    public void setOrder(int order) {&#10;        this.order = order;&#10;    }&#10;    public boolean isFinalApprover() {&#10;        return isFinalApprover;&#10;    }&#10;    public void setFinalApprover(boolean finalApprover) {&#10;        isFinalApprover = finalApprover;&#10;    }&#10;}&#10;" />
+            </PendingDiffInfo>
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/java/com/example/hamster/data/model/request/UpdateAssetCategoryRequest.java">
+          <value>
+            <PendingDiffInfo>
+              <option name="filePath" value="$PROJECT_DIR$/app/src/main/java/com/example/hamster/data/model/request/UpdateAssetCategoryRequest.java" />
+              <option name="updatedContent" value="package com.example.hamster.data.model.request;&#10;&#10;public class UpdateAssetCategoryRequest {&#10;    private String name;&#10;    private String code;&#10;    private String description;&#10;&#10;    public UpdateAssetCategoryRequest(String name, String code, String description) {&#10;        this.name = name;&#10;        this.code = code;&#10;        this.description = description;&#10;    }&#10;&#10;    public String getName() {&#10;        return name;&#10;    }&#10;    public void setName(String name) {&#10;        this.name = name;&#10;    }&#10;    public String getCode() {&#10;        return code;&#10;    }&#10;    public void setCode(String code) {&#10;        this.code = code;&#10;    }&#10;    public String getDescription() {&#10;        return description;&#10;    }&#10;    public void setDescription(String description) {&#10;        this.description = description;&#10;    }&#10;}&#10;" />
+            </PendingDiffInfo>
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/java/com/example/hamster/data/model/request/UpdateAssetSubCategoryRequest.java">
+          <value>
+            <PendingDiffInfo>
+              <option name="filePath" value="$PROJECT_DIR$/app/src/main/java/com/example/hamster/data/model/request/UpdateAssetSubCategoryRequest.java" />
+              <option name="updatedContent" value="package com.example.hamster.data.model.request;&#10;&#10;public class UpdateAssetSubCategoryRequest {&#10;    private String name;&#10;    private String code;&#10;    private String assetCategoryId;&#10;    private String description;&#10;&#10;    public UpdateAssetSubCategoryRequest(String name, String code, String assetCategoryId, String description) {&#10;        this.name = name;&#10;        this.code = code;&#10;        this.assetCategoryId = assetCategoryId;&#10;        this.description = description;&#10;    }&#10;&#10;    public String getName() {&#10;        return name;&#10;    }&#10;    public void setName(String name) {&#10;        this.name = name;&#10;    }&#10;    public String getCode() {&#10;        return code;&#10;    }&#10;    public void setCode(String code) {&#10;        this.code = code;&#10;    }&#10;    public String getAssetCategoryId() {&#10;        return assetCategoryId;&#10;    }&#10;    public void setAssetCategoryId(String assetCategoryId) {&#10;        this.assetCategoryId = assetCategoryId;&#10;    }&#10;    public String getDescription() {&#10;        return description;&#10;    }&#10;    public void setDescription(String description) {&#10;        this.description = description;&#10;    }&#10;}&#10;" />
+            </PendingDiffInfo>
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/java/com/example/hamster/data/model/request/UpdateBrandRequest.java">
+          <value>
+            <PendingDiffInfo>
+              <option name="filePath" value="$PROJECT_DIR$/app/src/main/java/com/example/hamster/data/model/request/UpdateBrandRequest.java" />
+              <option name="updatedContent" value="package com.example.hamster.data.model.request;&#10;&#10;public class UpdateBrandRequest {&#10;    private String name;&#10;    private String code;&#10;    private String description;&#10;&#10;    public UpdateBrandRequest(String name, String code, String description) {&#10;        this.name = name;&#10;        this.code = code;&#10;        this.description = description;&#10;    }&#10;&#10;    public String getName() {&#10;        return name;&#10;    }&#10;    public void setName(String name) {&#10;        this.name = name;&#10;    }&#10;    public String getCode() {&#10;        return code;&#10;    }&#10;    public void setCode(String code) {&#10;        this.code = code;&#10;    }&#10;    public String getDescription() {&#10;        return description;&#10;    }&#10;    public void setDescription(String description) {&#10;        this.description = description;&#10;    }&#10;}&#10;" />
+            </PendingDiffInfo>
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/java/com/example/hamster/data/model/request/UpdateBuildingRequest.java">
+          <value>
+            <PendingDiffInfo>
+              <option name="filePath" value="$PROJECT_DIR$/app/src/main/java/com/example/hamster/data/model/request/UpdateBuildingRequest.java" />
+              <option name="originalContent" value="package com.example.hamster.data.model.request;&#10;&#10;public class UpdateBuildingRequest {&#10;    // TODO: Add fields&#10;}&#10;&#10;" />
+              <option name="updatedContent" value="package com.example.hamster.data.model.request;&#10;&#10;public class UpdateBuildingRequest {&#10;    private String name;&#10;    private String code;&#10;    private String hospitalId;&#10;    private String address;&#10;&#10;    public UpdateBuildingRequest(String name, String code, String hospitalId, String address) {&#10;        this.name = name;&#10;        this.code = code;&#10;        this.hospitalId = hospitalId;&#10;        this.address = address;&#10;    }&#10;&#10;    // Getters &amp; Setters&#10;    public String getName() {&#10;        return name;&#10;    }&#10;    public void setName(String name) {&#10;        this.name = name;&#10;    }&#10;    public String getCode() {&#10;        return code;&#10;    }&#10;    public void setCode(String code) {&#10;        this.code = code;&#10;    }&#10;    public String getHospitalId() {&#10;        return hospitalId;&#10;    }&#10;    public void setHospitalId(String hospitalId) {&#10;        this.hospitalId = hospitalId;&#10;    }&#10;    public String getAddress() {&#10;        return address;&#10;    }&#10;    public void setAddress(String address) {&#10;        this.address = address;&#10;    }&#10;}" />
+            </PendingDiffInfo>
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/java/com/example/hamster/data/model/request/UpdateDivisionRequest.java">
+          <value>
+            <PendingDiffInfo>
+              <option name="filePath" value="$PROJECT_DIR$/app/src/main/java/com/example/hamster/data/model/request/UpdateDivisionRequest.java" />
+              <option name="updatedContent" value="package com.example.hamster.data.model.request;&#10;&#10;public class UpdateDivisionRequest {&#10;    private String name;&#10;    private String code;&#10;    private String description;&#10;&#10;    public UpdateDivisionRequest(String name, String code, String description) {&#10;        this.name = name;&#10;        this.code = code;&#10;        this.description = description;&#10;    }&#10;&#10;    public String getName() {&#10;        return name;&#10;    }&#10;    public void setName(String name) {&#10;        this.name = name;&#10;    }&#10;    public String getCode() {&#10;        return code;&#10;    }&#10;    public void setCode(String code) {&#10;        this.code = code;&#10;    }&#10;    public String getDescription() {&#10;        return description;&#10;    }&#10;    public void setDescription(String description) {&#10;        this.description = description;&#10;    }&#10;}&#10;" />
+            </PendingDiffInfo>
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/java/com/example/hamster/data/model/request/UpdateHospitalRequest.java">
+          <value>
+            <PendingDiffInfo>
+              <option name="filePath" value="$PROJECT_DIR$/app/src/main/java/com/example/hamster/data/model/request/UpdateHospitalRequest.java" />
+              <option name="originalContent" value="package com.example.hamster.data.model.request;&#10;&#10;public class UpdateHospitalRequest {&#10;    // TODO: Add fields&#10;}&#10;&#10;" />
+              <option name="updatedContent" value="package com.example.hamster.data.model.request;&#10;&#10;public class UpdateHospitalRequest {&#10;    private String name;&#10;    private String address;&#10;    private String code;&#10;    private String phone;&#10;    private String email;&#10;&#10;    public UpdateHospitalRequest(String name, String address, String code, String phone, String email) {&#10;        this.name = name;&#10;        this.address = address;&#10;        this.code = code;&#10;        this.phone = phone;&#10;        this.email = email;&#10;    }&#10;&#10;    // Getters &amp; Setters&#10;    public String getName() {&#10;        return name;&#10;    }&#10;    public void setName(String name) {&#10;        this.name = name;&#10;    }&#10;    public String getAddress() {&#10;        return address;&#10;    }&#10;    public void setAddress(String address) {&#10;        this.address = address;&#10;    }&#10;    public String getCode() {&#10;        return code;&#10;    }&#10;    public void setCode(String code) {&#10;        this.code = code;&#10;    }&#10;    public String getPhone() {&#10;        return phone;&#10;    }&#10;    public void setPhone(String phone) {&#10;        this.phone = phone;&#10;    }&#10;    public String getEmail() {&#10;        return email;&#10;    }&#10;    public void setEmail(String email) {&#10;        this.email = email;&#10;    }&#10;}" />
+            </PendingDiffInfo>
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/java/com/example/hamster/data/model/request/UpdateNotificationRequest.java">
+          <value>
+            <PendingDiffInfo>
+              <option name="filePath" value="$PROJECT_DIR$/app/src/main/java/com/example/hamster/data/model/request/UpdateNotificationRequest.java" />
+              <option name="updatedContent" value="package com.example.hamster.data.model.request;&#10;&#10;public class UpdateNotificationRequest {&#10;    private boolean read;&#10;&#10;    public UpdateNotificationRequest(boolean read) {&#10;        this.read = read;&#10;    }&#10;&#10;    public boolean isRead() {&#10;        return read;&#10;    }&#10;    public void setRead(boolean read) {&#10;        this.read = read;&#10;    }&#10;}&#10;" />
+            </PendingDiffInfo>
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/java/com/example/hamster/data/model/request/UpdatePositionRequest.java">
+          <value>
+            <PendingDiffInfo>
+              <option name="filePath" value="$PROJECT_DIR$/app/src/main/java/com/example/hamster/data/model/request/UpdatePositionRequest.java" />
+              <option name="updatedContent" value="package com.example.hamster.data.model.request;&#10;&#10;public class UpdatePositionRequest {&#10;    private String name;&#10;    private String code;&#10;    private String description;&#10;&#10;    public UpdatePositionRequest(String name, String code, String description) {&#10;        this.name = name;&#10;        this.code = code;&#10;        this.description = description;&#10;    }&#10;&#10;    public String getName() {&#10;        return name;&#10;    }&#10;    public void setName(String name) {&#10;        this.name = name;&#10;    }&#10;    public String getCode() {&#10;        return code;&#10;    }&#10;    public void setCode(String code) {&#10;        this.code = code;&#10;    }&#10;    public String getDescription() {&#10;        return description;&#10;    }&#10;    public void setDescription(String description) {&#10;        this.description = description;&#10;    }&#10;}&#10;" />
+            </PendingDiffInfo>
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/java/com/example/hamster/data/model/request/UpdateRolePermissionRequest.java">
+          <value>
+            <PendingDiffInfo>
+              <option name="filePath" value="$PROJECT_DIR$/app/src/main/java/com/example/hamster/data/model/request/UpdateRolePermissionRequest.java" />
+              <option name="updatedContent" value="package com.example.hamster.data.model.request;&#10;&#10;public class UpdateRolePermissionRequest {&#10;    private String divisionId;&#10;    private String positionId;&#10;    private String permissions; // JSON string or comma separated, adjust as needed&#10;&#10;    public UpdateRolePermissionRequest(String divisionId, String positionId, String permissions) {&#10;        this.divisionId = divisionId;&#10;        this.positionId = positionId;&#10;        this.permissions = permissions;&#10;    }&#10;&#10;    public String getDivisionId() {&#10;        return divisionId;&#10;    }&#10;    public void setDivisionId(String divisionId) {&#10;        this.divisionId = divisionId;&#10;    }&#10;    public String getPositionId() {&#10;        return positionId;&#10;    }&#10;    public void setPositionId(String positionId) {&#10;        this.positionId = positionId;&#10;    }&#10;    public String getPermissions() {&#10;        return permissions;&#10;    }&#10;    public void setPermissions(String permissions) {&#10;        this.permissions = permissions;&#10;    }&#10;}&#10;" />
+            </PendingDiffInfo>
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/java/com/example/hamster/data/model/request/UpdateRoomRequest.java">
+          <value>
+            <PendingDiffInfo>
+              <option name="filePath" value="$PROJECT_DIR$/app/src/main/java/com/example/hamster/data/model/request/UpdateRoomRequest.java" />
+              <option name="originalContent" value="package com.example.hamster.data.model.request;&#10;&#10;public class UpdateRoomRequest {&#10;    // TODO: Add fields&#10;}&#10;&#10;" />
+              <option name="updatedContent" value="package com.example.hamster.data.model.request;&#10;&#10;public class UpdateRoomRequest {&#10;    private String name;&#10;    private String code;&#10;    private String floorId;&#10;    private String description;&#10;&#10;    public UpdateRoomRequest(String name, String code, String floorId, String description) {&#10;        this.name = name;&#10;        this.code = code;&#10;        this.floorId = floorId;&#10;        this.description = description;&#10;    }&#10;&#10;    // Getters &amp; Setters&#10;    public String getName() {&#10;        return name;&#10;    }&#10;    public void setName(String name) {&#10;        this.name = name;&#10;    }&#10;    public String getCode() {&#10;        return code;&#10;    }&#10;    public void setCode(String code) {&#10;        this.code = code;&#10;    }&#10;    public String getFloorId() {&#10;        return floorId;&#10;    }&#10;    public void setFloorId(String floorId) {&#10;        this.floorId = floorId;&#10;    }&#10;    public String getDescription() {&#10;        return description;&#10;    }&#10;    public void setDescription(String description) {&#10;        this.description = description;&#10;    }&#10;}" />
+            </PendingDiffInfo>
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/java/com/example/hamster/data/model/request/UpdateSubRoomRequest.java">
+          <value>
+            <PendingDiffInfo>
+              <option name="filePath" value="$PROJECT_DIR$/app/src/main/java/com/example/hamster/data/model/request/UpdateSubRoomRequest.java" />
+              <option name="updatedContent" value="package com.example.hamster.data.model.request;&#10;&#10;public class UpdateSubRoomRequest {&#10;    private String name;&#10;    private String code;&#10;    private String roomId;&#10;    private String description;&#10;&#10;    public UpdateSubRoomRequest(String name, String code, String roomId, String description) {&#10;        this.name = name;&#10;        this.code = code;&#10;        this.roomId = roomId;&#10;        this.description = description;&#10;    }&#10;&#10;    public String getName() {&#10;        return name;&#10;    }&#10;    public void setName(String name) {&#10;        this.name = name;&#10;    }&#10;    public String getCode() {&#10;        return code;&#10;    }&#10;    public void setCode(String code) {&#10;        this.code = code;&#10;    }&#10;    public String getRoomId() {&#10;        return roomId;&#10;    }&#10;    public void setRoomId(String roomId) {&#10;        this.roomId = roomId;&#10;    }&#10;    public String getDescription() {&#10;        return description;&#10;    }&#10;    public void setDescription(String description) {&#10;        this.description = description;&#10;    }&#10;}&#10;" />
+            </PendingDiffInfo>
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/java/com/example/hamster/data/model/request/UpdateVendorRequest.java">
+          <value>
+            <PendingDiffInfo>
+              <option name="filePath" value="$PROJECT_DIR$/app/src/main/java/com/example/hamster/data/model/request/UpdateVendorRequest.java" />
+              <option name="updatedContent" value="package com.example.hamster.data.model.request;&#10;&#10;public class UpdateVendorRequest {&#10;    private String name;&#10;    private String code;&#10;    private String address;&#10;    private String phone;&#10;    private String email;&#10;    private String description;&#10;&#10;    public UpdateVendorRequest(String name, String code, String address, String phone, String email, String description) {&#10;        this.name = name;&#10;        this.code = code;&#10;        this.address = address;&#10;        this.phone = phone;&#10;        this.email = email;&#10;        this.description = description;&#10;    }&#10;&#10;    public String getName() {&#10;        return name;&#10;    }&#10;    public void setName(String name) {&#10;        this.name = name;&#10;    }&#10;    public String getCode() {&#10;        return code;&#10;    }&#10;    public void setCode(String code) {&#10;        this.code = code;&#10;    }&#10;    public String getAddress() {&#10;        return address;&#10;    }&#10;    public void setAddress(String address) {&#10;        this.address = address;&#10;    }&#10;    public String getPhone() {&#10;        return phone;&#10;    }&#10;    public void setPhone(String phone) {&#10;        this.phone = phone;&#10;    }&#10;    public String getEmail() {&#10;        return email;&#10;    }&#10;    public void setEmail(String email) {&#10;        this.email = email;&#10;    }&#10;    public String getDescription() {&#10;        return description;&#10;    }&#10;    public void setDescription(String description) {&#10;        this.description = description;&#10;    }&#10;}&#10;" />
+            </PendingDiffInfo>
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/java/com/example/hamster/data/model/request/UpdateWorkingUnitRequest.java">
+          <value>
+            <PendingDiffInfo>
+              <option name="filePath" value="$PROJECT_DIR$/app/src/main/java/com/example/hamster/data/model/request/UpdateWorkingUnitRequest.java" />
+              <option name="updatedContent" value="package com.example.hamster.data.model.request;&#10;&#10;public class UpdateWorkingUnitRequest {&#10;    private String name;&#10;    private String code;&#10;    private String description;&#10;&#10;    public UpdateWorkingUnitRequest(String name, String code, String description) {&#10;        this.name = name;&#10;        this.code = code;&#10;        this.description = description;&#10;    }&#10;&#10;    public String getName() {&#10;        return name;&#10;    }&#10;    public void setName(String name) {&#10;        this.name = name;&#10;    }&#10;    public String getCode() {&#10;        return code;&#10;    }&#10;    public void setCode(String code) {&#10;        this.code = code;&#10;    }&#10;    public String getDescription() {&#10;        return description;&#10;    }&#10;    public void setDescription(String description) {&#10;        this.description = description;&#10;    }&#10;}&#10;" />
+            </PendingDiffInfo>
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/java/com/example/hamster/data/model/response/AssetActivationResponse.java">
+          <value>
+            <PendingDiffInfo>
+              <option name="filePath" value="$PROJECT_DIR$/app/src/main/java/com/example/hamster/data/model/response/AssetActivationResponse.java" />
+              <option name="updatedContent" value="package com.example.hamster.data.model.response;&#10;&#10;import com.example.hamster.data.model.Asset;&#10;import java.util.List;&#10;&#10;public class AssetActivationResponse {&#10;    private String id;&#10;    private String assetId;&#10;    private String status;&#10;    private List&lt;String&gt; approverIds;&#10;    private String createdAt;&#10;    private String updatedAt;&#10;&#10;    public AssetActivationResponse(String id, String assetId, String status, List&lt;String&gt; approverIds, String createdAt, String updatedAt) {&#10;        this.id = id;&#10;        this.assetId = assetId;&#10;        this.status = status;&#10;        this.approverIds = approverIds;&#10;        this.createdAt = createdAt;&#10;        this.updatedAt = updatedAt;&#10;    }&#10;&#10;    public String getId() {&#10;        return id;&#10;    }&#10;    public void setId(String id) {&#10;        this.id = id;&#10;    }&#10;    public String getAssetId() {&#10;        return assetId;&#10;    }&#10;    public void setAssetId(String assetId) {&#10;        this.assetId = assetId;&#10;    }&#10;    public String getStatus() {&#10;        return status;&#10;    }&#10;    public void setStatus(String status) {&#10;        this.status = status;&#10;    }&#10;    public List&lt;String&gt; getApproverIds() {&#10;        return approverIds;&#10;    }&#10;    public void setApproverIds(List&lt;String&gt; approverIds) {&#10;        this.approverIds = approverIds;&#10;    }&#10;    public String getCreatedAt() {&#10;        return createdAt;&#10;    }&#10;    public void setCreatedAt(String createdAt) {&#10;        this.createdAt = createdAt;&#10;    }&#10;    public String getUpdatedAt() {&#10;        return updatedAt;&#10;    }&#10;    public void setUpdatedAt(String updatedAt) {&#10;        this.updatedAt = updatedAt;&#10;    }&#10;}&#10;" />
+            </PendingDiffInfo>
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/java/com/example/hamster/data/model/response/AssetActivationSettingResponse.java">
+          <value>
+            <PendingDiffInfo>
+              <option name="filePath" value="$PROJECT_DIR$/app/src/main/java/com/example/hamster/data/model/response/AssetActivationSettingResponse.java" />
+              <option name="updatedContent" value="package com.example.hamster.data.model.response;&#10;&#10;import com.example.hamster.data.model.AssetActivationSetting;&#10;import java.util.List;&#10;&#10;public class AssetActivationSettingResponse {&#10;    private int page;&#10;    private int limit;&#10;    private int total;&#10;    private List&lt;AssetActivationSetting&gt; data;&#10;&#10;    public AssetActivationSettingResponse(int page, int limit, int total, List&lt;AssetActivationSetting&gt; data) {&#10;        this.page = page;&#10;        this.limit = limit;&#10;        this.total = total;&#10;        this.data = data;&#10;    }&#10;&#10;    public int getPage() {&#10;        return page;&#10;    }&#10;    public void setPage(int page) {&#10;        this.page = page;&#10;    }&#10;    public int getLimit() {&#10;        return limit;&#10;    }&#10;    public void setLimit(int limit) {&#10;        this.limit = limit;&#10;    }&#10;    public int getTotal() {&#10;        return total;&#10;    }&#10;    public void setTotal(int total) {&#10;        this.total = total;&#10;    }&#10;    public List&lt;AssetActivationSetting&gt; getData() {&#10;        return data;&#10;    }&#10;    public void setData(List&lt;AssetActivationSetting&gt; data) {&#10;        this.data = data;&#10;    }&#10;}&#10;" />
+            </PendingDiffInfo>
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/java/com/example/hamster/data/model/response/AssetApprovalStatusResponse.java">
+          <value>
+            <PendingDiffInfo>
+              <option name="filePath" value="$PROJECT_DIR$/app/src/main/java/com/example/hamster/data/model/response/AssetApprovalStatusResponse.java" />
+              <option name="updatedContent" value="package com.example.hamster.data.model.response;&#10;&#10;public class AssetApprovalStatusResponse {&#10;    private String assetId;&#10;    private String status;&#10;    private String lastApproverId;&#10;    private String lastUpdatedAt;&#10;&#10;    public AssetApprovalStatusResponse(String assetId, String status, String lastApproverId, String lastUpdatedAt) {&#10;        this.assetId = assetId;&#10;        this.status = status;&#10;        this.lastApproverId = lastApproverId;&#10;        this.lastUpdatedAt = lastUpdatedAt;&#10;    }&#10;&#10;    public String getAssetId() {&#10;        return assetId;&#10;    }&#10;    public void setAssetId(String assetId) {&#10;        this.assetId = assetId;&#10;    }&#10;    public String getStatus() {&#10;        return status;&#10;    }&#10;    public void setStatus(String status) {&#10;        this.status = status;&#10;    }&#10;    public String getLastApproverId() {&#10;        return lastApproverId;&#10;    }&#10;    public void setLastApproverId(String lastApproverId) {&#10;        this.lastApproverId = lastApproverId;&#10;    }&#10;    public String getLastUpdatedAt() {&#10;        return lastUpdatedAt;&#10;    }&#10;    public void setLastUpdatedAt(String lastUpdatedAt) {&#10;        this.lastUpdatedAt = lastUpdatedAt;&#10;    }&#10;}&#10;" />
+            </PendingDiffInfo>
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/java/com/example/hamster/data/model/response/AssetCategoryResponse.java">
+          <value>
+            <PendingDiffInfo>
+              <option name="filePath" value="$PROJECT_DIR$/app/src/main/java/com/example/hamster/data/model/response/AssetCategoryResponse.java" />
+              <option name="updatedContent" value="package com.example.hamster.data.model.response;&#10;&#10;import com.example.hamster.data.model.AssetCategory;&#10;import java.util.List;&#10;&#10;public class AssetCategoryResponse {&#10;    private int page;&#10;    private int limit;&#10;    private int total;&#10;    private List&lt;AssetCategory&gt; data;&#10;&#10;    public AssetCategoryResponse(int page, int limit, int total, List&lt;AssetCategory&gt; data) {&#10;        this.page = page;&#10;        this.limit = limit;&#10;        this.total = total;&#10;        this.data = data;&#10;    }&#10;&#10;    public int getPage() {&#10;        return page;&#10;    }&#10;    public void setPage(int page) {&#10;        this.page = page;&#10;    }&#10;    public int getLimit() {&#10;        return limit;&#10;    }&#10;    public void setLimit(int limit) {&#10;        this.limit = limit;&#10;    }&#10;    public int getTotal() {&#10;        return total;&#10;    }&#10;    public void setTotal(int total) {&#10;        this.total = total;&#10;    }&#10;    public List&lt;AssetCategory&gt; getData() {&#10;        return data;&#10;    }&#10;    public void setData(List&lt;AssetCategory&gt; data) {&#10;        this.data = data;&#10;    }&#10;}&#10;" />
+            </PendingDiffInfo>
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/java/com/example/hamster/data/model/response/AssetSubCategoryResponse.java">
+          <value>
+            <PendingDiffInfo>
+              <option name="filePath" value="$PROJECT_DIR$/app/src/main/java/com/example/hamster/data/model/response/AssetSubCategoryResponse.java" />
+              <option name="updatedContent" value="package com.example.hamster.data.model.response;&#10;&#10;import com.example.hamster.data.model.AssetSubCategory;&#10;import java.util.List;&#10;&#10;public class AssetSubCategoryResponse {&#10;    private int page;&#10;    private int limit;&#10;    private int total;&#10;    private List&lt;AssetSubCategory&gt; data;&#10;&#10;    public AssetSubCategoryResponse(int page, int limit, int total, List&lt;AssetSubCategory&gt; data) {&#10;        this.page = page;&#10;        this.limit = limit;&#10;        this.total = total;&#10;        this.data = data;&#10;    }&#10;&#10;    public int getPage() {&#10;        return page;&#10;    }&#10;    public void setPage(int page) {&#10;        this.page = page;&#10;    }&#10;    public int getLimit() {&#10;        return limit;&#10;    }&#10;    public void setLimit(int limit) {&#10;        this.limit = limit;&#10;    }&#10;    public int getTotal() {&#10;        return total;&#10;    }&#10;    public void setTotal(int total) {&#10;        this.total = total;&#10;    }&#10;    public List&lt;AssetSubCategory&gt; getData() {&#10;        return data;&#10;    }&#10;    public void setData(List&lt;AssetSubCategory&gt; data) {&#10;        this.data = data;&#10;    }&#10;}&#10;" />
+            </PendingDiffInfo>
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/java/com/example/hamster/data/model/response/BrandResponse.java">
+          <value>
+            <PendingDiffInfo>
+              <option name="filePath" value="$PROJECT_DIR$/app/src/main/java/com/example/hamster/data/model/response/BrandResponse.java" />
+              <option name="updatedContent" value="package com.example.hamster.data.model.response;&#10;&#10;import com.example.hamster.data.model.Brand;&#10;import java.util.List;&#10;&#10;public class BrandResponse {&#10;    private int page;&#10;    private int limit;&#10;    private int total;&#10;    private List&lt;Brand&gt; data;&#10;&#10;    public BrandResponse(int page, int limit, int total, List&lt;Brand&gt; data) {&#10;        this.page = page;&#10;        this.limit = limit;&#10;        this.total = total;&#10;        this.data = data;&#10;    }&#10;&#10;    public int getPage() {&#10;        return page;&#10;    }&#10;    public void setPage(int page) {&#10;        this.page = page;&#10;    }&#10;    public int getLimit() {&#10;        return limit;&#10;    }&#10;    public void setLimit(int limit) {&#10;        this.limit = limit;&#10;    }&#10;    public int getTotal() {&#10;        return total;&#10;    }&#10;    public void setTotal(int total) {&#10;        this.total = total;&#10;    }&#10;    public List&lt;Brand&gt; getData() {&#10;        return data;&#10;    }&#10;    public void setData(List&lt;Brand&gt; data) {&#10;        this.data = data;&#10;    }&#10;}&#10;" />
+            </PendingDiffInfo>
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/java/com/example/hamster/data/model/response/DivisionResponse.java">
+          <value>
+            <PendingDiffInfo>
+              <option name="filePath" value="$PROJECT_DIR$/app/src/main/java/com/example/hamster/data/model/response/DivisionResponse.java" />
+              <option name="updatedContent" value="package com.example.hamster.data.model.response;&#10;&#10;import com.example.hamster.data.model.Division;&#10;import java.util.List;&#10;&#10;public class DivisionResponse {&#10;    private int page;&#10;    private int limit;&#10;    private int total;&#10;    private List&lt;Division&gt; data;&#10;&#10;    public DivisionResponse(int page, int limit, int total, List&lt;Division&gt; data) {&#10;        this.page = page;&#10;        this.limit = limit;&#10;        this.total = total;&#10;        this.data = data;&#10;    }&#10;&#10;    public int getPage() {&#10;        return page;&#10;    }&#10;    public void setPage(int page) {&#10;        this.page = page;&#10;    }&#10;    public int getLimit() {&#10;        return limit;&#10;    }&#10;    public void setLimit(int limit) {&#10;        this.limit = limit;&#10;    }&#10;    public int getTotal() {&#10;        return total;&#10;    }&#10;    public void setTotal(int total) {&#10;        this.total = total;&#10;    }&#10;    public List&lt;Division&gt; getData() {&#10;        return data;&#10;    }&#10;    public void setData(List&lt;Division&gt; data) {&#10;        this.data = data;&#10;    }&#10;}&#10;" />
+            </PendingDiffInfo>
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/java/com/example/hamster/data/model/response/FloorResponse.java">
+          <value>
+            <PendingDiffInfo>
+              <option name="filePath" value="$PROJECT_DIR$/app/src/main/java/com/example/hamster/data/model/response/FloorResponse.java" />
+              <option name="originalContent" value="package com.example.hamster.data.model.response;&#10;&#10;public class FloorResponse {&#10;    // TODO: Add fields&#10;}&#10;&#10;" />
+              <option name="updatedContent" value="package com.example.hamster.data.model.response;&#10;&#10;import com.example.hamster.data.model.Floor;&#10;import java.util.List;&#10;&#10;public class FloorResponse {&#10;    private int page;&#10;    private int limit;&#10;    private int total;&#10;    private List&lt;Floor&gt; data;&#10;&#10;    public FloorResponse(int page, int limit, int total, List&lt;Floor&gt; data) {&#10;        this.page = page;&#10;        this.limit = limit;&#10;        this.total = total;&#10;        this.data = data;&#10;    }&#10;&#10;    // Getters &amp; Setters&#10;    public int getPage() {&#10;        return page;&#10;    }&#10;    public void setPage(int page) {&#10;        this.page = page;&#10;    }&#10;    public int getLimit() {&#10;        return limit;&#10;    }&#10;    public void setLimit(int limit) {&#10;        this.limit = limit;&#10;    }&#10;    public int getTotal() {&#10;        return total;&#10;    }&#10;    public void setTotal(int total) {&#10;        this.total = total;&#10;    }&#10;    public List&lt;Floor&gt; getData() {&#10;        return data;&#10;    }&#10;    public void setData(List&lt;Floor&gt; data) {&#10;        this.data = data;&#10;    }&#10;}" />
+            </PendingDiffInfo>
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/java/com/example/hamster/data/model/response/MediaFileResponse.java">
+          <value>
+            <PendingDiffInfo>
+              <option name="filePath" value="$PROJECT_DIR$/app/src/main/java/com/example/hamster/data/model/response/MediaFileResponse.java" />
+              <option name="updatedContent" value="package com.example.hamster.data.model.response;&#10;&#10;import com.example.hamster.data.model.MediaFile;&#10;import java.util.List;&#10;&#10;public class MediaFileResponse {&#10;    private int page;&#10;    private int limit;&#10;    private int total;&#10;    private List&lt;MediaFile&gt; data;&#10;&#10;    public MediaFileResponse(int page, int limit, int total, List&lt;MediaFile&gt; data) {&#10;        this.page = page;&#10;        this.limit = limit;&#10;        this.total = total;&#10;        this.data = data;&#10;    }&#10;&#10;    public int getPage() {&#10;        return page;&#10;    }&#10;    public void setPage(int page) {&#10;        this.page = page;&#10;    }&#10;    public int getLimit() {&#10;        return limit;&#10;    }&#10;    public void setLimit(int limit) {&#10;        this.limit = limit;&#10;    }&#10;    public int getTotal() {&#10;        return total;&#10;    }&#10;    public void setTotal(int total) {&#10;        this.total = total;&#10;    }&#10;    public List&lt;MediaFile&gt; getData() {&#10;        return data;&#10;    }&#10;    public void setData(List&lt;MediaFile&gt; data) {&#10;        this.data = data;&#10;    }&#10;}&#10;" />
+            </PendingDiffInfo>
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/java/com/example/hamster/data/model/response/NotificationResponse.java">
+          <value>
+            <PendingDiffInfo>
+              <option name="filePath" value="$PROJECT_DIR$/app/src/main/java/com/example/hamster/data/model/response/NotificationResponse.java" />
+              <option name="updatedContent" value="package com.example.hamster.data.model.response;&#10;&#10;import android.app.Notification;&#10;import java.util.List;&#10;&#10;public class NotificationResponse {&#10;    private int page;&#10;    private int limit;&#10;    private int total;&#10;    private List&lt;Notification&gt; data;&#10;&#10;    public NotificationResponse(int page, int limit, int total, List&lt;Notification&gt; data) {&#10;        this.page = page;&#10;        this.limit = limit;&#10;        this.total = total;&#10;        this.data = data;&#10;    }&#10;&#10;    public int getPage() {&#10;        return page;&#10;    }&#10;    public void setPage(int page) {&#10;        this.page = page;&#10;    }&#10;    public int getLimit() {&#10;        return limit;&#10;    }&#10;    public void setLimit(int limit) {&#10;        this.limit = limit;&#10;    }&#10;    public int getTotal() {&#10;        return total;&#10;    }&#10;    public void setTotal(int total) {&#10;        this.total = total;&#10;    }&#10;    public List&lt;Notification&gt; getData() {&#10;        return data;&#10;    }&#10;    public void setData(List&lt;Notification&gt; data) {&#10;        this.data = data;&#10;    }&#10;}&#10;" />
+            </PendingDiffInfo>
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/java/com/example/hamster/data/model/response/PendingApprovalsResponse.java">
+          <value>
+            <PendingDiffInfo>
+              <option name="filePath" value="$PROJECT_DIR$/app/src/main/java/com/example/hamster/data/model/response/PendingApprovalsResponse.java" />
+              <option name="updatedContent" value="package com.example.hamster.data.model.response;&#10;&#10;import java.util.List;&#10;&#10;public class PendingApprovalsResponse {&#10;    private int page;&#10;    private int limit;&#10;    private int total;&#10;    private List&lt;String&gt; assetIds;&#10;&#10;    public PendingApprovalsResponse(int page, int limit, int total, List&lt;String&gt; assetIds) {&#10;        this.page = page;&#10;        this.limit = limit;&#10;        this.total = total;&#10;        this.assetIds = assetIds;&#10;    }&#10;&#10;    public int getPage() {&#10;        return page;&#10;    }&#10;    public void setPage(int page) {&#10;        this.page = page;&#10;    }&#10;    public int getLimit() {&#10;        return limit;&#10;    }&#10;    public void setLimit(int limit) {&#10;        this.limit = limit;&#10;    }&#10;    public int getTotal() {&#10;        return total;&#10;    }&#10;    public void setTotal(int total) {&#10;        this.total = total;&#10;    }&#10;    public List&lt;String&gt; getAssetIds() {&#10;        return assetIds;&#10;    }&#10;    public void setAssetIds(List&lt;String&gt; assetIds) {&#10;        this.assetIds = assetIds;&#10;    }&#10;}&#10;" />
+            </PendingDiffInfo>
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/java/com/example/hamster/data/model/response/PositionResponse.java">
+          <value>
+            <PendingDiffInfo>
+              <option name="filePath" value="$PROJECT_DIR$/app/src/main/java/com/example/hamster/data/model/response/PositionResponse.java" />
+              <option name="updatedContent" value="package com.example.hamster.data.model.response;&#10;&#10;import com.example.hamster.data.model.Position;&#10;import java.util.List;&#10;&#10;public class PositionResponse {&#10;    private int page;&#10;    private int limit;&#10;    private int total;&#10;    private List&lt;Position&gt; data;&#10;&#10;    public PositionResponse(int page, int limit, int total, List&lt;Position&gt; data) {&#10;        this.page = page;&#10;        this.limit = limit;&#10;        this.total = total;&#10;        this.data = data;&#10;    }&#10;&#10;    public int getPage() {&#10;        return page;&#10;    }&#10;    public void setPage(int page) {&#10;        this.page = page;&#10;    }&#10;    public int getLimit() {&#10;        return limit;&#10;    }&#10;    public void setLimit(int limit) {&#10;        this.limit = limit;&#10;    }&#10;    public int getTotal() {&#10;        return total;&#10;    }&#10;    public void setTotal(int total) {&#10;        this.total = total;&#10;    }&#10;    public List&lt;Position&gt; getData() {&#10;        return data;&#10;    }&#10;    public void setData(List&lt;Position&gt; data) {&#10;        this.data = data;&#10;    }&#10;}&#10;" />
+            </PendingDiffInfo>
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/java/com/example/hamster/data/model/response/PrinterStatusResponse.java">
+          <value>
+            <PendingDiffInfo>
+              <option name="filePath" value="$PROJECT_DIR$/app/src/main/java/com/example/hamster/data/model/response/PrinterStatusResponse.java" />
+              <option name="updatedContent" value="package com.example.hamster.data.model.response;&#10;&#10;public class PrinterStatusResponse {&#10;    private boolean connected;&#10;    private String statusMessage;&#10;&#10;    public PrinterStatusResponse(boolean connected, String statusMessage) {&#10;        this.connected = connected;&#10;        this.statusMessage = statusMessage;&#10;    }&#10;&#10;    public boolean isConnected() {&#10;        return connected;&#10;    }&#10;    public void setConnected(boolean connected) {&#10;        this.connected = connected;&#10;    }&#10;    public String getStatusMessage() {&#10;        return statusMessage;&#10;    }&#10;    public void setStatusMessage(String statusMessage) {&#10;        this.statusMessage = statusMessage;&#10;    }&#10;}&#10;" />
+            </PendingDiffInfo>
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/java/com/example/hamster/data/model/response/RolePermissionResponse.java">
+          <value>
+            <PendingDiffInfo>
+              <option name="filePath" value="$PROJECT_DIR$/app/src/main/java/com/example/hamster/data/model/response/RolePermissionResponse.java" />
+              <option name="updatedContent" value="package com.example.hamster.data.model.response;&#10;&#10;import com.example.hamster.data.model.RolePermission;&#10;import java.util.List;&#10;&#10;public class RolePermissionResponse {&#10;    private int page;&#10;    private int limit;&#10;    private int total;&#10;    private List&lt;RolePermission&gt; data;&#10;&#10;    public RolePermissionResponse(int page, int limit, int total, List&lt;RolePermission&gt; data) {&#10;        this.page = page;&#10;        this.limit = limit;&#10;        this.total = total;&#10;        this.data = data;&#10;    }&#10;&#10;    public int getPage() {&#10;        return page;&#10;    }&#10;    public void setPage(int page) {&#10;        this.page = page;&#10;    }&#10;    public int getLimit() {&#10;        return limit;&#10;    }&#10;    public void setLimit(int limit) {&#10;        this.limit = limit;&#10;    }&#10;    public int getTotal() {&#10;        return total;&#10;    }&#10;    public void setTotal(int total) {&#10;        this.total = total;&#10;    }&#10;    public List&lt;RolePermission&gt; getData() {&#10;        return data;&#10;    }&#10;    public void setData(List&lt;RolePermission&gt; data) {&#10;        this.data = data;&#10;    }&#10;}&#10;" />
+            </PendingDiffInfo>
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/java/com/example/hamster/data/model/response/RoomResponse.java">
+          <value>
+            <PendingDiffInfo>
+              <option name="filePath" value="$PROJECT_DIR$/app/src/main/java/com/example/hamster/data/model/response/RoomResponse.java" />
+              <option name="originalContent" value="package com.example.hamster.data.model.response;&#10;&#10;public class RoomResponse {&#10;    // TODO: Add fields&#10;}&#10;&#10;" />
+              <option name="updatedContent" value="package com.example.hamster.data.model.response;&#10;&#10;import com.example.hamster.data.model.Room;&#10;import java.util.List;&#10;&#10;public class RoomResponse {&#10;    private int page;&#10;    private int limit;&#10;    private int total;&#10;    private List&lt;Room&gt; data;&#10;&#10;    public RoomResponse(int page, int limit, int total, List&lt;Room&gt; data) {&#10;        this.page = page;&#10;        this.limit = limit;&#10;        this.total = total;&#10;        this.data = data;&#10;    }&#10;&#10;    // Getters &amp; Setters&#10;    public int getPage() {&#10;        return page;&#10;    }&#10;    public void setPage(int page) {&#10;        this.page = page;&#10;    }&#10;    public int getLimit() {&#10;        return limit;&#10;    }&#10;    public void setLimit(int limit) {&#10;        this.limit = limit;&#10;    }&#10;    public int getTotal() {&#10;        return total;&#10;    }&#10;    public void setTotal(int total) {&#10;        this.total = total;&#10;    }&#10;    public List&lt;Room&gt; getData() {&#10;        return data;&#10;    }&#10;    public void setData(List&lt;Room&gt; data) {&#10;        this.data = data;&#10;    }&#10;}" />
+            </PendingDiffInfo>
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/java/com/example/hamster/data/model/response/SubRoomResponse.java">
+          <value>
+            <PendingDiffInfo>
+              <option name="filePath" value="$PROJECT_DIR$/app/src/main/java/com/example/hamster/data/model/response/SubRoomResponse.java" />
+              <option name="originalContent" value="package com.example.hamster.data.model.response;&#10;&#10;public class SubRoomResponse {&#10;    // TODO: Add fields&#10;}&#10;&#10;" />
+              <option name="updatedContent" value="package com.example.hamster.data.model.response;&#10;&#10;import com.example.hamster.data.model.SubRoom;&#10;import java.util.List;&#10;&#10;public class SubRoomResponse {&#10;    private int page;&#10;    private int limit;&#10;    private int total;&#10;    private List&lt;SubRoom&gt; data;&#10;&#10;    public SubRoomResponse(int page, int limit, int total, List&lt;SubRoom&gt; data) {&#10;        this.page = page;&#10;        this.limit = limit;&#10;        this.total = total;&#10;        this.data = data;&#10;    }&#10;&#10;    // Getters &amp; Setters&#10;    public int getPage() {&#10;        return page;&#10;    }&#10;    public void setPage(int page) {&#10;        this.page = page;&#10;    }&#10;    public int getLimit() {&#10;        return limit;&#10;    }&#10;    public void setLimit(int limit) {&#10;        this.limit = limit;&#10;    }&#10;    public int getTotal() {&#10;        return total;&#10;    }&#10;    public void setTotal(int total) {&#10;        this.total = total;&#10;    }&#10;    public List&lt;SubRoom&gt; getData() {&#10;        return data;&#10;    }&#10;    public void setData(List&lt;SubRoom&gt; data) {&#10;        this.data = data;&#10;    }&#10;}" />
+            </PendingDiffInfo>
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/java/com/example/hamster/data/model/response/TemplateResponse.java">
+          <value>
+            <PendingDiffInfo>
+              <option name="filePath" value="$PROJECT_DIR$/app/src/main/java/com/example/hamster/data/model/response/TemplateResponse.java" />
+              <option name="updatedContent" value="package com.example.hamster.data.model.response;&#10;&#10;public class TemplateResponse {&#10;    private String id;&#10;    private String name;&#10;    private String description;&#10;&#10;    public TemplateResponse(String id, String name, String description) {&#10;        this.id = id;&#10;        this.name = name;&#10;        this.description = description;&#10;    }&#10;&#10;    public String getId() {&#10;        return id;&#10;    }&#10;    public void setId(String id) {&#10;        this.id = id;&#10;    }&#10;    public String getName() {&#10;        return name;&#10;    }&#10;    public void setName(String name) {&#10;        this.name = name;&#10;    }&#10;    public String getDescription() {&#10;        return description;&#10;    }&#10;    public void setDescription(String description) {&#10;        this.description = description;&#10;    }&#10;}&#10;" />
+            </PendingDiffInfo>
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/java/com/example/hamster/data/model/response/VendorResponse.java">
+          <value>
+            <PendingDiffInfo>
+              <option name="filePath" value="$PROJECT_DIR$/app/src/main/java/com/example/hamster/data/model/response/VendorResponse.java" />
+              <option name="updatedContent" value="package com.example.hamster.data.model.response;&#10;&#10;import com.example.hamster.data.model.Vendor;&#10;import java.util.List;&#10;&#10;public class VendorResponse {&#10;    private int page;&#10;    private int limit;&#10;    private int total;&#10;    private List&lt;Vendor&gt; data;&#10;&#10;    public VendorResponse(int page, int limit, int total, List&lt;Vendor&gt; data) {&#10;        this.page = page;&#10;        this.limit = limit;&#10;        this.total = total;&#10;        this.data = data;&#10;    }&#10;&#10;    public int getPage() {&#10;        return page;&#10;    }&#10;    public void setPage(int page) {&#10;        this.page = page;&#10;    }&#10;    public int getLimit() {&#10;        return limit;&#10;    }&#10;    public void setLimit(int limit) {&#10;        this.limit = limit;&#10;    }&#10;    public int getTotal() {&#10;        return total;&#10;    }&#10;    public void setTotal(int total) {&#10;        this.total = total;&#10;    }&#10;    public List&lt;Vendor&gt; getData() {&#10;        return data;&#10;    }&#10;    public void setData(List&lt;Vendor&gt; data) {&#10;        this.data = data;&#10;    }&#10;}&#10;" />
+            </PendingDiffInfo>
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/java/com/example/hamster/data/model/response/WorkingUnitResponse.java">
+          <value>
+            <PendingDiffInfo>
+              <option name="filePath" value="$PROJECT_DIR$/app/src/main/java/com/example/hamster/data/model/response/WorkingUnitResponse.java" />
+              <option name="updatedContent" value="package com.example.hamster.data.model.response;&#10;&#10;import com.example.hamster.data.model.WorkingUnit;&#10;import java.util.List;&#10;&#10;public class WorkingUnitResponse {&#10;    private int page;&#10;    private int limit;&#10;    private int total;&#10;    private List&lt;WorkingUnit&gt; data;&#10;&#10;    public WorkingUnitResponse(int page, int limit, int total, List&lt;WorkingUnit&gt; data) {&#10;        this.page = page;&#10;        this.limit = limit;&#10;        this.total = total;&#10;        this.data = data;&#10;    }&#10;&#10;    public int getPage() {&#10;        return page;&#10;    }&#10;    public void setPage(int page) {&#10;        this.page = page;&#10;    }&#10;    public int getLimit() {&#10;        return limit;&#10;    }&#10;    public void setLimit(int limit) {&#10;        this.limit = limit;&#10;    }&#10;    public int getTotal() {&#10;        return total;&#10;    }&#10;    public void setTotal(int total) {&#10;        this.total = total;&#10;    }&#10;    public List&lt;WorkingUnit&gt; getData() {&#10;        return data;&#10;    }&#10;    public void setData(List&lt;WorkingUnit&gt; data) {&#10;        this.data = data;&#10;    }&#10;}&#10;" />
+            </PendingDiffInfo>
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+</project>
