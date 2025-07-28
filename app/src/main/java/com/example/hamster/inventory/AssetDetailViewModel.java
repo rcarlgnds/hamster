@@ -23,6 +23,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
@@ -31,9 +32,6 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-/**
- * ViewModel untuk mengelola data dan logika bisnis untuk detail aset.
- */
 public class AssetDetailViewModel extends AndroidViewModel {
 
     private static final String TAG = "AssetDetailViewModel";
@@ -48,8 +46,6 @@ public class AssetDetailViewModel extends AndroidViewModel {
 
     // --- State untuk Perubahan ---
     private final UpdateAssetRequest pendingUpdateRequest = new UpdateAssetRequest();
-
-    // Daftar URI untuk file-file BARU yang akan di-upload.
     private final List<Uri> newSerialNumberPhotoUris = new ArrayList<>();
     private final List<Uri> newAssetPhotoUris = new ArrayList<>();
     private final List<Uri> newPoDocumentUris = new ArrayList<>();
@@ -106,8 +102,8 @@ public class AssetDetailViewModel extends AndroidViewModel {
     public LiveData<List<String>> getConditionOptions() { return conditionOptions; }
     public LiveData<List<String>> getUnitOptions() { return unitOptions; }
 
-    // --- Metode untuk Menerima Data dari Fragment ---
 
+    // --- Metode untuk Menerima Data dari Fragment ---
     public void updateAssetInfoData(UpdateAssetRequest data) {
         pendingUpdateRequest.setName(data.getName());
         pendingUpdateRequest.setCode(data.getCode());
@@ -147,44 +143,14 @@ public class AssetDetailViewModel extends AndroidViewModel {
         pendingUpdateRequest.setDepreciationDurationMonth(data.getDepreciationDurationMonth());
     }
 
-    public void updateAllDocuments(
-            List<Uri> newSerialUris, List<String> keepSerialIds,
-            List<Uri> newAssetUris, List<String> keepAssetIds,
-            List<Uri> newPoUris, List<String> keepPoIds,
-            List<Uri> newInvoiceUris, List<String> keepInvoiceIds,
-            List<Uri> newWarrantyUris, List<String> keepWarrantyIds,
-            List<Uri> newLicenseUris, List<String> keepLicenseIds,
-            List<Uri> newUserManualUris, List<String> keepUserManualIds,
-            List<Uri> newCustomUris, List<String> customNames, List<String> keepCustomIds)
-    {
+    public void updateAllDocuments(List<Uri> newSerialUris, List<String> keepSerialIds, List<Uri> newAssetUris, List<String> keepAssetPhotoIds) {
         updateUriList(this.newSerialNumberPhotoUris, newSerialUris);
         updateUriList(this.newAssetPhotoUris, newAssetUris);
-        updateUriList(this.newPoDocumentUris, newPoUris);
-        updateUriList(this.newInvoiceDocumentUris, newInvoiceUris);
-        updateUriList(this.newWarrantyDocumentUris, newWarrantyUris);
-        updateUriList(this.newLicenseDocumentUris, newLicenseUris);
-        updateUriList(this.newUserManualDocumentUris, newUserManualUris);
-        updateUriList(this.newCustomDocumentUris, newCustomUris);
-        updateStringList(this.newCustomDocumentNames, customNames);
-
         pendingUpdateRequest.setKeepSerialNumberPhotos(keepSerialIds);
-        pendingUpdateRequest.setKeepAssetPhotos(keepAssetIds);
-        pendingUpdateRequest.setKeepPoDocuments(keepPoIds);
-        pendingUpdateRequest.setKeepInvoiceDocuments(keepInvoiceIds);
-        pendingUpdateRequest.setKeepWarrantyDocuments(keepWarrantyIds);
-        pendingUpdateRequest.setKeepLicenseDocuments(keepLicenseIds);
-        pendingUpdateRequest.setKeepUserManualDocuments(keepUserManualIds);
-        pendingUpdateRequest.setKeepCustomDocuments(keepCustomIds);
+        pendingUpdateRequest.setKeepAssetPhotos(keepAssetPhotoIds);
     }
 
     private void updateUriList(List<Uri> targetList, List<Uri> sourceList) {
-        targetList.clear();
-        if (sourceList != null) {
-            targetList.addAll(sourceList);
-        }
-    }
-
-    private void updateStringList(List<String> targetList, List<String> sourceList) {
         targetList.clear();
         if (sourceList != null) {
             targetList.addAll(sourceList);
@@ -213,8 +179,8 @@ public class AssetDetailViewModel extends AndroidViewModel {
     }
 
     public void saveChanges(String assetId) {
-        if (pendingUpdateRequest.getCode() == null || pendingUpdateRequest.getCode().isEmpty() ||
-                pendingUpdateRequest.getName() == null || pendingUpdateRequest.getName().isEmpty()) {
+        if (pendingUpdateRequest.getCode() == null || pendingUpdateRequest.getCode().trim().isEmpty() ||
+                pendingUpdateRequest.getName() == null || pendingUpdateRequest.getName().trim().isEmpty()) {
             errorMessage.setValue("Kode Aset dan Nama Aset tidak boleh kosong.");
             return;
         }
@@ -222,6 +188,10 @@ public class AssetDetailViewModel extends AndroidViewModel {
         isLoading.setValue(true);
         Map<String, RequestBody> fields = buildFieldsMap();
         List<MultipartBody.Part> fileParts = buildFileParts();
+
+        Log.d(TAG, "Menyimpan perubahan untuk asset ID: " + assetId);
+        Log.d(TAG, "Fields dikirim: " + fields.keySet().toString());
+        Log.d(TAG, "Jumlah file baru: " + fileParts.size());
 
         apiService.updateAsset(assetId, fields, fileParts).enqueue(new Callback<Asset>() {
             @Override
@@ -248,17 +218,11 @@ public class AssetDetailViewModel extends AndroidViewModel {
     private void resetPendingChanges() {
         newSerialNumberPhotoUris.clear();
         newAssetPhotoUris.clear();
-        newPoDocumentUris.clear();
-        newInvoiceDocumentUris.clear();
-        newWarrantyDocumentUris.clear();
-        newLicenseDocumentUris.clear();
-        newUserManualDocumentUris.clear();
-        newCustomDocumentUris.clear();
-        newCustomDocumentNames.clear();
     }
 
     private Map<String, RequestBody> buildFieldsMap() {
         Map<String, RequestBody> fields = new HashMap<>();
+
         addPart(fields, "code", pendingUpdateRequest.getCode());
         addPart(fields, "name", pendingUpdateRequest.getName());
         addPart(fields, "ownership", pendingUpdateRequest.getOwnership());
@@ -268,6 +232,7 @@ public class AssetDetailViewModel extends AndroidViewModel {
         addPart(fields, "condition", pendingUpdateRequest.getCondition());
         addPart(fields, "roomId", pendingUpdateRequest.getRoomId());
         addPart(fields, "parentId", pendingUpdateRequest.getParentId());
+        addPart(fields, "description", pendingUpdateRequest.getDescription());
 
         addMultipleTextPart(fields, "keepSerialNumberPhotos", pendingUpdateRequest.getKeepSerialNumberPhotos());
         addMultipleTextPart(fields, "keepAssetPhotos", pendingUpdateRequest.getKeepAssetPhotos());
@@ -277,7 +242,6 @@ public class AssetDetailViewModel extends AndroidViewModel {
         addMultipleTextPart(fields, "keepLicenseDocuments", pendingUpdateRequest.getKeepLicenseDocuments());
         addMultipleTextPart(fields, "keepUserManualDocuments", pendingUpdateRequest.getKeepUserManualDocuments());
         addMultipleTextPart(fields, "keepCustomDocuments", pendingUpdateRequest.getKeepCustomDocuments());
-        addMultipleTextPart(fields, "customDocumentNames", this.newCustomDocumentNames);
 
         return fields;
     }
@@ -286,12 +250,6 @@ public class AssetDetailViewModel extends AndroidViewModel {
         List<MultipartBody.Part> fileParts = new ArrayList<>();
         addFilesToParts(fileParts, "serialNumberPhoto", newSerialNumberPhotoUris);
         addFilesToParts(fileParts, "assetPhotos", newAssetPhotoUris);
-        addFilesToParts(fileParts, "poDocument", newPoDocumentUris);
-        addFilesToParts(fileParts, "invoiceDocument", newInvoiceDocumentUris);
-        addFilesToParts(fileParts, "warrantyDocument", newWarrantyDocumentUris);
-        addFilesToParts(fileParts, "licenseDocuments", newLicenseDocumentUris);
-        addFilesToParts(fileParts, "userManualDocuments", newUserManualDocumentUris);
-        addFilesToParts(fileParts, "customDocuments", newCustomDocumentUris);
         return fileParts;
     }
 

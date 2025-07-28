@@ -10,7 +10,10 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class ApiClient {
+    // Alamat dasar untuk panggilan API (misalnya, ambil data, update data)
     public static final String BASE_URL = "http://195.35.20.102:9180/api/";
+
+    // Alamat dasar untuk mengakses file media (gambar, dokumen)
     public static final String BASE_MEDIA_URL = "http://195.35.20.102:9180";
 
     private static Retrofit retrofit = null;
