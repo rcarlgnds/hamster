@@ -2,6 +2,8 @@
 package com.example.hamster.inventory;
 
 import android.app.Application;
+import android.text.TextUtils;
+import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
@@ -13,12 +15,7 @@ import com.example.hamster.data.model.UpdateAssetRequest;
 import com.example.hamster.data.model.response.OptionsResponse;
 import com.example.hamster.data.network.ApiClient;
 import com.example.hamster.data.network.ApiService;
-import com.google.gson.Gson;
-import java.util.ArrayList;
 import java.util.List;
-import okhttp3.MediaType;
-import okhttp3.MultipartBody;
-import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -30,7 +27,7 @@ public class AssetDetailViewModel extends AndroidViewModel {
     private final MutableLiveData<Asset> assetData = new MutableLiveData<>();
     private final MutableLiveData<Boolean> isSaveSuccess = new MutableLiveData<>();
     private final MutableLiveData<Boolean> isLoading = new MutableLiveData<>();
-    private final MutableLiveData<Boolean> isError = new MutableLiveData<>();
+    private final MutableLiveData<String> errorMessage = new MutableLiveData<>();
 
     // "Wadah" untuk semua perubahan dari semua fragment
     private final UpdateAssetRequest pendingUpdateRequest = new UpdateAssetRequest();
@@ -62,7 +59,7 @@ public class AssetDetailViewModel extends AndroidViewModel {
     public LiveData<Asset> getAssetData() { return assetData; }
     public LiveData<Boolean> getIsSaveSuccess() { return isSaveSuccess; }
     public LiveData<Boolean> getIsLoading() { return isLoading; }
-    public LiveData<Boolean> getIsError() { return isError; }
+    public LiveData<String> getErrorMessage() { return errorMessage; }
     public LiveData<List<OptionItem>> getCategoryOptions() { return categoryOptions; }
     public LiveData<List<OptionItem>> getSubCategoryOptions() { return subCategoryOptions; }
     public LiveData<List<OptionItem>> getBrandOptions() { return brandOptions; }
@@ -146,13 +143,13 @@ public class AssetDetailViewModel extends AndroidViewModel {
                 if (response.isSuccessful() && response.body() != null) {
                     assetData.setValue(response.body().getData());
                 } else {
-                    isError.setValue(true);
+                    errorMessage.setValue("Gagal memuat detail aset.");
                 }
             }
             @Override
             public void onFailure(@NonNull Call<AssetDetailResponse> call, @NonNull Throwable t) {
                 isLoading.setValue(false);
-                isError.setValue(true);
+                errorMessage.setValue("Koneksi error: " + t.getMessage());
             }
         });
     }
@@ -176,33 +173,29 @@ public class AssetDetailViewModel extends AndroidViewModel {
 
     // --- Metode Save ---
     public void saveChanges(String assetId) {
-        // Hanya validasi code & name sebagai field wajib
-        if (pendingUpdateRequest.getCode() == null || pendingUpdateRequest.getCode().trim().isEmpty()
-                || pendingUpdateRequest.getName() == null || pendingUpdateRequest.getName().trim().isEmpty()) {
-            isError.setValue(true);
+        // Validasi wajib: code dan name tidak boleh kosong
+        if (TextUtils.isEmpty(pendingUpdateRequest.getCode()) || TextUtils.isEmpty(pendingUpdateRequest.getName())) {
+            errorMessage.setValue("Asset Code dan Asset Name wajib diisi.");
+            isSaveSuccess.setValue(false);
             return;
         }
 
         isLoading.setValue(true);
-        Gson gson = new Gson();
-        String jsonRequest = gson.toJson(pendingUpdateRequest);
-        RequestBody requestBody = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), jsonRequest);
-        List<MultipartBody.Part> files = new ArrayList<>();
 
-        apiService.updateAsset(assetId, requestBody, files).enqueue(new Callback<Asset>() {
+        apiService.updateAsset(assetId, pendingUpdateRequest).enqueue(new Callback<Asset>() {
             @Override
             public void onResponse(@NonNull Call<Asset> call, @NonNull Response<Asset> response) {
                 isLoading.setValue(false);
                 isSaveSuccess.setValue(response.isSuccessful());
                 if (!response.isSuccessful()){
-                    isError.setValue(true);
+                    errorMessage.setValue("Gagal menyimpan: " + response.message());
                 }
             }
             @Override
             public void onFailure(@NonNull Call<Asset> call, @NonNull Throwable t) {
                 isLoading.setValue(false);
                 isSaveSuccess.setValue(false);
-                isError.setValue(true);
+                errorMessage.setValue("Koneksi error: " + t.getMessage());
             }
         });
     }
@@ -214,11 +207,13 @@ public class AssetDetailViewModel extends AndroidViewModel {
             public void onResponse(@NonNull Call<OptionsResponse> call, @NonNull Response<OptionsResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     liveData.setValue(response.body().getData());
+                } else {
+                    errorMessage.setValue("Gagal memuat data dropdown.");
                 }
             }
             @Override
             public void onFailure(@NonNull Call<OptionsResponse> call, @NonNull Throwable t) {
-                isError.setValue(true);
+                errorMessage.setValue("Koneksi error: " + t.getMessage());
             }
         };
     }

@@ -1,3 +1,4 @@
+// File: app/src/main/java/com/example/hamster/data/network/ApiService.java
 package com.example.hamster.data.network;
 
 import android.app.Notification;
@@ -457,9 +458,9 @@ public interface ApiService {
     @GET("assets/{id}")
     Call<AssetDetailResponse> getAssetById(@Path("id") String assetId);
 
-    @Multipart
+    // --- [DIUBAH] Mengirim JSON murni, bukan multipart ---
     @PATCH("assets/{id}")
-    Call<Asset> updateAsset(@Path("id") String assetId, @Part("data") RequestBody data, @Part List<MultipartBody.Part> files);
+    Call<Asset> updateAsset(@Path("id") String assetId, @Body UpdateAssetRequest request);
 
     @DELETE("assets/{id}")
     Call<Void> softDeleteAsset(@Path("id") String assetId);

@@ -48,23 +48,8 @@ public class AssetInfoFragment extends Fragment implements FragmentDataCollector
     public void collectDataForSave() {
         UpdateAssetRequest partialRequest = new UpdateAssetRequest();
 
-        String name = etName.getText().toString();
-        String code = etCode.getText().toString();
-
-        // Validasi UI: hanya code & name wajib diisi
-        if (TextUtils.isEmpty(code)) {
-            etCode.setError("Asset Code wajib diisi");
-        } else {
-            etCode.setError(null);
-        }
-        if (TextUtils.isEmpty(name)) {
-            etName.setError("Asset Name wajib diisi");
-        } else {
-            etName.setError(null);
-        }
-
-        partialRequest.setName(name);
-        partialRequest.setCode(code);
+        partialRequest.setName(etName.getText().toString());
+        partialRequest.setCode(etCode.getText().toString());
         partialRequest.setCode2(etCode2.getText().toString());
         partialRequest.setCode3(etCode3.getText().toString());
         partialRequest.setType(etType.getText().toString());

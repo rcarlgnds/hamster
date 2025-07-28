@@ -63,9 +63,9 @@ public class AssetDetailActivity extends AppCompatActivity {
             }
         });
 
-        viewModel.getIsError().observe(this, isError -> {
-            if (isError != null && isError) {
-                Toast.makeText(this, "Gagal menyimpan data. Periksa kembali isian Anda.", Toast.LENGTH_LONG).show();
+        viewModel.getErrorMessage().observe(this, error -> {
+            if (error != null && !error.isEmpty()) {
+                Toast.makeText(this, error, Toast.LENGTH_LONG).show();
             }
         });
     }
@@ -90,8 +90,7 @@ public class AssetDetailActivity extends AppCompatActivity {
         viewModel.saveChanges(assetId);
     }
 
-    // Adapter dibuat sebagai inner class non-statis
-    private class AssetDetailPagerAdapter extends FragmentStateAdapter {
+    private static class AssetDetailPagerAdapter extends FragmentStateAdapter {
         public AssetDetailPagerAdapter(FragmentActivity fa) { super(fa); }
 
         @NonNull
