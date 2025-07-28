@@ -49,7 +49,7 @@ public class AssetDetailActivity extends AppCompatActivity {
                 case 1: tab.setText("Location"); break;
                 case 2: tab.setText("Maintenance"); break;
                 case 3: tab.setText("Documents"); break;
-                case 4: tab.setText("Review"); break;
+//                case 4: tab.setText("Review"); break;
             }
         }).attach();
 
