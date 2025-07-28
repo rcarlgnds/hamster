@@ -1,7 +1,8 @@
 package com.example.hamster.inventory;
 
 import android.os.Bundle;
-import android.text.TextUtils;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,20 +14,20 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import com.example.hamster.R;
 import com.example.hamster.data.model.OptionItem;
-import com.example.hamster.data.model.UpdateAssetRequest;
 import com.google.android.material.textfield.TextInputEditText;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AssetInfoFragment extends Fragment implements FragmentDataCollector {
+public class AssetInfoFragment extends Fragment {
     private AssetDetailViewModel viewModel;
-    private TextInputEditText etCode, etCode2, etCode3, etName, etType, etSerial, etTotal, etDesc;
-    private AutoCompleteTextView acOwnership, acCategory, acSubCategory, acUnit, acBrand, acCondition, acParent;
+    private TextInputEditText etCode, etName, etSerial, etDesc;
+    private AutoCompleteTextView acOwnership, acCategory, acSubCategory, acBrand, acCondition;
 
     private List<OptionItem> categoryList = new ArrayList<>();
     private List<OptionItem> subCategoryList = new ArrayList<>();
     private List<OptionItem> brandList = new ArrayList<>();
-    private List<OptionItem> parentAssetList = new ArrayList<>();
+
+    private boolean isProgrammaticChange = false;
 
     @Nullable
     @Override
@@ -40,94 +41,73 @@ public class AssetInfoFragment extends Fragment implements FragmentDataCollector
         viewModel = new ViewModelProvider(requireActivity()).get(AssetDetailViewModel.class);
         initializeViews(view);
         setupObservers();
-        setupDropdownListeners();
-    }
-
-    @Override
-    public void collectDataForSave() {
-        UpdateAssetRequest partialRequest = new UpdateAssetRequest();
-
-        partialRequest.setName(etName.getText().toString());
-        partialRequest.setCode(etCode.getText().toString());
-        partialRequest.setCode2(etCode2.getText().toString());
-        partialRequest.setCode3(etCode3.getText().toString());
-        partialRequest.setType(etType.getText().toString());
-        partialRequest.setSerialNumber(etSerial.getText().toString());
-        partialRequest.setDescription(etDesc.getText().toString());
-
-        if (!TextUtils.isEmpty(etTotal.getText().toString())) {
-            try {
-                partialRequest.setTotal(Integer.parseInt(etTotal.getText().toString()));
-            } catch (NumberFormatException e) {
-                partialRequest.setTotal(0);
-            }
-        }
-
-        partialRequest.setOwnership(acOwnership.getText().toString());
-        partialRequest.setUnit(acUnit.getText().toString());
-        partialRequest.setCondition(acCondition.getText().toString());
-
-        partialRequest.setCategoryId(getSelectedId(acCategory, categoryList));
-        partialRequest.setSubcategoryId(getSelectedId(acSubCategory, subCategoryList));
-        partialRequest.setBrandId(getSelectedId(acBrand, brandList));
-        partialRequest.setParentId(getSelectedId(acParent, parentAssetList));
-
-        viewModel.updateAssetInfoData(partialRequest);
+        setupInputListeners();
     }
 
     private void initializeViews(View view) {
         etCode = view.findViewById(R.id.editTextCode);
-        etCode2 = view.findViewById(R.id.editTextCode2);
-        etCode3 = view.findViewById(R.id.editTextCode3);
         etName = view.findViewById(R.id.editTextName);
-        etType = view.findViewById(R.id.editTextType);
         etSerial = view.findViewById(R.id.editTextSerial);
-        etTotal = view.findViewById(R.id.editTextTotal);
         etDesc = view.findViewById(R.id.editTextDescription);
         acOwnership = view.findViewById(R.id.autoCompleteOwnership);
-        acUnit = view.findViewById(R.id.autoCompleteUnit);
         acCondition = view.findViewById(R.id.autoCompleteCondition);
         acCategory = view.findViewById(R.id.autoCompleteCategory);
         acSubCategory = view.findViewById(R.id.autoCompleteSubCategory);
         acBrand = view.findViewById(R.id.autoCompleteBrand);
-        acParent = view.findViewById(R.id.autoCompleteParent);
-    }
-
-    private void setupDropdownListeners() {
-        acCategory.setOnItemClickListener((parent, view, position, id) -> {
-            OptionItem selected = (OptionItem) parent.getItemAtPosition(position);
-            viewModel.fetchSubCategoryOptions(selected.getId());
-            acSubCategory.setText("", false);
-        });
     }
 
     private void setupObservers() {
         viewModel.getAssetData().observe(getViewLifecycleOwner(), asset -> {
             if (asset == null) return;
+            isProgrammaticChange = true;
             etCode.setText(asset.getCode());
-            etCode2.setText(asset.getCode2());
-            etCode3.setText(asset.getCode3());
             etName.setText(asset.getName());
-            etType.setText(asset.getType());
             etSerial.setText(asset.getSerialNumber());
-            if(asset.getTotal() != null) etTotal.setText(String.valueOf(asset.getTotal()));
             etDesc.setText(asset.getDescription());
             acOwnership.setText(asset.getOwnership(), false);
-            acUnit.setText(asset.getUnit(), false);
             acCondition.setText(asset.getCondition(), false);
             if (asset.getCategory() != null) acCategory.setText(asset.getCategory().getName(), false);
             if (asset.getSubcategory() != null) acSubCategory.setText(asset.getSubcategory().getName(), false);
             if (asset.getBrand() != null) acBrand.setText(asset.getBrand().getName(), false);
-            if (asset.getParent() != null) acParent.setText(asset.getParent().getName(), false);
+            isProgrammaticChange = false;
         });
 
         viewModel.getCategoryOptions().observe(getViewLifecycleOwner(), options -> populateDropdown(acCategory, options, categoryList));
         viewModel.getSubCategoryOptions().observe(getViewLifecycleOwner(), options -> populateDropdown(acSubCategory, options, subCategoryList));
         viewModel.getBrandOptions().observe(getViewLifecycleOwner(), options -> populateDropdown(acBrand, options, brandList));
-        viewModel.getParentAssetOptions().observe(getViewLifecycleOwner(), options -> populateDropdown(acParent, options, parentAssetList));
+
+        // === INI BAGIAN YANG DIPERBAIKI ===
+        // Menggunakan lambda untuk menyediakan argumen yang dibutuhkan oleh populateStringDropdown
         viewModel.getOwnershipOptions().observe(getViewLifecycleOwner(), options -> populateStringDropdown(acOwnership, options));
         viewModel.getConditionOptions().observe(getViewLifecycleOwner(), options -> populateStringDropdown(acCondition, options));
-        viewModel.getUnitOptions().observe(getViewLifecycleOwner(), options -> populateStringDropdown(acUnit, options));
+    }
+
+    private void setupInputListeners() {
+        etName.addTextChangedListener(new SimpleTextWatcher(text -> viewModel.updateField(req -> req.setName(text))));
+        etCode.addTextChangedListener(new SimpleTextWatcher(text -> viewModel.updateField(req -> req.setCode(text))));
+        etSerial.addTextChangedListener(new SimpleTextWatcher(text -> viewModel.updateField(req -> req.setSerialNumber(text))));
+        etDesc.addTextChangedListener(new SimpleTextWatcher(text -> viewModel.updateField(req -> req.setDescription(text))));
+
+        acOwnership.setOnItemClickListener((p, v, pos, id) -> viewModel.updateField(req -> req.setOwnership(acOwnership.getText().toString())));
+        acCondition.setOnItemClickListener((p, v, pos, id) -> viewModel.updateField(req -> req.setCondition(acCondition.getText().toString())));
+
+        acCategory.setOnItemClickListener((parent, view, position, id) -> {
+            OptionItem selected = categoryList.get(position);
+            viewModel.updateField(req -> req.setCategoryId(selected.getId()));
+            viewModel.fetchSubCategoryOptions(selected.getId());
+            acSubCategory.setText("", false);
+            viewModel.updateField(req -> req.setSubcategoryId(null));
+        });
+
+        acSubCategory.setOnItemClickListener((parent, view, position, id) -> {
+            OptionItem selected = subCategoryList.get(position);
+            viewModel.updateField(req -> req.setSubcategoryId(selected.getId()));
+        });
+
+        acBrand.setOnItemClickListener((parent, view, position, id) -> {
+            OptionItem selected = brandList.get(position);
+            viewModel.updateField(req -> req.setBrandId(selected.getId()));
+        });
     }
 
     private void populateDropdown(AutoCompleteTextView view, List<OptionItem> options, List<OptionItem> localList) {
@@ -144,14 +124,15 @@ public class AssetInfoFragment extends Fragment implements FragmentDataCollector
         view.setAdapter(adapter);
     }
 
-    private String getSelectedId(AutoCompleteTextView view, List<OptionItem> list) {
-        String name = view.getText().toString();
-        if (name.isEmpty() || list.isEmpty()) return null;
-        for (OptionItem item : list) {
-            if (item.getName().equals(name)) {
-                return item.getId();
+    private class SimpleTextWatcher implements TextWatcher {
+        private final java.util.function.Consumer<String> onTextChanged;
+        SimpleTextWatcher(java.util.function.Consumer<String> onTextChanged) { this.onTextChanged = onTextChanged; }
+        @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+        @Override public void onTextChanged(CharSequence s, int start, int before, int count) {
+            if (!isProgrammaticChange) {
+                onTextChanged.accept(s.toString());
             }
         }
-        return null;
+        @Override public void afterTextChanged(Editable s) {}
     }
 }

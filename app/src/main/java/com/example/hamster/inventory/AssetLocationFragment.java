@@ -13,11 +13,11 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProvider;
 import com.example.hamster.R;
 import com.example.hamster.data.model.OptionItem;
-import com.example.hamster.data.model.UpdateAssetRequest;
+
 import java.util.ArrayList;
 import java.util.List;
 
-public class AssetLocationFragment extends Fragment implements FragmentDataCollector {
+public class AssetLocationFragment extends Fragment {
     private AssetDetailViewModel viewModel;
     private AutoCompleteTextView acHospital, acBuilding, acFloor, acRoom, acSubRoom, acDivision, acUnit, acUser;
 
@@ -29,6 +29,7 @@ public class AssetLocationFragment extends Fragment implements FragmentDataColle
     private List<OptionItem> divisionList = new ArrayList<>();
     private List<OptionItem> workingUnitList = new ArrayList<>();
     private List<OptionItem> userList = new ArrayList<>();
+    private boolean isProgrammaticChange = false;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup c, Bundle s) {
@@ -45,19 +46,6 @@ public class AssetLocationFragment extends Fragment implements FragmentDataColle
         setupDropdownListeners();
     }
 
-    @Override
-    public void collectDataForSave() {
-        UpdateAssetRequest partialRequest = new UpdateAssetRequest();
-
-        partialRequest.setRoomId(getSelectedId(acRoom, roomList));
-        partialRequest.setSubRoomId(getSelectedId(acSubRoom, subRoomList));
-        partialRequest.setResponsibleDivisionId(getSelectedId(acDivision, divisionList));
-        partialRequest.setResponsibleWorkingUnitId(getSelectedId(acUnit, workingUnitList));
-        partialRequest.setResponsibleUserId(getSelectedId(acUser, userList));
-
-        viewModel.updateLocationData(partialRequest);
-    }
-
     private void initializeViews(View view) {
         acHospital = view.findViewById(R.id.autoCompleteHospital);
         acBuilding = view.findViewById(R.id.autoCompleteBuilding);
@@ -71,30 +59,49 @@ public class AssetLocationFragment extends Fragment implements FragmentDataColle
 
     private void setupDropdownListeners() {
         acHospital.setOnItemClickListener((p, v, pos, id) -> {
-            OptionItem selected = (OptionItem) p.getItemAtPosition(pos);
+            OptionItem selected = hospitalList.get(pos);
             viewModel.fetchBuildingOptions(selected.getId());
             clearAndDisable(acBuilding, acFloor, acRoom, acSubRoom);
+            viewModel.updateField(req -> req.setRoomId(null)); // Clear room ID
         });
         acBuilding.setOnItemClickListener((p, v, pos, id) -> {
-            OptionItem selected = (OptionItem) p.getItemAtPosition(pos);
+            OptionItem selected = buildingList.get(pos);
             viewModel.fetchFloorOptions(selected.getId());
             clearAndDisable(acFloor, acRoom, acSubRoom);
         });
         acFloor.setOnItemClickListener((p, v, pos, id) -> {
-            OptionItem selected = (OptionItem) p.getItemAtPosition(pos);
+            OptionItem selected = floorList.get(pos);
             viewModel.fetchRoomOptions(selected.getId());
             clearAndDisable(acRoom, acSubRoom);
         });
         acRoom.setOnItemClickListener((p, v, pos, id) -> {
-            OptionItem selected = (OptionItem) p.getItemAtPosition(pos);
+            OptionItem selected = roomList.get(pos);
+            viewModel.updateField(req -> req.setRoomId(selected.getId()));
             viewModel.fetchSubRoomOptions(selected.getId());
             clearAndDisable(acSubRoom);
+        });
+        acSubRoom.setOnItemClickListener((p, v, pos, id) -> {
+            OptionItem selected = subRoomList.get(pos);
+            viewModel.updateField(req -> req.setSubRoomId(selected.getId()));
+        });
+        acDivision.setOnItemClickListener((p, v, pos, id) -> {
+            OptionItem selected = divisionList.get(pos);
+            viewModel.updateField(req -> req.setResponsibleDivisionId(selected.getId()));
+        });
+        acUnit.setOnItemClickListener((p, v, pos, id) -> {
+            OptionItem selected = workingUnitList.get(pos);
+            viewModel.updateField(req -> req.setResponsibleWorkingUnitId(selected.getId()));
+        });
+        acUser.setOnItemClickListener((p, v, pos, id) -> {
+            OptionItem selected = userList.get(pos);
+            viewModel.updateField(req -> req.setResponsibleUserId(selected.getId()));
         });
     }
 
     private void setupObservers() {
         viewModel.getAssetData().observe(getViewLifecycleOwner(), asset -> {
             if (asset == null) return;
+            isProgrammaticChange = true;
             if (asset.getRoom() != null && asset.getRoom().getFloor() != null && asset.getRoom().getFloor().getBuilding() != null && asset.getRoom().getFloor().getBuilding().getHospital() != null) {
                 acHospital.setText(asset.getRoom().getFloor().getBuilding().getHospital().getName(), false);
                 acBuilding.setText(asset.getRoom().getFloor().getBuilding().getName(), false);
@@ -104,12 +111,13 @@ public class AssetLocationFragment extends Fragment implements FragmentDataColle
                 viewModel.fetchBuildingOptions(asset.getRoom().getFloor().getBuilding().getHospital().getId());
                 viewModel.fetchFloorOptions(asset.getRoom().getFloor().getBuilding().getId());
                 viewModel.fetchRoomOptions(asset.getRoom().getFloor().getId());
-                viewModel.fetchSubRoomOptions(asset.getRoom().getId());
+                if (asset.getRoom() != null) viewModel.fetchSubRoomOptions(asset.getRoom().getId());
             }
             if (asset.getSubRoom() != null) acSubRoom.setText(asset.getSubRoom().getName(), false);
             if (asset.getResponsibleDivision() != null) acDivision.setText(asset.getResponsibleDivision().getName(), false);
             if (asset.getResponsibleWorkingUnit() != null) acUnit.setText(asset.getResponsibleWorkingUnit().getName(), false);
             if (asset.getResponsibleUser() != null) acUser.setText(asset.getResponsibleUser().getFirstName(), false);
+            isProgrammaticChange = false;
         });
 
         observeAndPopulate(viewModel.getHospitalOptions(), acHospital, hospitalList);
@@ -120,17 +128,6 @@ public class AssetLocationFragment extends Fragment implements FragmentDataColle
         observeAndPopulate(viewModel.getDivisionOptions(), acDivision, divisionList);
         observeAndPopulate(viewModel.getWorkingUnitOptions(), acUnit, workingUnitList);
         observeAndPopulate(viewModel.getUserOptions(), acUser, userList);
-    }
-
-    private String getSelectedId(AutoCompleteTextView view, List<OptionItem> list) {
-        String name = view.getText().toString();
-        if (name.isEmpty() || list.isEmpty()) return null;
-        for (OptionItem item : list) {
-            if (item.getName().equals(name)) {
-                return item.getId();
-            }
-        }
-        return null;
     }
 
     private void observeAndPopulate(LiveData<List<OptionItem>> liveData, AutoCompleteTextView autoComplete, List<OptionItem> dataList) {

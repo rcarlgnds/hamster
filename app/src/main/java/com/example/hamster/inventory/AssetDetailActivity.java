@@ -1,6 +1,7 @@
 package com.example.hamster.inventory;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.util.SparseArray;
 import android.widget.Button;
 import android.widget.Toast;
@@ -16,6 +17,7 @@ import com.google.android.material.tabs.TabLayoutMediator;
 
 public class AssetDetailActivity extends AppCompatActivity {
 
+    private static final String TAG = "AssetDetailActivity";
     private AssetDetailViewModel viewModel;
     private ActivityAssetDetailBinding binding;
     private String assetId;
@@ -35,7 +37,7 @@ public class AssetDetailActivity extends AppCompatActivity {
         assetId = getIntent().getStringExtra("ASSET_ID");
         viewModel = new ViewModelProvider(this).get(AssetDetailViewModel.class);
 
-        if (assetId != null) {
+        if (assetId != null && savedInstanceState == null) { // Hanya fetch jika pertama kali dibuat
             viewModel.fetchAssetById(assetId);
             viewModel.fetchAllOptions();
         }
@@ -49,13 +51,16 @@ public class AssetDetailActivity extends AppCompatActivity {
                 case 1: tab.setText("Location"); break;
                 case 2: tab.setText("Maintenance"); break;
                 case 3: tab.setText("Documents"); break;
-//                case 4: tab.setText("Review"); break;
             }
         }).attach();
 
         Button buttonSave = findViewById(R.id.buttonEdit);
-        buttonSave.setOnClickListener(v -> saveChanges());
+        buttonSave.setOnClickListener(v -> saveAllChanges());
 
+        setupObservers();
+    }
+
+    private void setupObservers() {
         viewModel.getIsSaveSuccess().observe(this, isSuccess -> {
             if (isSuccess) {
                 Toast.makeText(this, "Data berhasil disimpan!", Toast.LENGTH_SHORT).show();
@@ -66,6 +71,7 @@ public class AssetDetailActivity extends AppCompatActivity {
         viewModel.getErrorMessage().observe(this, error -> {
             if (error != null && !error.isEmpty()) {
                 Toast.makeText(this, error, Toast.LENGTH_LONG).show();
+                viewModel.clearErrorMessage();
             }
         });
     }
@@ -76,24 +82,26 @@ public class AssetDetailActivity extends AppCompatActivity {
         return true;
     }
 
-    private void saveChanges() {
+    private void saveAllChanges() {
         if (assetId == null) return;
 
-        // 1. Panggil metode pengumpulan data di semua fragment yang sudah dibuat.
+        Log.d(TAG, "Tombol simpan ditekan. Memulai proses pengumpulan data.");
+
+        // Panggil collectDataForSave hanya pada fragment yang membutuhkannya (seperti Dokumen)
+        // Fragment lain sudah mengupdate ViewModel secara real-time.
         for (int i = 0; i < pagerAdapter.getItemCount(); i++) {
             Fragment fragment = pagerAdapter.getFragment(i);
             if (fragment instanceof FragmentDataCollector) {
+                Log.d(TAG, "Mengumpulkan data dari fragment: " + fragment.getClass().getSimpleName());
                 ((FragmentDataCollector) fragment).collectDataForSave();
             }
         }
 
-        // 2. Setelah semua data terkumpul di ViewModel, panggil save.
+        Log.d(TAG, "Semua data terkumpul. Memanggil saveChanges di ViewModel.");
         viewModel.saveChanges(assetId);
     }
 
-    // --- [DIUBAH] Adapter sekarang menyimpan referensi ke fragment ---
-    private class AssetDetailPagerAdapter extends FragmentStateAdapter {
-        // Gunakan SparseArray untuk menyimpan referensi fragment yang sudah dibuat
+    private static class AssetDetailPagerAdapter extends FragmentStateAdapter {
         private final SparseArray<Fragment> registeredFragments = new SparseArray<>();
 
         public AssetDetailPagerAdapter(FragmentActivity fa) { super(fa); }
@@ -103,30 +111,19 @@ public class AssetDetailActivity extends AppCompatActivity {
         public Fragment createFragment(int position) {
             final Fragment fragment;
             switch (position) {
-                case 0:
-                    fragment = new AssetInfoFragment();
-                    break;
-                case 1:
-                    fragment = new AssetLocationFragment();
-                    break;
-                case 2:
-                    fragment = new AssetMaintenanceFragment();
-                    break;
-                case 3:
-                    fragment = new AssetDocumentsFragment();
-                    break;
-                default:
-                    fragment = new Fragment();
-                    break;
+                case 0: fragment = new AssetInfoFragment(); break;
+                case 1: fragment = new AssetLocationFragment(); break;
+                case 2: fragment = new AssetMaintenanceFragment(); break;
+                case 3: fragment = new AssetDocumentsFragment(); break;
+                default: fragment = new Fragment();
             }
             registeredFragments.put(position, fragment);
             return fragment;
         }
 
         @Override
-        public int getItemCount() { return 5; }
+        public int getItemCount() { return 4; }
 
-        // Metode untuk mengambil fragment yang sudah disimpan
         public Fragment getFragment(int position) {
             return registeredFragments.get(position);
         }

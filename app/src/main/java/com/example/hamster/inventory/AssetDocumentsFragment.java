@@ -4,7 +4,6 @@ import android.Manifest;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,8 +35,6 @@ import java.util.Locale;
 
 public class AssetDocumentsFragment extends Fragment implements FragmentDataCollector {
 
-    private static final String TAG = "AssetDocumentsFragment";
-
     private AssetDetailViewModel viewModel;
     private ImageView imageViewSerialNumber;
     private LinearLayout assetPhotosContainer;
@@ -45,6 +42,7 @@ public class AssetDocumentsFragment extends Fragment implements FragmentDataColl
     private Uri currentImageUri;
     private boolean isCapturingForSerial;
 
+    // State LOKAL untuk fragment ini
     private final List<Uri> newSerialNumberUri = new ArrayList<>();
     private final List<Uri> newAssetPhotosUris = new ArrayList<>();
     private final List<String> existingSerialPhotoIds = new ArrayList<>();
@@ -61,7 +59,7 @@ public class AssetDocumentsFragment extends Fragment implements FragmentDataColl
                 if (success && currentImageUri != null) {
                     if (isCapturingForSerial) {
                         newSerialNumberUri.clear();
-                        existingSerialPhotoIds.clear();
+                        existingSerialPhotoIds.clear(); // Hapus ID lama jika ada foto baru
                         newSerialNumberUri.add(currentImageUri);
                         Glide.with(this).load(currentImageUri).into(imageViewSerialNumber);
                     } else {
@@ -134,8 +132,8 @@ public class AssetDocumentsFragment extends Fragment implements FragmentDataColl
 
     @Override
     public void collectDataForSave() {
-        // === INI PEMANGGILAN YANG DIPERBAIKI ===
-        viewModel.updateAllDocuments(
+        // Cukup kirim state lokal fragment ini ke ViewModel
+        viewModel.updateDocumentsData(
                 newSerialNumberUri,
                 existingSerialPhotoIds,
                 newAssetPhotosUris,
