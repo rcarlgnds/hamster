@@ -1,3 +1,4 @@
+// File: app/src/main/java/com/example/hamster/inventory/AssetDocumentsFragment.java
 package com.example.hamster.inventory;
 
 import android.Manifest;
@@ -8,10 +9,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
-
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AlertDialog;
@@ -19,22 +20,32 @@ import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
-
+import com.bumptech.glide.Glide;
 import com.example.hamster.R;
-
+import com.example.hamster.data.model.AssetMediaFile;
 import java.io.File;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
-public class AssetDocumentsFragment extends Fragment {
+public class AssetDocumentsFragment extends Fragment implements FragmentDataCollector {
 
     private AssetDetailViewModel viewModel;
     private ImageView imageViewSerialNumber;
     private LinearLayout assetPhotosContainer;
+    private FrameLayout serialNumberFrame;
 
     private Uri currentImageUri;
     private boolean isSerialPhoto;
+
+    private Uri newSerialNumberUri = null;
+    private final List<Uri> newAssetPhotosUris = new ArrayList<>();
+
+    private String existingSerialPhotoId = null;
+    private final List<String> existingAssetPhotoIds = new ArrayList<>();
+
 
     private final ActivityResultLauncher<String> requestPermissionLauncher =
             registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
@@ -49,9 +60,12 @@ public class AssetDocumentsFragment extends Fragment {
             registerForActivityResult(new ActivityResultContracts.TakePicture(), result -> {
                 if (result && currentImageUri != null) {
                     if (isSerialPhoto) {
-                        imageViewSerialNumber.setImageURI(currentImageUri);
+                        newSerialNumberUri = currentImageUri;
+                        existingSerialPhotoId = null;
+                        Glide.with(this).load(newSerialNumberUri).into(imageViewSerialNumber);
                     } else {
-                        addAssetPhotoToContainer(currentImageUri);
+                        newAssetPhotosUris.add(currentImageUri);
+                        addAssetPhotoToContainer(currentImageUri, null, -1);
                     }
                 }
             });
@@ -64,6 +78,7 @@ public class AssetDocumentsFragment extends Fragment {
 
         imageViewSerialNumber = view.findViewById(R.id.imageViewSerialNumber);
         assetPhotosContainer = view.findViewById(R.id.assetPhotosContainer);
+        serialNumberFrame = view.findViewById(R.id.serialNumberFrame);
 
         Button buttonSerialPhoto = view.findViewById(R.id.buttonTakeSerialPhoto);
         Button buttonAssetPhoto = view.findViewById(R.id.buttonTakeAssetPhoto);
@@ -78,7 +93,45 @@ public class AssetDocumentsFragment extends Fragment {
             checkCameraPermissionAndLaunch();
         });
 
+        setupObservers();
         return view;
+    }
+
+    private void setupObservers() {
+        viewModel.getAssetData().observe(getViewLifecycleOwner(), asset -> {
+            if (asset == null || asset.getMediaFiles() == null) return;
+
+            assetPhotosContainer.removeAllViews();
+            existingAssetPhotoIds.clear();
+            existingSerialPhotoId = null;
+
+            imageViewSerialNumber.setImageResource(R.drawable.ic_launcher_background);
+
+
+            for (AssetMediaFile media : asset.getMediaFiles()) {
+                if ("SERIAL_NUMBER_PHOTO".equals(media.getType()) && media.getMediaFile() != null) {
+                    existingSerialPhotoId = media.getMediaFile().getId();
+                    Glide.with(this)
+                            .load(media.getMediaFile().getUrl())
+                            .placeholder(R.drawable.ic_launcher_background)
+                            .into(imageViewSerialNumber);
+                } else if ("ASSET_PHOTO".equals(media.getType()) && media.getMediaFile() != null) {
+                    String mediaId = media.getMediaFile().getId();
+                    existingAssetPhotoIds.add(mediaId);
+                    addAssetPhotoToContainer(null, media.getMediaFile().getUrl(), existingAssetPhotoIds.size() -1);
+                }
+            }
+        });
+    }
+
+    @Override
+    public void collectDataForSave() {
+        List<String> keepSerialIds = new ArrayList<>();
+        if (existingSerialPhotoId != null && newSerialNumberUri == null) {
+            keepSerialIds.add(existingSerialPhotoId);
+        }
+
+        viewModel.updateDocumentUris(newSerialNumberUri, newAssetPhotosUris, keepSerialIds, existingAssetPhotoIds);
     }
 
     private void checkCameraPermissionAndLaunch() {
@@ -122,16 +175,31 @@ public class AssetDocumentsFragment extends Fragment {
         takePictureLauncher.launch(currentImageUri);
     }
 
-    private void addAssetPhotoToContainer(Uri uri) {
+    private void addAssetPhotoToContainer(Uri localUri, String remoteUrl, int index) {
         if (getContext() == null) return;
 
-        ImageView imageView = new ImageView(requireContext());
-        int size = getResources().getDimensionPixelSize(R.dimen.asset_image_size);
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(size, size);
-        params.setMargins(0, 0, 16, 0);
-        imageView.setLayoutParams(params);
-        imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-        imageView.setImageURI(uri);
-        assetPhotosContainer.addView(imageView);
+        LayoutInflater inflater = LayoutInflater.from(getContext());
+        View photoView = inflater.inflate(R.layout.item_asset_photo, assetPhotosContainer, false);
+
+        ImageView imageView = photoView.findViewById(R.id.imageViewAsset);
+        ImageView deleteButton = photoView.findViewById(R.id.buttonDeletePhoto);
+
+        if (localUri != null) {
+            Glide.with(this).load(localUri).into(imageView);
+            deleteButton.setOnClickListener(v -> {
+                assetPhotosContainer.removeView(photoView);
+                newAssetPhotosUris.remove(localUri);
+            });
+        } else if (remoteUrl != null) {
+            Glide.with(this).load(remoteUrl).into(imageView);
+            deleteButton.setOnClickListener(v -> {
+                assetPhotosContainer.removeView(photoView);
+                if (index >= 0 && index < existingAssetPhotoIds.size()) {
+                    existingAssetPhotoIds.remove(index);
+                }
+            });
+        }
+
+        assetPhotosContainer.addView(photoView);
     }
 }

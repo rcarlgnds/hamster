@@ -1,0 +1,23 @@
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginEnd="8dp">
+
+    <ImageView
+        android:id="@+id/imageViewAsset"
+        android:layout_width="@dimen/asset_image_size"
+        android:layout_height="@dimen/asset_image_size"
+        android:scaleType="centerCrop"
+        android:background="@color/primary_95"/>
+
+    <ImageView
+        android:id="@+id/buttonDeletePhoto"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_gravity="top|end"
+        android:src="@android:drawable/ic_menu_close_clear_cancel"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:contentDescription="Hapus Foto"/>
+
+</FrameLayout>

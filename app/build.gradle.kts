@@ -47,8 +47,12 @@ dependencies {
     implementation (libs.lifecycle.viewmodel.ktx)
     implementation (libs.lifecycle.livedata.ktx)
 
-    //   Untuk API dan Debugging
+    //  Untuk API dan Debugging
     implementation(libs.retrofit)
     implementation(libs.converter.gson)
     implementation(libs.logging.interceptor)
+
+    // Untuk Gambar
+    implementation(libs.glide)
+    annotationProcessor(libs.compiler)
 }

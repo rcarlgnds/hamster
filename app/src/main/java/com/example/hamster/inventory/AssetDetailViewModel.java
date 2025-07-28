@@ -1,8 +1,9 @@
+// File: app/src/main/java/com/example/hamster/inventory/AssetDetailViewModel.java
 package com.example.hamster.inventory;
 
 import android.app.Application;
+import android.net.Uri;
 import android.text.TextUtils;
-import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
@@ -14,7 +15,15 @@ import com.example.hamster.data.model.UpdateAssetRequest;
 import com.example.hamster.data.model.response.OptionsResponse;
 import com.example.hamster.data.network.ApiClient;
 import com.example.hamster.data.network.ApiService;
+import com.example.hamster.utils.FileUtils;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -22,16 +31,15 @@ import retrofit2.Response;
 public class AssetDetailViewModel extends AndroidViewModel {
     private final ApiService apiService;
 
-    // Data utama dan status
     private final MutableLiveData<Asset> assetData = new MutableLiveData<>();
     private final MutableLiveData<Boolean> isSaveSuccess = new MutableLiveData<>();
     private final MutableLiveData<Boolean> isLoading = new MutableLiveData<>();
     private final MutableLiveData<String> errorMessage = new MutableLiveData<>();
 
-    // "Wadah" untuk semua perubahan dari semua fragment
     private final UpdateAssetRequest pendingUpdateRequest = new UpdateAssetRequest();
+    private final List<Uri> newAssetPhotoUris = new ArrayList<>();
+    private Uri newSerialNumberPhotoUri = null;
 
-    // Data untuk dropdown
     private final MutableLiveData<List<OptionItem>> categoryOptions = new MutableLiveData<>();
     private final MutableLiveData<List<OptionItem>> subCategoryOptions = new MutableLiveData<>();
     private final MutableLiveData<List<OptionItem>> brandOptions = new MutableLiveData<>();
@@ -117,6 +125,15 @@ public class AssetDetailViewModel extends AndroidViewModel {
         pendingUpdateRequest.setDepreciationDurationMonth(data.getDepreciationDurationMonth());
     }
 
+    public void updateDocumentUris(Uri serialUri, List<Uri> assetUris, List<String> keepSerialIds, List<String> keepAssetPhotoIds) {
+        this.newSerialNumberPhotoUri = serialUri;
+        this.newAssetPhotoUris.clear();
+        if (assetUris != null) {
+            this.newAssetPhotoUris.addAll(assetUris);
+        }
+        pendingUpdateRequest.setKeepSerialNumberPhotos(keepSerialIds);
+        pendingUpdateRequest.setKeepAssetPhotos(keepAssetPhotoIds);
+    }
 
     // --- Metode Fetch ---
     public void fetchAllOptions() {
@@ -170,23 +187,53 @@ public class AssetDetailViewModel extends AndroidViewModel {
     public void fetchConditionOptions() { conditionOptions.setValue(java.util.Arrays.asList("Good", "Slightly Damaged", "Moderately Damaged", "Heavily Damaged")); }
     public void fetchUnitOptions() { unitOptions.setValue(java.util.Arrays.asList("pieces", "unit", "set")); }
 
-    // --- Metode Save ---
+
     public void saveChanges(String assetId) {
-//        if (TextUtils.isEmpty(pendingUpdateRequest.getCode()) || TextUtils.isEmpty(pendingUpdateRequest.getName())) {
-//            errorMessage.setValue("Asset Code dan Asset Name wajib diisi.");
-//            isSaveSuccess.setValue(false);
-//            return;
-//        }
+        if (TextUtils.isEmpty(pendingUpdateRequest.getCode()) || TextUtils.isEmpty(pendingUpdateRequest.getName())) {
+            errorMessage.setValue("Asset Code dan Asset Name wajib diisi.");
+            return;
+        }
 
         isLoading.setValue(true);
 
-        apiService.updateAsset(assetId, pendingUpdateRequest).enqueue(new Callback<Asset>() {
+        Map<String, RequestBody> fields = new HashMap<>();
+        addPart(fields, "code", pendingUpdateRequest.getCode());
+        addPart(fields, "name", pendingUpdateRequest.getName());
+        addPart(fields, "ownership", pendingUpdateRequest.getOwnership());
+        addPart(fields, "categoryId", pendingUpdateRequest.getCategoryId());
+        addPart(fields, "subcategoryId", pendingUpdateRequest.getSubcategoryId());
+        addPart(fields, "brandId", pendingUpdateRequest.getBrandId());
+        addPart(fields, "condition", pendingUpdateRequest.getCondition());
+        addPart(fields, "roomId", pendingUpdateRequest.getRoomId());
+        addPart(fields, "subRoomId", pendingUpdateRequest.getSubRoomId());
+        addPart(fields, "responsibleDivisionId", pendingUpdateRequest.getResponsibleDivisionId());
+        addPart(fields, "responsibleWorkingUnitId", pendingUpdateRequest.getResponsibleWorkingUnitId());
+        addPart(fields, "responsibleUserId", pendingUpdateRequest.getResponsibleUserId());
+        addPart(fields, "vendorId", pendingUpdateRequest.getVendorId());
+        addPart(fields, "type", pendingUpdateRequest.getType());
+        addPart(fields, "serialNumber", pendingUpdateRequest.getSerialNumber());
+        addPart(fields, "code2", pendingUpdateRequest.getCode2());
+        addPart(fields, "code3", pendingUpdateRequest.getCode3());
+        addPart(fields, "parentId", pendingUpdateRequest.getParentId());
+        addPart(fields, "description", pendingUpdateRequest.getDescription());
+
+        List<MultipartBody.Part> fileParts = new ArrayList<>();
+        if (newSerialNumberPhotoUri != null) {
+            MultipartBody.Part part = createFilePart("serialNumberPhoto", newSerialNumberPhotoUri);
+            if (part != null) fileParts.add(part);
+        }
+        for (Uri uri : newAssetPhotoUris) {
+            MultipartBody.Part part = createFilePart("assetPhotos", uri);
+            if (part != null) fileParts.add(part);
+        }
+
+        apiService.updateAsset(assetId, fields, fileParts).enqueue(new Callback<Asset>() {
             @Override
             public void onResponse(@NonNull Call<Asset> call, @NonNull Response<Asset> response) {
                 isLoading.setValue(false);
                 isSaveSuccess.setValue(response.isSuccessful());
                 if (!response.isSuccessful()){
-                    errorMessage.setValue("Gagal menyimpan: " + response.message());
+                    errorMessage.setValue("Gagal menyimpan: " + response.code() + " " + response.message());
                 }
             }
             @Override
@@ -198,19 +245,35 @@ public class AssetDetailViewModel extends AndroidViewModel {
         });
     }
 
+    private void addPart(Map<String, RequestBody> map, String key, String value) {
+        if (value != null && !value.isEmpty()) {
+            map.put(key, RequestBody.create(MediaType.parse("text/plain"), value));
+        }
+    }
+
+    private MultipartBody.Part createFilePart(String partName, Uri fileUri) {
+        try {
+            File file = FileUtils.getFile(getApplication(), fileUri);
+            if (file == null) return null;
+            RequestBody requestFile = RequestBody.create(MediaType.parse(getApplication().getContentResolver().getType(fileUri)), file);
+            return MultipartBody.Part.createFormData(partName, file.getName(), requestFile);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
     private Callback<OptionsResponse> createOptionsCallback(final MutableLiveData<List<OptionItem>> liveData) {
         return new Callback<OptionsResponse>() {
             @Override
             public void onResponse(@NonNull Call<OptionsResponse> call, @NonNull Response<OptionsResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     liveData.setValue(response.body().getData());
-                } else {
-                    errorMessage.setValue("Gagal memuat data dropdown.");
                 }
             }
             @Override
             public void onFailure(@NonNull Call<OptionsResponse> call, @NonNull Throwable t) {
-                errorMessage.setValue("Koneksi error: " + t.getMessage());
+                errorMessage.setValue("Koneksi error dropdown: " + t.getMessage());
             }
         };
     }

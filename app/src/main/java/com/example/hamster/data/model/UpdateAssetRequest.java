@@ -2,6 +2,8 @@ package com.example.hamster.data.model;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.util.List;
+
 public class UpdateAssetRequest {
 
     // --- Dari AssetInfoFragment ---
@@ -49,6 +51,9 @@ public class UpdateAssetRequest {
     private Double depreciationValue;
     private Long depreciationStartDate;
     private Integer depreciationDurationMonth;
+
+    private List<String> keepSerialNumberPhotos;
+    private List<String> keepAssetPhotos;
 
 
     // Getter
@@ -205,4 +210,10 @@ public class UpdateAssetRequest {
     public void setDepreciationValue(Double depreciationValue) { this.depreciationValue = depreciationValue; }
     public void setDepreciationStartDate(Long depreciationStartDate) { this.depreciationStartDate = depreciationStartDate; }
     public void setDepreciationDurationMonth(Integer depreciationDurationMonth) { this.depreciationDurationMonth = depreciationDurationMonth; }
+
+    public List<String> getKeepSerialNumberPhotos() { return keepSerialNumberPhotos; }
+    public void setKeepSerialNumberPhotos(List<String> keepSerialNumberPhotos) { this.keepSerialNumberPhotos = keepSerialNumberPhotos; }
+    public List<String> getKeepAssetPhotos() { return keepAssetPhotos; }
+    public void setKeepAssetPhotos(List<String> keepAssetPhotos) { this.keepAssetPhotos = keepAssetPhotos; }
+
 }

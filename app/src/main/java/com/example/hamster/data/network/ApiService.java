@@ -87,6 +87,7 @@ import com.example.hamster.data.model.response.VendorResponse;
 import com.example.hamster.data.model.response.WorkingUnitResponse;
 
 import java.util.List;
+import java.util.Map;
 
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
@@ -99,6 +100,7 @@ import retrofit2.http.PATCH;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
 import retrofit2.http.Part;
+import retrofit2.http.PartMap;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
 
@@ -458,8 +460,13 @@ public interface ApiService {
     @GET("assets/{id}")
     Call<AssetDetailResponse> getAssetById(@Path("id") String assetId);
 
+    @Multipart
     @PATCH("assets/{id}")
-    Call<Asset> updateAsset(@Path("id") String assetId, @Body UpdateAssetRequest request);
+    Call<Asset> updateAsset(
+            @Path("id") String assetId,
+            @PartMap Map<String, RequestBody> fields,
+            @Part List<MultipartBody.Part> files
+    );
 
     @DELETE("assets/{id}")
     Call<Void> softDeleteAsset(@Path("id") String assetId);
