@@ -1,4 +1,3 @@
-// File: app/src/main/java/com/example/hamster/inventory/AssetInfoFragment.java
 package com.example.hamster.inventory;
 
 import android.os.Bundle;

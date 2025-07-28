@@ -2,6 +2,7 @@ package com.example.hamster.dashboard;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
@@ -12,19 +13,25 @@ import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.example.hamster.R;
+import com.example.hamster.SplashActivity;
 import com.example.hamster.data.model.User;
 import com.example.hamster.inventory.InventoryActivity;
+import com.example.hamster.utils.SessionManager;
 import com.google.android.material.navigation.NavigationView;
 
 public class DashboardActivity extends AppCompatActivity {
 
     private DrawerLayout drawerLayout;
     private ActionBarDrawerToggle toggle;
+    private SessionManager sessionManager;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dashboard);
+
+        sessionManager = new SessionManager(this);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -42,12 +49,14 @@ public class DashboardActivity extends AppCompatActivity {
             if (itemId == R.id.nav_inventory) {
                 Intent intent = new Intent(DashboardActivity.this, InventoryActivity.class);
                 startActivity(intent);
+            }  else if (itemId == R.id.nav_logout) {
+                logoutUser();
             }
-
 
             drawerLayout.closeDrawer(GravityCompat.START);
             return true;
         });
+
 
         displayUserData();
     }
@@ -57,7 +66,7 @@ public class DashboardActivity extends AppCompatActivity {
         TextView textViewUserEmail = findViewById(R.id.textViewUserEmail);
         TextView textViewUserPosition = findViewById(R.id.textViewUserPosition);
 
-        User user = (User) getIntent().getSerializableExtra("USER_DATA");
+        User user = sessionManager.getUser();
 
         if (user != null) {
             String fullName = user.getFirstName() + " " + user.getLastName();
@@ -70,6 +79,14 @@ public class DashboardActivity extends AppCompatActivity {
 
             Toast.makeText(this, "Selamat datang, " + user.getFirstName(), Toast.LENGTH_LONG).show();
         }
+    }
+
+    private void logoutUser() {
+        sessionManager.logout();
+        Intent intent = new Intent(DashboardActivity.this, SplashActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
+        finish();
     }
 
     @Override

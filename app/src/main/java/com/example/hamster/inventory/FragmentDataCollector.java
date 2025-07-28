@@ -1,4 +1,3 @@
-// File: app/src/main/java/com/example/hamster/inventory/FragmentDataCollector.java
 package com.example.hamster.inventory;
 
 public interface FragmentDataCollector {

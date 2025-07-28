@@ -43,7 +43,6 @@ public class InventoryActivity extends AppCompatActivity {
 
         viewModel = new ViewModelProvider(this).get(InventoryViewModel.class);
 
-        // FAB sekarang juga memanggil dialog yang sama
         fabSearch.setOnClickListener(v -> showSearchDialog());
 
         setupObservers();
@@ -67,14 +66,12 @@ public class InventoryActivity extends AppCompatActivity {
         });
     }
 
-    // DITAMBAHKAN: Method untuk menampilkan menu di Toolbar
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.inventory_menu, menu);
         return true;
     }
 
-    // DITAMBAHKAN: Method untuk menangani klik pada item menu
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == R.id.action_search) {
@@ -92,7 +89,6 @@ public class InventoryActivity extends AppCompatActivity {
 
         final AlertDialog dialog = builder.create();
 
-        // Ambil referensi dari layout dialog
         TextInputEditText editTextCode = dialogView.findViewById(R.id.editTextInventoryCode);
         Button buttonCancel = dialogView.findViewById(R.id.buttonCancel);
         Button buttonNext = dialogView.findViewById(R.id.buttonNext);

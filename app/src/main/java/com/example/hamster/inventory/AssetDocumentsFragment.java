@@ -14,6 +14,7 @@ import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.appcompat.app.AlertDialog;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
@@ -40,7 +41,7 @@ public class AssetDocumentsFragment extends Fragment {
                 if (isGranted) {
                     launchCamera();
                 } else {
-                    Toast.makeText(getContext(), "Camera permission denied", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), "Izin kamera ditolak.", Toast.LENGTH_SHORT).show();
                 }
             });
 
@@ -81,16 +82,32 @@ public class AssetDocumentsFragment extends Fragment {
     }
 
     private void checkCameraPermissionAndLaunch() {
+        if (getContext() == null) return;
+
         if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
             launchCamera();
+        } else if (shouldShowRequestPermissionRationale(Manifest.permission.CAMERA)) {
+            new AlertDialog.Builder(requireContext())
+                    .setTitle("Izin Dibutuhkan")
+                    .setMessage("Aplikasi ini memerlukan izin kamera untuk mengambil foto aset dan nomor seri.")
+                    .setPositiveButton("Berikan Izin", (dialog, which) -> {
+                        requestPermissionLauncher.launch(Manifest.permission.CAMERA);
+                    })
+                    .setNegativeButton("Batalkan", (dialog, which) -> dialog.dismiss())
+                    .create()
+                    .show();
         } else {
             requestPermissionLauncher.launch(Manifest.permission.CAMERA);
         }
     }
 
     private void launchCamera() {
+        if (getContext() == null) return;
+
         File imageDir = new File(requireContext().getFilesDir(), "images");
-        if (!imageDir.exists()) imageDir.mkdirs();
+        if (!imageDir.exists()) {
+            imageDir.mkdirs();
+        }
 
         String fileName = (isSerialPhoto ? "serial_" : "asset_") +
                 new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(new Date()) + ".jpg";
@@ -106,6 +123,8 @@ public class AssetDocumentsFragment extends Fragment {
     }
 
     private void addAssetPhotoToContainer(Uri uri) {
+        if (getContext() == null) return;
+
         ImageView imageView = new ImageView(requireContext());
         int size = getResources().getDimensionPixelSize(R.dimen.asset_image_size);
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(size, size);

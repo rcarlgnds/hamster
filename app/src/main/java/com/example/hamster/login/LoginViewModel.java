@@ -1,7 +1,7 @@
 package com.example.hamster.login;
 
 import android.app.Application;
-import android.util.Log; // <-- [TAMBAHKAN] Import Log
+import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
@@ -50,8 +50,13 @@ public class LoginViewModel extends AndroidViewModel {
                     LoginResponse loginResponse = response.body();
                     if (loginResponse.isSuccess()) {
                         String token = loginResponse.getData().getAccessToken();
+                        User user = loginResponse.getData().getUser();
+
+                        // --- [DIUBAH] Simpan token DAN data user ---
                         sessionManager.saveAuthToken(token);
-                        userData.setValue(loginResponse.getData().getUser());
+                        sessionManager.saveUser(user); // <-- Simpan objek User
+
+                        userData.setValue(user);
                         loginResult.setValue(LoginResult.SUCCESS);
                     } else {
                         loginResult.setValue(LoginResult.INVALID_CREDENTIALS);

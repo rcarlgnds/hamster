@@ -458,7 +458,6 @@ public interface ApiService {
     @GET("assets/{id}")
     Call<AssetDetailResponse> getAssetById(@Path("id") String assetId);
 
-    // --- [DIUBAH] Mengirim JSON murni, bukan multipart ---
     @PATCH("assets/{id}")
     Call<Asset> updateAsset(@Path("id") String assetId, @Body UpdateAssetRequest request);
 

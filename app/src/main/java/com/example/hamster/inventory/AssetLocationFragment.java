@@ -1,4 +1,3 @@
-// File: app/src/main/java/com/example/hamster/inventory/AssetLocationFragment.java
 package com.example.hamster.inventory;
 
 import android.os.Bundle;
@@ -96,14 +95,12 @@ public class AssetLocationFragment extends Fragment implements FragmentDataColle
     private void setupObservers() {
         viewModel.getAssetData().observe(getViewLifecycleOwner(), asset -> {
             if (asset == null) return;
-            // Pre-fill data dan fetch data turunan
             if (asset.getRoom() != null && asset.getRoom().getFloor() != null && asset.getRoom().getFloor().getBuilding() != null && asset.getRoom().getFloor().getBuilding().getHospital() != null) {
                 acHospital.setText(asset.getRoom().getFloor().getBuilding().getHospital().getName(), false);
                 acBuilding.setText(asset.getRoom().getFloor().getBuilding().getName(), false);
                 acFloor.setText(asset.getRoom().getFloor().getName(), false);
                 acRoom.setText(asset.getRoom().getName(), false);
 
-                // Fetch data turunan berdasarkan data yang sudah ada
                 viewModel.fetchBuildingOptions(asset.getRoom().getFloor().getBuilding().getHospital().getId());
                 viewModel.fetchFloorOptions(asset.getRoom().getFloor().getBuilding().getId());
                 viewModel.fetchRoomOptions(asset.getRoom().getFloor().getId());

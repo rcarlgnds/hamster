@@ -1,4 +1,3 @@
-// File: app/src/main/java/com/example/hamster/inventory/AssetDetailViewModel.java
 package com.example.hamster.inventory;
 
 import android.app.Application;
@@ -173,12 +172,11 @@ public class AssetDetailViewModel extends AndroidViewModel {
 
     // --- Metode Save ---
     public void saveChanges(String assetId) {
-        // Validasi wajib: code dan name tidak boleh kosong
-        if (TextUtils.isEmpty(pendingUpdateRequest.getCode()) || TextUtils.isEmpty(pendingUpdateRequest.getName())) {
-            errorMessage.setValue("Asset Code dan Asset Name wajib diisi.");
-            isSaveSuccess.setValue(false);
-            return;
-        }
+//        if (TextUtils.isEmpty(pendingUpdateRequest.getCode()) || TextUtils.isEmpty(pendingUpdateRequest.getName())) {
+//            errorMessage.setValue("Asset Code dan Asset Name wajib diisi.");
+//            isSaveSuccess.setValue(false);
+//            return;
+//        }
 
         isLoading.setValue(true);
 
@@ -200,7 +198,6 @@ public class AssetDetailViewModel extends AndroidViewModel {
         });
     }
 
-    // Generic Callback Helper
     private Callback<OptionsResponse> createOptionsCallback(final MutableLiveData<List<OptionItem>> liveData) {
         return new Callback<OptionsResponse>() {
             @Override

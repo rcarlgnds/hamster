@@ -1,4 +1,3 @@
-// File: app/src/main/java/com/example/hamster/inventory/AssetDetailActivity.java
 package com.example.hamster.inventory;
 
 import android.os.Bundle;
@@ -37,7 +36,7 @@ public class AssetDetailActivity extends AppCompatActivity {
 
         if (assetId != null) {
             viewModel.fetchAssetById(assetId);
-            viewModel.fetchAllOptions(); // Muat semua data dropdown sekali saja
+            viewModel.fetchAllOptions();
         }
 
         pagerAdapter = new AssetDetailPagerAdapter(this);
@@ -79,14 +78,12 @@ public class AssetDetailActivity extends AppCompatActivity {
     private void saveChanges() {
         if (assetId == null) return;
 
-        // 1. Panggil metode pengumpulan data di semua fragment yang aktif.
         for (Fragment fragment : getSupportFragmentManager().getFragments()) {
             if (fragment instanceof FragmentDataCollector && fragment.isAdded()) {
                 ((FragmentDataCollector) fragment).collectDataForSave();
             }
         }
 
-        // 2. Setelah semua data dijamin terkumpul di ViewModel, panggil save.
         viewModel.saveChanges(assetId);
     }
 
@@ -101,7 +98,7 @@ public class AssetDetailActivity extends AppCompatActivity {
                 case 1: return new AssetLocationFragment();
                 case 2: return new AssetMaintenanceFragment();
                 case 3: return new AssetDocumentsFragment();
-                default: return new Fragment(); // Untuk tab "Review"
+                default: return new Fragment();
             }
         }
 
