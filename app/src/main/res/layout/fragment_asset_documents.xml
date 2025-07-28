@@ -1,65 +1,68 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="16dp">
+    android:orientation="vertical"
+    android:padding="16dp"
+    tools:context=".inventory.AssetDocumentsFragment">
 
-    <LinearLayout
-        android:layout_width="match_parent"
+    <TextView
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:text="Serial Number Photo"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:layout_marginBottom="8dp"/>
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Serial Number Photo"
-            android:textStyle="bold"/>
+    <FrameLayout
+        android:id="@+id/serialNumberFrame"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:background="#E0E0E0"
+        android:layout_marginBottom="16dp">
 
-        <FrameLayout
-            android:id="@+id/serialNumberFrame"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp">
-
-            <ImageView
-                android:id="@+id/imageViewSerialNumber"
-                android:layout_width="@dimen/asset_image_size"
-                android:layout_height="@dimen/asset_image_size"
-                android:scaleType="centerCrop"
-                android:background="@color/primary_95"
-                android:contentDescription="Serial Number Photo"/>
-        </FrameLayout>
+        <ImageView
+            android:id="@+id/imageViewSerialNumber"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop"
+            android:src="@drawable/ic_launcher_background"
+            android:contentDescription="Serial Number Photo" />
 
         <Button
             android:id="@+id/buttonTakeSerialPhoto"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:text="Take/Change Photo"/>
+            android:layout_gravity="center"
+            android:text="Take Photo" />
+    </FrameLayout>
 
-        <TextView
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Asset Photos"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:layout_marginBottom="8dp"/>
+
+    <Button
+        android:id="@+id/buttonTakeAssetPhoto"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Add Asset Photo"
+        android:layout_marginBottom="8dp"/>
+
+    <HorizontalScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <LinearLayout
+            android:id="@+id/assetPhotosContainer"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Asset Photos"
-            android:layout_marginTop="24dp"
-            android:textStyle="bold"/>
+            android:orientation="horizontal">
+        </LinearLayout>
+    </HorizontalScrollView>
 
-        <HorizontalScrollView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp">
-            <LinearLayout
-                android:id="@+id/assetPhotosContainer"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"/>
-        </HorizontalScrollView>
-
-        <Button
-            android:id="@+id/buttonTakeAssetPhoto"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:text="Add Asset Photo"/>
-    </LinearLayout>
-</ScrollView>
+</LinearLayout>

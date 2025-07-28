@@ -465,9 +465,7 @@ public interface ApiService {
     Call<Asset> updateAsset(
             @Path("id") String assetId,
             @PartMap Map<String, RequestBody> fields,
-            @Part List<MultipartBody.Part> fileParts,
-            @Part List<MultipartBody.Part> keepAssetPhotos,
-            @Part List<MultipartBody.Part> keepSerialNumberPhotos
+            @Part List<MultipartBody.Part> fileParts // Ini akan berisi semua file baru dan juga 'keep' IDs
     );
 
     @DELETE("assets/{id}")

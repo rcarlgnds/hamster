@@ -1,53 +1,39 @@
+// File: app/src/main/java/com/example/hamster/data/model/MediaFile.java
 package com.example.hamster.data.model;
 
-import java.io.Serializable;
-import java.util.Date;
+import com.google.gson.annotations.SerializedName;
 
-public class MediaFile implements Serializable {
-    private String id;
+public class MediaFile {
+    @SerializedName("id")
+    private String id; // Ini ID file fisik (11a63851-...)
+    @SerializedName("filename")
     private String filename;
+    @SerializedName("originalName")
     private String originalName;
+    @SerializedName("mimeType")
     private String mimeType;
-    private int size;
+    @SerializedName("size")
+    private Long size; // Atau Integer
+    @SerializedName("url")
+    private String url; // Path relatif: /uploads/...
+    @SerializedName("path")
     private String path;
-    private String url;
-    private Date createdAt;
-    private Date updatedAt;
 
     // Getters
-    public String getId() {
-        return id;
-    }
+    public String getId() { return id; }
+    public String getFilename() { return filename; }
+    public String getOriginalName() { return originalName; }
+    public String getMimeType() { return mimeType; }
+    public Long getSize() { return size; }
+    public String getUrl() { return url; }
+    public String getPath() { return path; }
 
-    public String getFilename() {
-        return filename;
-    }
-
-    public String getOriginalName() {
-        return originalName;
-    }
-
-    public String getMimeType() {
-        return mimeType;
-    }
-
-    public int getSize() {
-        return size;
-    }
-
-    public String getPath() {
-        return path;
-    }
-
-    public String getUrl() {
-        return url;
-    }
-
-    public Date getCreatedAt() {
-        return createdAt;
-    }
-
-    public Date getUpdatedAt() {
-        return updatedAt;
-    }
+    // Setters (jika dibutuhkan)
+    public void setId(String id) { this.id = id; }
+    public void setFilename(String filename) { this.filename = filename; }
+    public void setOriginalName(String originalName) { this.originalName = originalName; }
+    public void setMimeType(String mimeType) { this.mimeType = mimeType; }
+    public void setSize(Long size) { this.size = size; }
+    public void setUrl(String url) { this.url = url; }
+    public void setPath(String path) { this.path = path; }
 }

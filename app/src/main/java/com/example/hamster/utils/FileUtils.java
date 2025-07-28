@@ -1,69 +1,63 @@
-// File: app/src/main/java/com/example/hamster/utils/FileUtils.java
 package com.example.hamster.utils;
 
 import android.content.Context;
-import android.database.Cursor;
 import android.net.Uri;
 import android.provider.OpenableColumns;
-import android.util.Log;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
+import android.database.Cursor; // Tambahkan import ini
 
 public class FileUtils {
 
-    /**
-     * Mengubah Uri menjadi objek File dengan menyalinnya ke cache directory aplikasi.
-     * @param context Context aplikasi.
-     * @param uri Uri dari file yang akan dikonversi.
-     * @return Objek File, atau null jika terjadi error.
-     */
+    // Metode ini mungkin perlu lebih kompleks tergantung pada Uri
+    // Untuk Uri dari kamera yang disimpan via FileProvider, ini harusnya cukup
+    // Untuk Uri dari Gallery/Downloads, ini mungkin perlu menyalin file ke internal storage
     public static File getFile(Context context, Uri uri) {
         if (uri == null) return null;
 
-        String fileName = getFileName(context, uri);
-        File file = new File(context.getCacheDir(), fileName);
-
-        try (InputStream inputStream = context.getContentResolver().openInputStream(uri);
-             FileOutputStream outputStream = new FileOutputStream(file)) {
-
-            if (inputStream == null) return null;
-
-            byte[] buffer = new byte[4096];
-            int bytesRead;
-            while ((bytesRead = inputStream.read(buffer)) != -1) {
-                outputStream.write(buffer, 0, bytesRead);
-            }
-            return file;
-
-        } catch (Exception e) {
-            Log.e("FileUtils", "Gagal mengubah Uri menjadi File", e);
-            return null;
-        }
-    }
-
-    /**
-     * Helper method untuk mendapatkan nama file asli dari sebuah Uri.
-     */
-    private static String getFileName(Context context, Uri uri) {
-        String result = null;
-        if (uri.getScheme().equals("content")) {
-            try (Cursor cursor = context.getContentResolver().query(uri, null, null, null, null)) {
-                if (cursor != null && cursor.moveToFirst()) {
-                    int nameIndex = cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME);
-                    if (nameIndex != -1) {
-                        result = cursor.getString(nameIndex);
+        String filePath = null;
+        if ("content".equals(uri.getScheme())) {
+            try {
+                // Try to get file from content resolver (e.g., gallery images)
+                String fileName = null;
+                try (Cursor cursor = context.getContentResolver().query(uri, null, null, null, null)) {
+                    if (cursor != null && cursor.moveToFirst()) {
+                        int nameIndex = cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME);
+                        if (nameIndex != -1) {
+                            fileName = cursor.getString(nameIndex);
+                        }
                     }
                 }
+
+                if (fileName == null) {
+                    fileName = "temp_file_" + System.currentTimeMillis();
+                }
+
+                File tempFile = new File(context.getCacheDir(), fileName);
+                try (InputStream inputStream = context.getContentResolver().openInputStream(uri);
+                     FileOutputStream outputStream = new FileOutputStream(tempFile)) {
+                    if (inputStream != null) {
+                        byte[] buffer = new byte[1024];
+                        int read;
+                        while ((read = inputStream.read(buffer)) != -1) {
+                            outputStream.write(buffer, 0, read);
+                        }
+                        filePath = tempFile.getAbsolutePath();
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                // Fallback to simpler path if content resolver fails
+                filePath = uri.getPath();
             }
+        } else if ("file".equals(uri.getScheme())) {
+            filePath = uri.getPath();
         }
-        if (result == null) {
-            result = uri.getPath();
-            int cut = result.lastIndexOf('/');
-            if (cut != -1) {
-                result = result.substring(cut + 1);
-            }
+
+        if (filePath != null) {
+            return new File(filePath);
         }
-        return result;
+        return null;
     }
 }
