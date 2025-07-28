@@ -1,19 +1,17 @@
 package com.example.hamster.login;
 
 import android.app.Application;
-
+import android.util.Log; // <-- [TAMBAHKAN] Import Log
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
-
 import com.example.hamster.data.model.LoginRequest;
 import com.example.hamster.data.model.LoginResponse;
 import com.example.hamster.data.model.User;
 import com.example.hamster.data.network.ApiClient;
 import com.example.hamster.data.network.ApiService;
 import com.example.hamster.utils.SessionManager;
-
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -29,7 +27,7 @@ public class LoginViewModel extends AndroidViewModel {
 
     private final MutableLiveData<LoginResult> loginResult = new MutableLiveData<>();
     private final MutableLiveData<User> userData = new MutableLiveData<>();
-    private final SessionManager sessionManager; //
+    private final SessionManager sessionManager;
 
     public LoginViewModel(@NonNull Application application) {
         super(application);
@@ -53,7 +51,6 @@ public class LoginViewModel extends AndroidViewModel {
                     if (loginResponse.isSuccess()) {
                         String token = loginResponse.getData().getAccessToken();
                         sessionManager.saveAuthToken(token);
-
                         userData.setValue(loginResponse.getData().getUser());
                         loginResult.setValue(LoginResult.SUCCESS);
                     } else {
@@ -66,6 +63,7 @@ public class LoginViewModel extends AndroidViewModel {
 
             @Override
             public void onFailure(@NonNull Call<LoginResponse> call, @NonNull Throwable t) {
+                Log.e("LoginViewModel", "API call failed: ", t);
                 loginResult.setValue(LoginResult.API_ERROR);
             }
         });

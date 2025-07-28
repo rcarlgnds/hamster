@@ -1,11 +1,8 @@
 package com.example.hamster.data.network;
 
 import android.content.Context;
-
 import com.example.hamster.utils.SessionManager;
-
 import java.util.concurrent.TimeUnit;
-
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.logging.HttpLoggingInterceptor;
@@ -41,6 +38,7 @@ public class ApiClient {
         httpClient.connectTimeout(30, TimeUnit.SECONDS)
                 .readTimeout(30, TimeUnit.SECONDS)
                 .writeTimeout(30, TimeUnit.SECONDS);
+
 
         retrofit = new Retrofit.Builder()
                 .baseUrl(BASE_URL)

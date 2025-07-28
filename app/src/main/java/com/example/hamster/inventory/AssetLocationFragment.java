@@ -4,17 +4,30 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProvider;
 import com.example.hamster.R;
-import com.example.hamster.data.model.*;
+import com.example.hamster.data.model.OptionItem;
+import java.util.ArrayList;
+import java.util.List;
 
 public class AssetLocationFragment extends Fragment {
     private AssetDetailViewModel viewModel;
-    private AutoCompleteTextView autoCompleteHospital, autoCompleteBuilding, autoCompleteFloor, autoCompleteRoom, autoCompleteSubRoom, autoCompleteDivision, autoCompleteUnit;
+    private AutoCompleteTextView acHospital, acBuilding, acFloor, acRoom, acSubRoom, acDivision, acUnit, acUser;
+
+    private List<OptionItem> hospitalList = new ArrayList<>();
+    private List<OptionItem> buildingList = new ArrayList<>();
+    private List<OptionItem> floorList = new ArrayList<>();
+    private List<OptionItem> roomList = new ArrayList<>();
+    private List<OptionItem> subRoomList = new ArrayList<>();
+    private List<OptionItem> divisionList = new ArrayList<>();
+    private List<OptionItem> workingUnitList = new ArrayList<>();
+    private List<OptionItem> userList = new ArrayList<>();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup c, Bundle s) {
@@ -25,38 +38,100 @@ public class AssetLocationFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         viewModel = new ViewModelProvider(requireActivity()).get(AssetDetailViewModel.class);
+
         initializeViews(view);
-        setupObserver();
+        setupObservers();
+        setupDropdownListeners();
+
+        // Fetch data awal untuk dropdown teratas
+        viewModel.fetchHospitalOptions();
+        viewModel.fetchDivisionOptions();
+        viewModel.fetchWorkingUnitOptions();
+        viewModel.fetchUserOptions();
     }
 
     private void initializeViews(View view) {
-        autoCompleteHospital = view.findViewById(R.id.autoCompleteHospital);
-        autoCompleteBuilding = view.findViewById(R.id.autoCompleteBuilding);
-        autoCompleteFloor = view.findViewById(R.id.autoCompleteFloor);
-        autoCompleteRoom = view.findViewById(R.id.autoCompleteRoom);
-        autoCompleteSubRoom = view.findViewById(R.id.autoCompleteSubRoom);
-        autoCompleteDivision = view.findViewById(R.id.autoCompleteDivision);
-        autoCompleteUnit = view.findViewById(R.id.autoCompleteUnit);
+        acHospital = view.findViewById(R.id.autoCompleteHospital);
+        acBuilding = view.findViewById(R.id.autoCompleteBuilding);
+        acFloor = view.findViewById(R.id.autoCompleteFloor);
+        acRoom = view.findViewById(R.id.autoCompleteRoom);
+        acSubRoom = view.findViewById(R.id.autoCompleteSubRoom);
+        acDivision = view.findViewById(R.id.autoCompleteDivision);
+        acUnit = view.findViewById(R.id.autoCompleteUnit);
+        acUser = view.findViewById(R.id.autoCompleteUser);
     }
 
-    private void setupObserver() {
+    private void setupDropdownListeners() {
+        acHospital.setOnItemClickListener((p, v, pos, id) -> {
+            OptionItem selected = (OptionItem) p.getItemAtPosition(pos);
+            viewModel.fetchBuildingOptions(selected.getId());
+            clearAndDisable(acBuilding, acFloor, acRoom, acSubRoom);
+        });
+        acBuilding.setOnItemClickListener((p, v, pos, id) -> {
+            OptionItem selected = (OptionItem) p.getItemAtPosition(pos);
+            viewModel.fetchFloorOptions(selected.getId());
+            clearAndDisable(acFloor, acRoom, acSubRoom);
+        });
+        acFloor.setOnItemClickListener((p, v, pos, id) -> {
+            OptionItem selected = (OptionItem) p.getItemAtPosition(pos);
+            viewModel.fetchRoomOptions(selected.getId());
+            clearAndDisable(acRoom, acSubRoom);
+        });
+        acRoom.setOnItemClickListener((p, v, pos, id) -> {
+            OptionItem selected = (OptionItem) p.getItemAtPosition(pos);
+            viewModel.fetchSubRoomOptions(selected.getId());
+            clearAndDisable(acSubRoom);
+        });
+    }
+
+    private void setupObservers() {
         viewModel.getAssetData().observe(getViewLifecycleOwner(), asset -> {
             if (asset == null) return;
-            if (asset.getRoom() != null) {
-                autoCompleteRoom.setText(asset.getRoom().getName(), false);
-                if (asset.getRoom().getFloor() != null) {
-                    autoCompleteFloor.setText(asset.getRoom().getFloor().getName(), false);
-                    if (asset.getRoom().getFloor().getBuilding() != null) {
-                        autoCompleteBuilding.setText(asset.getRoom().getFloor().getBuilding().getName(), false);
-                        if (asset.getRoom().getFloor().getBuilding().getHospital() != null) {
-                            autoCompleteHospital.setText(asset.getRoom().getFloor().getBuilding().getHospital().getName(), false);
-                        }
-                    }
-                }
+            // Pre-fill data dan fetch data turunan
+            if (asset.getRoom() != null && asset.getRoom().getFloor() != null && asset.getRoom().getFloor().getBuilding() != null && asset.getRoom().getFloor().getBuilding().getHospital() != null) {
+                acHospital.setText(asset.getRoom().getFloor().getBuilding().getHospital().getName(), false);
+                viewModel.fetchBuildingOptions(asset.getRoom().getFloor().getBuilding().getHospital().getId());
+
+                acBuilding.setText(asset.getRoom().getFloor().getBuilding().getName(), false);
+                viewModel.fetchFloorOptions(asset.getRoom().getFloor().getBuilding().getId());
+
+                acFloor.setText(asset.getRoom().getFloor().getName(), false);
+                viewModel.fetchRoomOptions(asset.getRoom().getFloor().getId());
+
+                acRoom.setText(asset.getRoom().getName(), false);
+                viewModel.fetchSubRoomOptions(asset.getRoom().getId());
             }
-            if (asset.getSubRoom() != null) autoCompleteSubRoom.setText(asset.getSubRoom().getName(), false);
-            if (asset.getResponsibleDivision() != null) autoCompleteDivision.setText(asset.getResponsibleDivision().getName(), false);
-            if (asset.getResponsibleWorkingUnit() != null) autoCompleteUnit.setText(asset.getResponsibleWorkingUnit().getName(), false);
+            if (asset.getSubRoom() != null) acSubRoom.setText(asset.getSubRoom().getName(), false);
+            if (asset.getResponsibleDivision() != null) acDivision.setText(asset.getResponsibleDivision().getName(), false);
+            if (asset.getResponsibleWorkingUnit() != null) acUnit.setText(asset.getResponsibleWorkingUnit().getName(), false);
         });
+
+        observeAndPopulate(viewModel.getHospitalOptions(), acHospital, hospitalList);
+        observeAndPopulate(viewModel.getBuildingOptions(), acBuilding, buildingList);
+        observeAndPopulate(viewModel.getFloorOptions(), acFloor, floorList);
+        observeAndPopulate(viewModel.getRoomOptions(), acRoom, roomList);
+        observeAndPopulate(viewModel.getSubRoomOptions(), acSubRoom, subRoomList);
+        observeAndPopulate(viewModel.getDivisionOptions(), acDivision, divisionList);
+        observeAndPopulate(viewModel.getWorkingUnitOptions(), acUnit, workingUnitList);
+        observeAndPopulate(viewModel.getUserOptions(), acUser, userList);
+    }
+
+    private void observeAndPopulate(LiveData<List<OptionItem>> liveData, AutoCompleteTextView autoComplete, List<OptionItem> dataList) {
+        liveData.observe(getViewLifecycleOwner(), options -> {
+            if (options == null) return;
+            dataList.clear();
+            dataList.addAll(options);
+            ArrayAdapter<OptionItem> adapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_dropdown_item_1line, dataList);
+            autoComplete.setAdapter(adapter);
+            autoComplete.setEnabled(true);
+        });
+    }
+
+    private void clearAndDisable(AutoCompleteTextView... views) {
+        for (AutoCompleteTextView view : views) {
+            view.setText("", false);
+            view.setAdapter(null);
+            view.setEnabled(false);
+        }
     }
 }

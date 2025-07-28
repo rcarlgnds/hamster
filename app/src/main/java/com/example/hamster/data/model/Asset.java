@@ -26,22 +26,22 @@ public class Asset implements Serializable {
     private String responsibleDivisionId;
     private String responsibleWorkingUnitId;
     private String responsibleUserId;
-    private Date procurementDate;
+    private Long procurementDate;
     private Float purchasePrice;
     private String vendorId;
     private String poNumber;
     private String invoiceNumber;
-    private Date warrantyExpirationDate;
+    private Long warrantyExpirationDate;
     private Float depreciation;
     private Float depreciationValue;
-    private Date depreciationStartDate;
+    private Long depreciationStartDate;
     private Integer depreciationDurationMonth;
     private String parentId;
-    private Date deletedAt;
+    private Long deletedAt;
     private String deletedBy;
     private String createdVia;
-    private Date createdAt;
-    private Date updatedAt;
+    private Long createdAt;
+    private Long updatedAt;
 
     // Relasi
     private AssetCategory category;
@@ -143,7 +143,7 @@ public class Asset implements Serializable {
         return responsibleUserId;
     }
 
-    public Date getProcurementDate() {
+    public Long getProcurementDate() {
         return procurementDate;
     }
 
@@ -163,7 +163,7 @@ public class Asset implements Serializable {
         return invoiceNumber;
     }
 
-    public Date getWarrantyExpirationDate() {
+    public Long getWarrantyExpirationDate() {
         return warrantyExpirationDate;
     }
 
@@ -175,7 +175,7 @@ public class Asset implements Serializable {
         return depreciationValue;
     }
 
-    public Date getDepreciationStartDate() {
+    public Long getDepreciationStartDate() {
         return depreciationStartDate;
     }
 
@@ -187,7 +187,7 @@ public class Asset implements Serializable {
         return parentId;
     }
 
-    public Date getDeletedAt() {
+    public Long getDeletedAt() {
         return deletedAt;
     }
 
@@ -199,11 +199,11 @@ public class Asset implements Serializable {
         return createdVia;
     }
 
-    public Date getCreatedAt() {
+    public Long getCreatedAt() {
         return createdAt;
     }
 
-    public Date getUpdatedAt() {
+    public Long getUpdatedAt() {
         return updatedAt;
     }
 

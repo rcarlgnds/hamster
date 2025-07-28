@@ -20,10 +20,10 @@ public class User implements Serializable {
     private String hospitalId;
     private String workingUnitId;
     private String roomId;
-    private Date deletedAt;
+    private Long deletedAt;
     private String deletedBy;
-    private Date createdAt;
-    private Date updatedAt;
+    private Long createdAt;
+    private Long updatedAt;
 
     // Relasi
     private Division division;
@@ -34,6 +34,8 @@ public class User implements Serializable {
     private List<Asset> responsibleAssets;
     private List<AssetApprovalTransaction> approvalTransactions;
     private List<Notification> notifications;
+    private List<Permission> permissions;
+
 
     // Getters
     public String getId() {
@@ -96,7 +98,7 @@ public class User implements Serializable {
         return roomId;
     }
 
-    public Date getDeletedAt() {
+    public Long getDeletedAt() {
         return deletedAt;
     }
 
@@ -104,11 +106,11 @@ public class User implements Serializable {
         return deletedBy;
     }
 
-    public Date getCreatedAt() {
+    public Long getCreatedAt() {
         return createdAt;
     }
 
-    public Date getUpdatedAt() {
+    public Long getUpdatedAt() {
         return updatedAt;
     }
 
@@ -142,5 +144,9 @@ public class User implements Serializable {
 
     public List<Notification> getNotifications() {
         return notifications;
+    }
+
+    public List<Permission> getPermissions() {
+        return permissions;
     }
 }
