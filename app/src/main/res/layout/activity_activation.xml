@@ -1,21 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    tools:context=".activation.ActivationActivity">
+    android:fillViewport="true">
 
-    <com.google.android.material.appbar.MaterialToolbar
-        android:id="@+id/toolbar"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        app:title="Start Asset Activation" />
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        tools:context=".activation.ActivationActivity">
 
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            app:title="Mulai Aktivasi Aset" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -23,65 +25,123 @@
             android:orientation="vertical"
             android:padding="16dp">
 
-            <Button
-                android:id="@+id/btnScanQr"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Scan Asset QR Code"
-                app:icon="@drawable/baseline_search_24" />
-
             <TextView
-                android:id="@+id/tvQrResult"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:background="@drawable/badge_inactivate_background"
-                android:padding="12dp"
-                android:text="Asset Code will appear here"
-                android:textAlignment="center"
-                android:textAppearance="?attr/textAppearanceBody1" />
+                android:text="1. Pindai Aset"
+                android:textAppearance="?attr/textAppearanceTitleMedium"
+                android:layout_marginBottom="8dp"/>
+
+            <com.google.android.material.card.MaterialCardView
+                style="@style/Widget.Material3.CardView.Outlined"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnScanQr"
+                        style="@style/Widget.Material3.Button.TonalButton"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Pindai QR Code Aset"
+                        app:icon="@android:drawable/ic_menu_camera" />
+
+                    <TextView
+                        android:id="@+id/tvQrResult"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+                        android:padding="12dp"
+                        android:text="Kode aset akan muncul di sini"
+                        android:textAlignment="center"
+                        android:textAppearance="?attr/textAppearanceBodyLarge" />
+
+                    <TextView
+                        android:id="@+id/tvStatusBadge"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_marginTop="8dp"
+                        android:background="@drawable/badge_pending_background"
+                        android:paddingLeft="16dp"
+                        android:paddingTop="6dp"
+                        android:paddingRight="16dp"
+                        android:paddingBottom="6dp"
+                        android:textColor="@android:color/white"
+                        android:textStyle="bold"
+                        android:visibility="gone"
+                        tools:text="Pending Approval"
+                        tools:visibility="visible" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:text="2. Ambil Foto Bukti"
+                android:textAppearance="?attr/textAppearanceTitleMedium"
                 android:layout_marginTop="24dp"
-                android:text="Labelled Asset Photo"
-                android:textAppearance="?attr/textAppearanceTitleMedium" />
+                android:layout_marginBottom="8dp"/>
 
-            <ImageView
-                android:id="@+id/ivAssetPhoto"
+            <com.google.android.material.card.MaterialCardView
+                style="@style/Widget.Material3.CardView.Outlined"
                 android:layout_width="match_parent"
-                android:layout_height="250dp"
-                android:layout_marginTop="8dp"
-                android:background="#E0E0E0"
-                android:contentDescription="Asset Photo Preview"
-                android:scaleType="centerCrop"
-                android:src="@drawable/ic_broken_image" />
+                android:layout_height="wrap_content">
 
-            <Button
-                android:id="@+id/btnTakePhoto"
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <ImageView
+                        android:id="@+id/ivAssetPhoto"
+                        android:layout_width="match_parent"
+                        android:layout_height="250dp"
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/ic_broken_image"
+                        android:background="?attr/colorSurfaceContainerLowest"
+                        android:contentDescription="Pratinjau Foto Aset" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnTakePhoto"
+                        style="@style/Widget.Material3.Button.OutlinedButton"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+                        android:text="Ambil Foto" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:text="Take Photo" />
+                android:layout_marginTop="24dp"
+                android:hint="Catatan (Opsional)">
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etNotes"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="top"
+                    android:minLines="3"
+                    android:inputType="textMultiLine" />
+            </com.google.android.material.textfield.TextInputLayout>
 
-            <EditText
-                android:id="@+id/etNotes"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:hint="Notes (Optional)"
-                android:minLines="3"
-                android:gravity="top"
-                android:inputType="textMultiLine"/>
-
-            <Button
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnStartActivation"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
+                android:layout_marginTop="16dp"
                 android:enabled="false"
-                android:text="Start Activation" />
+                android:text="Mulai Aktivasi" />
 
             <ProgressBar
                 android:id="@+id/progressBar"
@@ -90,7 +150,6 @@
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="16dp"
                 android:visibility="gone" />
-
         </LinearLayout>
-    </ScrollView>
-</LinearLayout>
+    </LinearLayout>
+</androidx.core.widget.NestedScrollView>

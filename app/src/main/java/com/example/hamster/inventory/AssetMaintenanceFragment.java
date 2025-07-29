@@ -36,11 +36,10 @@ public class AssetMaintenanceFragment extends Fragment {
     private TextInputEditText etPurchasePrice, etPoNumber, etInvoiceNumber, etDepreciationPercent, etDepreciationValue, etDepreciationDuration;
     private AutoCompleteTextView acVendor;
 
-    // EditText untuk tanggal
     private TextInputEditText etProcurementDate, etWarrantyDate, etDepreciationStart;
 
     private List<OptionItem> vendorList = new ArrayList<>();
-    private boolean isUserAction = true; // Flag untuk mencegah pembaruan loop tak terbatas
+    private boolean isUserAction = true;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -53,7 +52,7 @@ public class AssetMaintenanceFragment extends Fragment {
         viewModel = new ViewModelProvider(requireActivity()).get(AssetDetailViewModel.class);
 
         initializeViews(view);
-        setupListeners(); // Menggantikan collectDataForSave
+        setupListeners();
         setupObservers();
     }
 
@@ -69,7 +68,6 @@ public class AssetMaintenanceFragment extends Fragment {
         etDepreciationStart = view.findViewById(R.id.editTextDepreciationStart);
         etDepreciationDuration = view.findViewById(R.id.editTextDepreciationDuration);
 
-        // Membuat EditText tanggal tidak bisa diketik, hanya bisa diklik
         etProcurementDate.setFocusable(false);
         etProcurementDate.setClickable(true);
         etWarrantyDate.setFocusable(false);
@@ -104,9 +102,9 @@ public class AssetMaintenanceFragment extends Fragment {
     private void setupObservers() {
         viewModel.getAssetData().observe(getViewLifecycleOwner(), asset -> {
             if (asset == null) return;
-            isUserAction = false; // Nonaktifkan listener sementara untuk mengisi data
+            isUserAction = false;
             updateUI(asset);
-            isUserAction = true; // Aktifkan kembali
+            isUserAction = true;
         });
 
         viewModel.getVendorOptions().observe(getViewLifecycleOwner(), options -> {
@@ -116,7 +114,6 @@ public class AssetMaintenanceFragment extends Fragment {
             ArrayAdapter<OptionItem> adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_dropdown_item_1line, vendorList);
             acVendor.setAdapter(adapter);
 
-            // Set nilai awal jika data aset sudah ada
             if (viewModel.getAssetData().getValue() != null && viewModel.getAssetData().getValue().getVendor() != null) {
                 acVendor.setText(viewModel.getAssetData().getValue().getVendor().getName(), false);
             }
@@ -181,7 +178,7 @@ public class AssetMaintenanceFragment extends Fragment {
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (isUserAction) { // Hanya proses jika perubahan dari pengguna
+                if (isUserAction) {
                     onTextChanged.accept(s.toString());
                 }
             }
@@ -192,7 +189,6 @@ public class AssetMaintenanceFragment extends Fragment {
 
     private String formatDate(Long timestamp) {
         if (timestamp == null || timestamp == 0) return "";
-        // Timestamp dari server mungkin dalam detik, sesuaikan jika perlu (jika ms, hapus *1000)
         Date date = new Date(timestamp);
         return new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(date);
     }

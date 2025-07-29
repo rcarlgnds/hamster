@@ -62,7 +62,7 @@ public class AssetLocationFragment extends Fragment {
             OptionItem selected = hospitalList.get(pos);
             viewModel.fetchBuildingOptions(selected.getId());
             clearAndDisable(acBuilding, acFloor, acRoom, acSubRoom);
-            viewModel.updateField(req -> req.setRoomId(null)); // Clear room ID
+            viewModel.updateField(req -> req.setRoomId(null));
         });
         acBuilding.setOnItemClickListener((p, v, pos, id) -> {
             OptionItem selected = buildingList.get(pos);

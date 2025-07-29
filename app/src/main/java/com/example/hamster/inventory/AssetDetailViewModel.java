@@ -166,13 +166,11 @@ public class AssetDetailViewModel extends AndroidViewModel {
         pendingUpdateRequest.setTotal(asset.getTotal());
         pendingUpdateRequest.setUnit(asset.getUnit());
 
-        // Relasi dengan null check
         if (asset.getCategory() != null) pendingUpdateRequest.setCategoryId(asset.getCategory().getId());
         if (asset.getSubcategory() != null) pendingUpdateRequest.setSubcategoryId(asset.getSubcategory().getId());
         if (asset.getBrand() != null) pendingUpdateRequest.setBrandId(asset.getBrand().getId());
 
         // 2. Lokasi Aset
-        // Relasi dengan null check
         if (asset.getRoom() != null) pendingUpdateRequest.setRoomId(asset.getRoom().getId());
         if (asset.getSubRoom() != null) pendingUpdateRequest.setSubRoomId(asset.getSubRoom().getId());
         if (asset.getResponsibleDivision() != null) pendingUpdateRequest.setResponsibleDivisionId(asset.getResponsibleDivision().getId());
@@ -190,11 +188,8 @@ public class AssetDetailViewModel extends AndroidViewModel {
         pendingUpdateRequest.setDepreciationStartDate(asset.getDepreciationStartDate());
         pendingUpdateRequest.setDepreciationDurationMonth(asset.getDepreciationDurationMonth());
 
-        // Relasi dengan null check
         if (asset.getVendor() != null) pendingUpdateRequest.setVendorId(asset.getVendor().getId());
 
-        // 4. Dokumen & Foto (Menyimpan ID file yang sudah ada)
-        // Inisialisasi list untuk menyimpan ID file yang akan dipertahankan
         if (asset.getMediaFiles() != null && !asset.getMediaFiles().isEmpty()) {
             List<String> serialNumberPhotoIds = new ArrayList<>();
             List<String> assetPhotoIds = new ArrayList<>();
@@ -202,11 +197,9 @@ public class AssetDetailViewModel extends AndroidViewModel {
             List<String> invoiceDocumentIds = new ArrayList<>();
             List<String> otherDocumentIds = new ArrayList<>();
 
-            // Loop melalui semua file media yang ada
             for (AssetMediaFile media : asset.getMediaFiles()) {
-                if (media == null || media.getId() == null) continue; // Lewati jika media atau ID-nya null
+                if (media == null || media.getId() == null) continue;
 
-                // Pisahkan ID berdasarkan tipe file
                 switch (media.getType()) {
                     case "SERIAL_NUMBER_PHOTO":
                         serialNumberPhotoIds.add(media.getId());

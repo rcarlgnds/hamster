@@ -25,7 +25,6 @@ import java.util.List;
 
 public class AssetPhotosAdapter extends RecyclerView.Adapter<AssetPhotosAdapter.PhotoViewHolder> {
 
-    // Menggunakan kelas 'wrapper' untuk membedakan foto lama (URL) dan baru (URI)
     public static class PhotoItem {
         public final Uri localUri;
         public final String remoteUrl;
@@ -89,7 +88,6 @@ public class AssetPhotosAdapter extends RecyclerView.Adapter<AssetPhotosAdapter.
                     .centerCrop()
                     .into(imageViewAsset);
 
-            // --- Logika untuk membuat ikon delete berwarna merah ---
             Drawable deleteIcon = ContextCompat.getDrawable(context, android.R.drawable.ic_menu_delete);
             if (deleteIcon != null) {
                 Drawable wrappedIcon = DrawableCompat.wrap(deleteIcon.mutate());
@@ -105,7 +103,6 @@ public class AssetPhotosAdapter extends RecyclerView.Adapter<AssetPhotosAdapter.
 
             buttonView.setOnClickListener(v -> {
                 Intent intent = new Intent(context, ImagePreviewActivity.class);
-                // Kirim URL sebagai String, baik dari remote maupun lokal
                 intent.putExtra("IMAGE_URL", item.getModel().toString());
                 context.startActivity(intent);
             });

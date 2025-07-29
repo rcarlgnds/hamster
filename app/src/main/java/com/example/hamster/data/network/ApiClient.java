@@ -13,10 +13,10 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class ApiClient {
-    // Alamat dasar untuk panggilan API
+    // Untuk panggilan API
     public static final String BASE_URL = "http://195.35.20.102:9180/api/";
 
-    // Alamat dasar untuk mengakses file media
+    // Untuk mengakses file media
     public static final String BASE_MEDIA_URL = "http://195.35.20.102:9180";
 
     /**
@@ -31,20 +31,15 @@ public class ApiClient {
      * @return Instance Retrofit yang sudah dikonfigurasi.
      */
     public static Retrofit getClient(Context context) {
-        // Gunakan ApplicationContext untuk mencegah memory leak
         Context applicationContext = context.getApplicationContext();
         SessionManager sessionManager = new SessionManager(applicationContext);
 
-        // Setup logging untuk melihat detail request dan response di Logcat
         HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
         logging.setLevel(HttpLoggingInterceptor.Level.BODY);
 
         OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
 
-        // 1. Menambahkan Interceptor untuk menyisipkan token ke setiap request
         httpClient.addInterceptor(chain -> {
-            // Ambil token terbaru dari SharedPreferences SETIAP KALI ada request baru.
-            // Ini penting agar token yang sudah di-refresh bisa langsung digunakan.
             String token = sessionManager.getAuthToken();
             Request original = chain.request();
             Request.Builder requestBuilder = original.newBuilder();
@@ -57,16 +52,13 @@ public class ApiClient {
             return chain.proceed(request);
         });
 
-        // 2. Menambahkan Authenticator untuk menangani error 401 (token expired)
         httpClient.authenticator(new TokenAuthenticator(applicationContext));
 
-        // 3. Menambahkan logging dan mengatur timeout
         httpClient.addInterceptor(logging)
                 .connectTimeout(30, TimeUnit.SECONDS)
                 .readTimeout(30, TimeUnit.SECONDS)
                 .writeTimeout(30, TimeUnit.SECONDS);
 
-        // 4. Membangun instance Retrofit dengan client yang sudah dikonfigurasi
         return new Retrofit.Builder()
                 .baseUrl(BASE_URL)
                 .client(httpClient.build())
@@ -74,14 +66,6 @@ public class ApiClient {
                 .build();
     }
 
-    /**
-     * Membuat instance Retrofit "bersih" (tanpa interceptor atau authenticator).
-     * Method ini KHUSUS digunakan oleh TokenAuthenticator untuk memanggil API refresh token.
-     * Tujuannya untuk menghindari infinite loop jika request refresh token itu sendiri gagal.
-     *
-     * @param serviceClass Kelas interface dari service Retrofit (misal: ApiService.class).
-     * @return Instance dari service yang diminta.
-     */
     public static <S> S createService(Class<S> serviceClass) {
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(BASE_URL)

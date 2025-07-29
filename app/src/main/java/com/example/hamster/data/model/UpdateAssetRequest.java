@@ -35,7 +35,7 @@ public class UpdateAssetRequest {
     private Long depreciationStartDate;
     private Integer depreciationDurationMonth;
 
-    // --- BARU: Fields untuk menyimpan ID foto/dokumen yang akan dipertahankan ---
+    // --- Fields untuk menyimpan ID foto/dokumen yang akan dipertahankan ---
     private List<String> keepPoDocuments;
     private List<String> keepInvoiceDocuments;
     private List<String> keepWarrantyDocuments;

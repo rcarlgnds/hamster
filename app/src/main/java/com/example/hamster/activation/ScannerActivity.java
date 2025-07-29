@@ -1,4 +1,3 @@
-// File: app/src/main/java/com/example/hamster/activation/ScannerActivity.java
 package com.example.hamster.activation;
 
 import android.Manifest;
@@ -96,7 +95,7 @@ public class ScannerActivity extends AppCompatActivity {
                             barcodeScanner.process(image)
                                     .addOnSuccessListener(barcodes -> {
                                         if (!barcodes.isEmpty()) {
-                                            isScanning = false; // Stop scanning after finding a QR code
+                                            isScanning = false;
                                             Barcode barcode = barcodes.get(0);
                                             String qrCodeValue = barcode.getRawValue();
                                             returnResult(qrCodeValue);

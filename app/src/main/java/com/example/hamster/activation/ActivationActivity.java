@@ -2,6 +2,7 @@ package com.example.hamster.activation;
 
 import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
@@ -10,18 +11,20 @@ import android.widget.Toast;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.bumptech.glide.Glide;
 import com.example.hamster.R;
+import com.example.hamster.data.model.AssetActivationStatus;
 import com.example.hamster.databinding.ActivityActivationBinding;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 
-/**
- * Activity untuk menangani proses memulai aktivasi aset.
- * Memungkinkan pengguna untuk memindai QR code aset dan mengambil foto sebagai bukti.
- */
 public class ActivationActivity extends AppCompatActivity {
 
     private ActivityActivationBinding binding;
@@ -29,13 +32,9 @@ public class ActivationActivity extends AppCompatActivity {
 
     private String scannedAssetCode = null;
     private Uri photoUri = null;
+    private boolean isAssetReadyForActivation = false;
 
     // --- ActivityResultLaunchers ---
-
-    /**
-     * Launcher untuk meminta izin kamera.
-     * Jika izin diberikan, maka akan langsung membuka kamera.
-     */
     private final ActivityResultLauncher<String> requestPermissionLauncher =
             registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
                 if (isGranted) {
@@ -45,25 +44,16 @@ public class ActivationActivity extends AppCompatActivity {
                 }
             });
 
-    /**
-     * Launcher untuk aplikasi kamera.
-     * Ketika foto berhasil diambil, akan memperbarui ImageView dan memvalidasi input.
-     */
     private final ActivityResultLauncher<Uri> takePictureLauncher =
             registerForActivityResult(new ActivityResultContracts.TakePicture(), success -> {
-                if (success) {
-                    binding.ivAssetPhoto.setImageURI(photoUri);
+                if (success && photoUri != null) {
+                    Glide.with(this).load(photoUri).into(binding.ivAssetPhoto);
                     validateInputs();
                 } else {
                     Toast.makeText(this, "Gagal mengambil foto.", Toast.LENGTH_SHORT).show();
                 }
             });
 
-    /**
-     * Launcher untuk ScannerActivity kustom kita.
-     * Ketika QR code berhasil dipindai, launcher akan menerima hasilnya,
-     * memperbarui UI, dan memvalidasi input.
-     */
     private final ActivityResultLauncher<Intent> qrCodeScannerLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
             result -> {
@@ -71,8 +61,8 @@ public class ActivationActivity extends AppCompatActivity {
                     String qrCode = result.getData().getStringExtra(ScannerActivity.EXTRA_QR_CODE_RESULT);
                     if (qrCode != null && !qrCode.isEmpty()) {
                         scannedAssetCode = qrCode;
-                        binding.tvQrResult.setText(scannedAssetCode);
-                        validateInputs();
+                        binding.tvQrResult.setText("Kode Aset: " + scannedAssetCode);
+                        viewModel.checkAssetStatus(scannedAssetCode);
                     }
                 } else {
                     Toast.makeText(this, "Scan QR dibatalkan atau gagal.", Toast.LENGTH_SHORT).show();
@@ -80,66 +70,79 @@ public class ActivationActivity extends AppCompatActivity {
             });
 
 
-    // --- Metode Lifecycle ---
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = ActivityActivationBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        // Pengaturan Toolbar
         setSupportActionBar(binding.toolbar);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
 
-        // Inisialisasi ViewModel
         viewModel = new ViewModelProvider(this).get(ActivationViewModel.class);
-
         setupListeners();
         setupObservers();
     }
 
-    /**
-     * Menangani navigasi kembali saat tombol panah di toolbar ditekan.
-     */
     @Override
     public boolean onSupportNavigateUp() {
         finish();
         return true;
     }
 
-    /**
-     * Mengatur click listener untuk semua elemen UI yang interaktif.
-     */
     private void setupListeners() {
-        // 1. Tombol Scan QR
         binding.btnScanQr.setOnClickListener(v -> {
-            Intent intent = new Intent(ActivationActivity.this, ScannerActivity.class);
+            Intent intent = new Intent(this, ScannerActivity.class);
             qrCodeScannerLauncher.launch(intent);
         });
 
-        // 2. Tombol Ambil Foto
-        binding.btnTakePhoto.setOnClickListener(v -> {
-            // Meminta izin kamera sebelum membuka kamera
-            requestPermissionLauncher.launch(Manifest.permission.CAMERA);
-        });
+        binding.btnTakePhoto.setOnClickListener(v -> checkCameraPermissionAndLaunch());
 
-        // 3. Tombol Mulai Aktivasi
         binding.btnStartActivation.setOnClickListener(v -> {
-            if (scannedAssetCode != null) {
-                // API hanya membutuhkan kode aset untuk memulai proses.
-                // Foto dan catatan biasanya akan diunggah secara terpisah atau sebagai bagian dari request multi-part.
+            if (scannedAssetCode != null && photoUri != null && isAssetReadyForActivation) {
                 viewModel.startActivationProcess(scannedAssetCode);
+            } else {
+                Toast.makeText(this, "Pindai aset, ambil foto, dan pastikan aset siap diaktivasi.", Toast.LENGTH_LONG).show();
             }
         });
     }
 
-    /**
-     * Mengamati LiveData dari ViewModel untuk bereaksi terhadap perubahan state (misalnya, loading, success, error).
-     */
     private void setupObservers() {
+        // Observer untuk hasil pengecekan status
+        viewModel.getStatusCheckState().observe(this, state -> {
+            binding.progressBar.setVisibility(View.GONE);
+
+            switch (state) {
+                case LOADING:
+                    binding.progressBar.setVisibility(View.VISIBLE);
+                    binding.tvStatusBadge.setVisibility(View.GONE);
+                    isAssetReadyForActivation = false;
+                    break;
+                case FOUND:
+                    isAssetReadyForActivation = false;
+                    AssetActivationStatus statusData = viewModel.getAssetStatusData().getValue();
+                    if (statusData != null && statusData.getStatus() != null) {
+                        binding.tvStatusBadge.setText(statusData.getStatus());
+                        binding.tvStatusBadge.setVisibility(View.VISIBLE);
+                    }
+                    Toast.makeText(this, "Aset ini sudah memiliki proses aktivasi.", Toast.LENGTH_LONG).show();
+                    break;
+                case NOT_FOUND:
+                    isAssetReadyForActivation = true;
+                    binding.tvStatusBadge.setVisibility(View.GONE);
+                    Toast.makeText(this, "Aset siap untuk diaktivasi.", Toast.LENGTH_SHORT).show();
+                    break;
+                case ERROR:
+                    isAssetReadyForActivation = false;
+                    binding.tvStatusBadge.setVisibility(View.GONE);
+                    Toast.makeText(this, "Gagal memeriksa status aset. Coba lagi.", Toast.LENGTH_SHORT).show();
+                    break;
+            }
+            validateInputs();
+        });
+
         viewModel.getActivationState().observe(this, state -> {
             switch (state) {
                 case LOADING:
@@ -149,38 +152,46 @@ public class ActivationActivity extends AppCompatActivity {
                 case SUCCESS:
                     binding.progressBar.setVisibility(View.GONE);
                     Toast.makeText(this, "Proses aktivasi berhasil dimulai!", Toast.LENGTH_LONG).show();
-                    // Selesaikan activity dan kembali ke layar sebelumnya
                     finish();
                     break;
                 case ERROR:
                     binding.progressBar.setVisibility(View.GONE);
-                    binding.btnStartActivation.setEnabled(true);
-                    Toast.makeText(this, "Gagal memulai proses aktivasi.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "Gagal memulai proses aktivasi. Cek kembali data.", Toast.LENGTH_SHORT).show();
+                    validateInputs();
                     break;
                 case IDLE:
-                default:
                     binding.progressBar.setVisibility(View.GONE);
-                    validateInputs(); // Validasi ulang input jika state di-reset
+                    validateInputs();
                     break;
             }
         });
     }
 
-    /**
-     * Membuat URI file sementara dan membuka aplikasi kamera sistem.
-     */
+    private void checkCameraPermissionAndLaunch() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
+            launchCamera();
+        } else {
+            requestPermissionLauncher.launch(Manifest.permission.CAMERA);
+        }
+    }
+
     private void launchCamera() {
-        File photoFile = new File(getExternalFilesDir(null), "asset_photo_" + System.currentTimeMillis() + ".jpg");
-        photoUri = FileProvider.getUriForFile(this, getApplicationContext().getPackageName() + ".provider", photoFile);
+        File imageDir = new File(getFilesDir(), "images");
+        if (!imageDir.exists()) imageDir.mkdirs();
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(new Date());
+        File imageFile = new File(imageDir, "ACTIVATION_" + timeStamp + ".jpg");
+        photoUri = FileProvider.getUriForFile(this, getApplicationContext().getPackageName() + ".provider", imageFile);
         takePictureLauncher.launch(photoUri);
     }
 
     /**
-     * Memeriksa apakah QR code sudah dipindai DAN foto sudah diambil.
-     * Mengaktifkan atau menonaktifkan tombol "Mulai Aktivasi" sesuai kondisi.
+     * Mengaktifkan tombol "Start Activation" hanya jika SEMUA kondisi terpenuhi.
      */
     private void validateInputs() {
-        boolean isReady = scannedAssetCode != null && !scannedAssetCode.isEmpty() && photoUri != null;
-        binding.btnStartActivation.setEnabled(isReady);
+        boolean conditionsMet = scannedAssetCode != null &&
+                photoUri != null &&
+                isAssetReadyForActivation;
+
+        binding.btnStartActivation.setEnabled(conditionsMet);
     }
 }

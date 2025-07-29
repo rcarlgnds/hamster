@@ -37,7 +37,7 @@ public class AssetDetailActivity extends AppCompatActivity {
         assetId = getIntent().getStringExtra("ASSET_ID");
         viewModel = new ViewModelProvider(this).get(AssetDetailViewModel.class);
 
-        if (assetId != null && savedInstanceState == null) { // Hanya fetch jika pertama kali dibuat
+        if (assetId != null && savedInstanceState == null) {
             viewModel.fetchAssetById(assetId);
             viewModel.fetchAllOptions();
         }

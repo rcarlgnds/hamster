@@ -17,7 +17,6 @@ public class FileUtils {
         String filePath = null;
         if ("content".equals(uri.getScheme())) {
             try {
-                // Try to get file from content resolver (e.g., gallery images)
                 String fileName = null;
                 try (Cursor cursor = context.getContentResolver().query(uri, null, null, null, null)) {
                     if (cursor != null && cursor.moveToFirst()) {
@@ -46,7 +45,6 @@ public class FileUtils {
                 }
             } catch (Exception e) {
                 e.printStackTrace();
-                // Fallback to simpler path if content resolver fails
                 filePath = uri.getPath();
             }
         } else if ("file".equals(uri.getScheme())) {

@@ -1,25 +1,24 @@
-// File: app/src/main/java/com/example/hamster/data/model/AssetMediaFile.java
 package com.example.hamster.data.model;
 
 import com.google.gson.annotations.SerializedName;
 
 public class AssetMediaFile {
     @SerializedName("id")
-    private String id; // Ini adalah ID record asosiasi (misal: c4988343-...)
+    private String id;
     @SerializedName("assetId")
     private String assetId;
     @SerializedName("mediaFileId")
-    private String mediaFileId; // Ini adalah ID file fisik (misal: 11a63851-...)
+    private String mediaFileId; /
     @SerializedName("type")
     private String type;
     @SerializedName("name")
-    private String name; // Untuk dokumen, ini mungkin nama kustom
+    private String name; /
     @SerializedName("createdAt")
-    private String createdAt; // Atau Long jika Unix timestamp
+    private String createdAt;
     @SerializedName("updatedAt")
-    private String updatedAt; // Atau Long jika Unix timestamp
+    private String updatedAt;
     @SerializedName("mediaFile")
-    private MediaFile mediaFile; // Objek mediaFile yang bersarang
+    private MediaFile mediaFile;
 
     // Getters
     public String getId() { return id; }

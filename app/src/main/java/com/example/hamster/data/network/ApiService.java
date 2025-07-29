@@ -4,6 +4,7 @@ import android.app.Notification;
 
 import com.example.hamster.data.model.Asset;
 import com.example.hamster.data.model.AssetActivationSetting;
+import com.example.hamster.data.model.AssetActivationStatus;
 import com.example.hamster.data.model.AssetCategory;
 import com.example.hamster.data.model.AssetDetailResponse;
 import com.example.hamster.data.model.AssetSubCategory;
@@ -598,13 +599,13 @@ public interface ApiService {
     Call<PendingApprovalsResponse> getPendingApprovals(@Query("page") int page, @Query("limit") int limit);
 
     @POST("asset-activation/start")
-    Call<Void> startAssetActivation(@Body StartActivationRequest request);
+    Call<Void> startAssetActivation(@Body StartActivationRequest body);
 
     @POST("asset-activation/approve")
     Call<Void> approveAssetActivation(@Body ApproveActivationRequest request);
 
     @GET("asset-activation/status/{assetId}")
-    Call<AssetApprovalStatusResponse> getAssetApprovalStatus(@Path("assetId") String assetId);
+    Call<AssetActivationStatus> getAssetActivationStatus(@Path("assetId") String assetId);
 
     @PUT("asset-activation/settings/{id}")
     Call<AssetActivationSetting> updateApprovalSetting(@Path("id") String settingId, @Body UpdateAssetActivationSettingRequest request);
