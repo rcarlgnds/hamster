@@ -19,6 +19,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.hamster.R;
 import com.example.hamster.data.model.Asset;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class InventoryAdapter extends RecyclerView.Adapter<InventoryAdapter.ViewHolder> {
@@ -27,9 +28,8 @@ public class InventoryAdapter extends RecyclerView.Adapter<InventoryAdapter.View
     private int copiedPosition = -1;
 
     public InventoryAdapter(List<Asset> assetList) {
-        this.assetList = assetList;
+        this.assetList = new ArrayList<>(assetList);
     }
-
     public List<Asset> getAssetList() {
         return this.assetList;
     }
@@ -94,6 +94,14 @@ public class InventoryAdapter extends RecyclerView.Adapter<InventoryAdapter.View
     @Override
     public int getItemCount() {
         return assetList != null ? assetList.size() : 0;
+    }
+
+    public void updateData(List<Asset> newAssets) {
+        assetList.clear();
+        if (newAssets != null) {
+            assetList.addAll(newAssets);
+        }
+        notifyDataSetChanged();
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {

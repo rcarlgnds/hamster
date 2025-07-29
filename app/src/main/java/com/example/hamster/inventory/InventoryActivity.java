@@ -7,7 +7,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import androidx.appcompat.widget.SearchView;
+import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
@@ -21,12 +24,17 @@ import com.example.hamster.data.model.Asset;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.textfield.TextInputEditText;
 
+import java.util.ArrayList;
+
 public class InventoryActivity extends AppCompatActivity {
 
     private InventoryViewModel viewModel;
     private RecyclerView recyclerView;
     private ProgressBar progressBar;
     private InventoryAdapter adapter;
+    private LinearLayout layoutEmpty;
+
+
     private FloatingActionButton fabSearch;
 
     @Override
@@ -40,6 +48,7 @@ public class InventoryActivity extends AppCompatActivity {
 
         progressBar = findViewById(R.id.progressBar);
         recyclerView = findViewById(R.id.recyclerViewInventory);
+        layoutEmpty = findViewById(R.id.layoutEmpty);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         fabSearch = findViewById(R.id.fab_add_inventory);
 
@@ -53,8 +62,20 @@ public class InventoryActivity extends AppCompatActivity {
 
     private void setupObservers() {
         viewModel.getAssetList().observe(this, assets -> {
-            adapter = new InventoryAdapter(assets);
-            recyclerView.setAdapter(adapter);
+            if (assets == null || assets.isEmpty()) {
+                recyclerView.setVisibility(View.GONE);
+                layoutEmpty.setVisibility(View.VISIBLE);
+            } else {
+                recyclerView.setVisibility(View.VISIBLE);
+                layoutEmpty.setVisibility(View.GONE);
+            }
+
+            if (adapter == null) {
+                adapter = new InventoryAdapter(assets);
+                recyclerView.setAdapter(adapter);
+            } else {
+                adapter.updateData(assets);
+            }
         });
 
         viewModel.getIsLoading().observe(this, isLoading -> {
@@ -71,16 +92,47 @@ public class InventoryActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.inventory_menu, menu);
+        MenuItem searchItem = menu.findItem(R.id.action_search);
+        SearchView searchView = (SearchView) searchItem.getActionView();
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                viewModel.searchAssets(newText);
+                return true;
+            }
+        });
+
         return true;
     }
-
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if (item.getItemId() == R.id.action_search) {
-            showSearchDialog();
+        int itemId = item.getItemId();
+        if (itemId == R.id.action_filter) {
+            showFilterDialog();
+            return true;
+        } else if (itemId == android.R.id.home) {
+            finish();
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void showFilterDialog() {
+        final String[] statuses = {"All", "Active", "Inactive"};
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Filter by Status")
+                .setItems(statuses, (dialog, which) -> {
+                    String selectedStatus = statuses[which];
+                    viewModel.filterByStatus(selectedStatus);
+                });
+        builder.create().show();
     }
 
     private void showSearchDialog() {
