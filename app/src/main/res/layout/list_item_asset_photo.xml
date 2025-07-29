@@ -3,10 +3,10 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="150dp"
-    android:layout_height="180dp"
+    android:layout_width="match_parent"
+    android:layout_height="200dp"
     style="@style/Widget.Material3.CardView.Outlined"
-    android:layout_marginEnd="12dp"
+    android:layout_margin="6dp"
     app:cardCornerRadius="16dp">
 
     <FrameLayout
@@ -19,25 +19,39 @@
             android:layout_height="match_parent"
             android:scaleType="centerCrop"
             tools:srcCompat="@tools:sample/backgrounds/scenic"
-            android:contentDescription="Asset Photo"/>
+            android:contentDescription="Foto Aset"/>
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/buttonDelete"
-            style="@style/Widget.Material3.Button.TextButton.Icon"
-            app:iconTint="@android:color/white"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="top|end"
-            app:icon="@android:drawable/ic_menu_delete" />
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="64dp"
+            android:background="@drawable/gradient_bottom_dark"
+            android:layout_gravity="top"/>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="64dp"
+            android:background="@drawable/gradient_bottom_dark"
+            android:layout_gravity="bottom"/>
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/buttonView"
             style="@style/Widget.Material3.Button.TextButton.Icon"
-            app:iconTint="@android:color/white"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="top|start"
+            app:icon="@android:drawable/ic_menu_zoom"
+            app:iconSize="30dp"
+            app:iconTint="@android:color/white" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/buttonDelete"
+            style="@style/Widget.Material3.Button.TextButton.Icon"
+            android:layout_width="66dp"
+            android:layout_height="wrap_content"
             android:layout_gravity="bottom|end"
-            app:icon="@android:drawable/ic_menu_zoom" />
+            app:icon="@android:drawable/ic_menu_delete"
+            app:iconSize="40dp"
+            app:iconTint="@android:color/holo_red_light" />
 
     </FrameLayout>
 </com.google.android.material.card.MaterialCardView>

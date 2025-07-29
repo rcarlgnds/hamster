@@ -1,21 +1,31 @@
-// File: AssetPhotosAdapter.java
 package com.example.hamster.inventory;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
+import androidx.core.graphics.drawable.DrawableCompat;
 import androidx.recyclerview.widget.RecyclerView;
+
 import com.bumptech.glide.Glide;
 import com.example.hamster.R;
+import com.google.android.material.button.MaterialButton;
+
 import java.util.List;
 
 public class AssetPhotosAdapter extends RecyclerView.Adapter<AssetPhotosAdapter.PhotoViewHolder> {
+
+    // Menggunakan kelas 'wrapper' untuk membedakan foto lama (URL) dan baru (URI)
     public static class PhotoItem {
         public final Uri localUri;
         public final String remoteUrl;
@@ -63,7 +73,7 @@ public class AssetPhotosAdapter extends RecyclerView.Adapter<AssetPhotosAdapter.
 
     static class PhotoViewHolder extends RecyclerView.ViewHolder {
         ImageView imageViewAsset;
-        Button buttonDelete, buttonView;
+        MaterialButton buttonDelete, buttonView;
 
         public PhotoViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -76,7 +86,16 @@ public class AssetPhotosAdapter extends RecyclerView.Adapter<AssetPhotosAdapter.
             Glide.with(context)
                     .load(item.getModel())
                     .error(R.drawable.ic_broken_image)
+                    .centerCrop()
                     .into(imageViewAsset);
+
+            // --- Logika untuk membuat ikon delete berwarna merah ---
+            Drawable deleteIcon = ContextCompat.getDrawable(context, android.R.drawable.ic_menu_delete);
+            if (deleteIcon != null) {
+                Drawable wrappedIcon = DrawableCompat.wrap(deleteIcon.mutate());
+                DrawableCompat.setTint(wrappedIcon, Color.RED);
+                buttonDelete.setIcon(wrappedIcon);
+            }
 
             buttonDelete.setOnClickListener(v -> {
                 if (deleteListener != null) {
@@ -86,6 +105,7 @@ public class AssetPhotosAdapter extends RecyclerView.Adapter<AssetPhotosAdapter.
 
             buttonView.setOnClickListener(v -> {
                 Intent intent = new Intent(context, ImagePreviewActivity.class);
+                // Kirim URL sebagai String, baik dari remote maupun lokal
                 intent.putExtra("IMAGE_URL", item.getModel().toString());
                 context.startActivity(intent);
             });
