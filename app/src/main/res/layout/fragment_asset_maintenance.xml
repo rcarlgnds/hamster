@@ -15,7 +15,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Informasi Pembelian"
+            android:text="@string/section_purchase_info"
             android:textAppearance="?attr/textAppearanceTitleSmall"
             android:textColor="?attr/colorPrimary"
             android:layout_marginBottom="12dp"/>
@@ -30,7 +30,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:hint="Tanggal Pengadaan">
+                android:hint="@string/hint_procurement_date">
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/etProcurementDate"
                     android:layout_width="match_parent"
@@ -45,7 +45,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_weight="1"
-                android:hint="Harga Beli">
+                android:hint="@string/hint_purchase_price">
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/editTextPurchasePrice"
                     android:layout_width="match_parent"
@@ -65,7 +65,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:hint="Vendor">
+                android:hint="@string/hint_vendor">
                 <AutoCompleteTextView
                     android:id="@+id/autoCompleteVendor"
                     android:layout_width="match_parent"
@@ -79,7 +79,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_weight="1"
-                android:hint="Nomor PO">
+                android:hint="@string/hint_po_number">
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/editTextPONumber"
                     android:layout_width="match_parent"
@@ -91,7 +91,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:text="Dokumen Purchase Order (PO)"
+            android:text="@string/label_po_document"
             android:textAppearance="?attr/textAppearanceLabelLarge"/>
         <com.google.android.material.card.MaterialCardView
             style="@style/Widget.Material3.CardView.Outlined"
@@ -115,13 +115,13 @@
                     android:layout_weight="1"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="12dp"
-                    android:text="Belum ada file"/>
+                    android:text="@string/status_no_file"/>
                 <Button
                     android:id="@+id/buttonChoosePODocument"
                     style="@style/Widget.Material3.Button.TextButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Pilih File"/>
+                    android:text="@string/button_choose_file"/>
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
@@ -134,7 +134,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Garansi &amp; Faktur"
+            android:text="@string/section_warranty_invoice"
             android:textAppearance="?attr/textAppearanceTitleSmall"
             android:textColor="?attr/colorPrimary"
             android:layout_marginBottom="12dp"/>
@@ -143,7 +143,7 @@
             style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Nomor Faktur (Invoice)">
+            android:hint="@string/hint_invoice_number">
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/editTextInvoiceNumber"
                 android:layout_width="match_parent"
@@ -154,7 +154,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:text="Dokumen Faktur"
+            android:text="@string/label_invoice_document"
             android:textAppearance="?attr/textAppearanceLabelLarge"/>
         <com.google.android.material.card.MaterialCardView
             style="@style/Widget.Material3.CardView.Outlined"
@@ -178,15 +178,16 @@
                     android:layout_weight="1"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="12dp"
-                    android:text="Belum ada file"/>
+                    android:text="@string/status_no_file"/>
                 <Button
                     android:id="@+id/buttonChooseInvoiceDocument"
                     style="@style/Widget.Material3.Button.TextButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Pilih File"/>
+                    android:text="@string/button_choose_file"/>
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -197,7 +198,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:hint="Garansi Berakhir">
+                android:hint="@string/hint_warranty_end_date">
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/editTextWarrantyDate"
                     android:layout_width="match_parent"
@@ -211,7 +212,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:layout_marginStart="8dp"
-                android:hint="Status Garansi">
+                android:hint="@string/hint_warranty_status">
                 <AutoCompleteTextView
                     android:id="@+id/autoCompleteWarrantyStatus"
                     android:layout_width="match_parent"
@@ -224,7 +225,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:text="Dokumen Garansi"
+            android:text="@string/label_warranty_document"
             android:textAppearance="?attr/textAppearanceLabelLarge"/>
         <com.google.android.material.card.MaterialCardView
             style="@style/Widget.Material3.CardView.Outlined"
@@ -248,13 +249,13 @@
                     android:layout_weight="1"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="12dp"
-                    android:text="Belum ada file"/>
+                    android:text="@string/status_no_file"/>
                 <Button
                     android:id="@+id/buttonChooseWarrantyDocument"
                     style="@style/Widget.Material3.Button.TextButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Pilih File"/>
+                    android:text="@string/button_choose_file"/>
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
@@ -267,7 +268,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Informasi Penyusutan (Depresiasi)"
+            android:text="@string/section_depreciation_info"
             android:textAppearance="?attr/textAppearanceTitleSmall"
             android:textColor="?attr/colorPrimary"
             android:layout_marginBottom="12dp"/>
@@ -282,7 +283,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:hint="Penyusutan (%)">
+                android:hint="@string/hint_depreciation_percent">
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/editTextDepreciationPercent"
                     android:layout_width="match_parent"
@@ -296,7 +297,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_weight="1"
-                android:hint="Nilai Penyusutan">
+                android:hint="@string/hint_depreciation_value">
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/editTextDepreciationValue"
                     android:layout_width="match_parent"
@@ -316,7 +317,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:hint="Mulai Penyusutan">
+                android:hint="@string/hint_depreciation_start_date">
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/editTextDepreciationStart"
                     android:layout_width="match_parent"
@@ -331,7 +332,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_weight="1"
-                android:hint="Durasi (Bulan)">
+                android:hint="@string/hint_depreciation_duration">
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/editTextDepreciationDuration"
                     android:layout_width="match_parent"

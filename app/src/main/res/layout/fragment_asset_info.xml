@@ -15,7 +15,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Informasi Utama"
+            android:text="@string/section_main_info"
             android:textAppearance="?attr/textAppearanceTitleSmall"
             android:textColor="?attr/colorPrimary"
             android:layout_marginBottom="12dp"/>
@@ -24,7 +24,7 @@
             style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Nama Aset">
+            android:hint="@string/hint_asset_name">
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/editTextName"
                 android:layout_width="match_parent"
@@ -36,7 +36,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
-            android:hint="Induk Inventaris (Parent)">
+            android:hint="@string/hint_inventory_parent">
             <AutoCompleteTextView
                 android:id="@+id/autoCompleteParent"
                 android:layout_width="match_parent"
@@ -48,7 +48,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
-            android:text="Kode &amp; Identifikasi"
+            android:text="@string/section_code_id"
             android:textAppearance="?attr/textAppearanceTitleSmall"
             android:textColor="?attr/colorPrimary"
             android:layout_marginBottom="12dp"/>
@@ -63,7 +63,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:hint="Kode Utama">
+                android:hint="@string/hint_main_code">
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/editTextCode"
                     android:layout_width="match_parent"
@@ -76,7 +76,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_weight="1"
-                android:hint="Nomor Seri">
+                android:hint="@string/hint_serial_number">
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/editTextSerial"
                     android:layout_width="match_parent"
@@ -95,7 +95,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:hint="Kode Tambahan 1 (Opsional)">
+                android:hint="@string/hint_additional_code_1">
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/editTextCode2"
                     android:layout_width="match_parent"
@@ -108,7 +108,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_weight="1"
-                android:hint="Kode Tambahan 2 (Opsional)">
+                android:hint="@string/hint_additional_code_2">
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/editTextCode3"
                     android:layout_width="match_parent"
@@ -116,12 +116,11 @@
             </com.google.android.material.textfield.TextInputLayout>
         </LinearLayout>
 
-
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
-            android:text="Detail &amp; Klasifikasi"
+            android:text="@string/section_details_classification"
             android:textAppearance="?attr/textAppearanceTitleSmall"
             android:textColor="?attr/colorPrimary"
             android:layout_marginBottom="12dp"/>
@@ -136,7 +135,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:hint="Kategori">
+                android:hint="@string/hint_category">
                 <AutoCompleteTextView
                     android:id="@+id/autoCompleteCategory"
                     android:layout_width="match_parent"
@@ -150,7 +149,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_weight="1"
-                android:hint="Sub-Kategori">
+                android:hint="@string/hint_subcategory">
                 <AutoCompleteTextView
                     android:id="@+id/autoCompleteSubCategory"
                     android:layout_width="match_parent"
@@ -170,7 +169,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:hint="Merek (Brand)">
+                android:hint="@string/hint_brand">
                 <AutoCompleteTextView
                     android:id="@+id/autoCompleteBrand"
                     android:layout_width="match_parent"
@@ -184,7 +183,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_weight="1"
-                android:hint="Kondisi">
+                android:hint="@string/hint_condition">
                 <AutoCompleteTextView
                     android:id="@+id/autoCompleteCondition"
                     android:layout_width="match_parent"
@@ -203,7 +202,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:hint="Kepemilikan">
+                android:hint="@string/hint_ownership">
                 <AutoCompleteTextView
                     android:id="@+id/autoCompleteOwnership"
                     android:layout_width="match_parent"
@@ -216,7 +215,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:layout_marginStart="8dp"
-                android:hint="Tipe">
+                android:hint="@string/hint_type">
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/editTextType"
                     android:layout_width="match_parent"
@@ -229,7 +228,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
-            android:text="Kuantitas"
+            android:text="@string/section_quantity"
             android:textAppearance="?attr/textAppearanceTitleSmall"
             android:textColor="?attr/colorPrimary"
             android:layout_marginBottom="12dp"/>
@@ -244,7 +243,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:hint="Total">
+                android:hint="@string/hint_total">
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/editTextTotal"
                     android:layout_width="match_parent"
@@ -258,7 +257,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_weight="1"
-                android:hint="Satuan (Unit)">
+                android:hint="@string/hint_unit">
                 <AutoCompleteTextView
                     android:id="@+id/autoCompleteUnit"
                     android:layout_width="match_parent"
@@ -272,7 +271,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
-            android:hint="Deskripsi (Opsional)">
+            android:hint="@string/hint_description">
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/editTextDescription"
                 android:layout_width="match_parent"

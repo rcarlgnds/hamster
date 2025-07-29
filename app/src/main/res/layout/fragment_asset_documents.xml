@@ -17,7 +17,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Foto Nomor Seri"
+            android:text="@string/serial_number_photo"
             android:textAppearance="?attr/textAppearanceTitleMedium"
             android:layout_marginBottom="8dp"/>
 
@@ -41,12 +41,12 @@
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/buttonTakeSerialPhoto"
-                    style="@style/ThemeOverlay.Material3.Button.TonalButton"
+                    style="@style/Widget.Material3.Button.TonalButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="bottom|end"
                     android:layout_margin="16dp"
-                    android:text="Ambil Foto"
+                    android:text="@string/button_take_photo"
                     app:icon="@android:drawable/ic_menu_camera"/>
 
                 <com.google.android.material.button.MaterialButton
@@ -82,7 +82,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Galeri Foto Aset"
+                android:text="@string/asset_photos_gallery"
                 android:textAppearance="?attr/textAppearanceTitleMedium"/>
 
             <com.google.android.material.button.MaterialButton
@@ -90,7 +90,7 @@
                 style="@style/Widget.Material3.Button.TonalButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Tambah"
+                android:text="@string/button_add"
                 app:icon="@android:drawable/ic_input_add" />
         </LinearLayout>
 
@@ -98,11 +98,11 @@
             android:id="@+id/recyclerViewAssetPhotos"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:clipToPadding="false"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            android:nestedScrollingEnabled="false"
+            app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+            app:spanCount="2"
             tools:listitem="@layout/list_item_asset_photo"
-            tools:itemCount="3"/>
+            tools:itemCount="4"/>
 
     </LinearLayout>
 </androidx.core.widget.NestedScrollView>

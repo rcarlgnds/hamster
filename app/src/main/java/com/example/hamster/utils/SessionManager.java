@@ -59,6 +59,14 @@ public class SessionManager {
         return gson.fromJson(userJson, User.class);
     }
 
+    public void createLoginSession(String accessToken, String refreshToken, User user) {
+        String userJson = gson.toJson(user);
+        editor.putString(KEY_ACCESS_TOKEN, accessToken);
+        editor.putString(KEY_REFRESH_TOKEN, refreshToken);
+        editor.putString(KEY_USER_DATA, userJson);
+        editor.apply();
+    }
+
 
     public void logout() {
         editor.clear();

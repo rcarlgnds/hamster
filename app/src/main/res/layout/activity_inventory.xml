@@ -18,7 +18,7 @@
             android:layout_height="112dp"
             app:layout_scrollFlags="scroll|exitUntilCollapsed|snap"
             app:contentScrim="@color/md_theme_surface"
-            app:title="Inventory"
+            app:title="@string/title_inventory"
             app:expandedTitleTextColor="@color/md_theme_on_surface"
             app:collapsedTitleTextColor="@color/md_theme_on_surface">
 
@@ -69,13 +69,13 @@
                 android:layout_height="50dp"
                 android:src="@drawable/ic_search_off"
                 app:tint="?attr/colorOnSurfaceVariant"
-                android:contentDescription="No data found" />
+                android:contentDescription="@string/data_not_found" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:text="Data Tidak Ditemukan"
+                android:text="@string/data_not_found"
                 android:textAppearance="?attr/textAppearanceTitleMedium"
                 android:textColor="?attr/colorOnSurfaceVariant" />
 
@@ -84,7 +84,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
-                android:text="Coba kata kunci lain atau ubah filter Anda."
+                android:text="@string/try_other_keywords"
                 android:textAppearance="?attr/textAppearanceBodyMedium"
                 android:textColor="?attr/colorOnSurfaceVariant" />
 
@@ -101,6 +101,6 @@
         android:src="@drawable/baseline_search_24"
         app:tint="@color/md_theme_on_primary_container"
         app:backgroundTint="@color/md_theme_primary_container"
-        android:contentDescription="Add New Inventory Item"/>
+        android:contentDescription="@string/search_dialog_title"/>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

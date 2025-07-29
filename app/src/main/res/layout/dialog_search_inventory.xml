@@ -10,7 +10,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Search Inventory"
+        android:text="@string/search_dialog_title"
         android:textAppearance="?attr/textAppearanceHeadlineSmall"
         android:textSize="22sp"
         android:textColor="@color/md_theme_on_surface"
@@ -29,7 +29,7 @@
             android:id="@+id/editTextInventoryCode"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Inventory Code" />
+            android:hint="@string/search_dialog_message" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <LinearLayout
@@ -44,7 +44,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:layout_marginEnd="8dp"
-            android:text="Cancel"
+            android:text="@string/dialog_cancel"
             style="@style/Widget.Material3.Button.TextButton"/>
 
         <com.google.android.material.button.MaterialButton
@@ -53,7 +53,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:layout_marginStart="8dp"
-            android:text="Next"/>
+            android:text="@string/dialog_next"/>
     </LinearLayout>
 
 </LinearLayout>

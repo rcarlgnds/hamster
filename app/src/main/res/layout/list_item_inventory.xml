@@ -3,15 +3,16 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/card_root"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginHorizontal="12dp"
-    android:layout_marginTop="12dp"
+    android:layout_marginHorizontal="16dp"
+    android:layout_marginVertical="8dp"
+    android:clickable="true"
+    android:focusable="true"
     app:cardCornerRadius="16dp"
-    app:cardElevation="6dp"
-    app:cardBackgroundColor="@color/primary_99"
-    app:strokeColor="@color/md_theme_outline_variant"
-    app:strokeWidth="1dp">
+    app:cardElevation="2dp"
+    app:strokeWidth="0dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -22,35 +23,45 @@
             android:id="@+id/textViewItemName"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:textSize="15sp"
+            android:layout_marginEnd="16dp"
             android:textAppearance="?attr/textAppearanceTitleMedium"
-            android:textColor="@color/md_theme_on_surface"
+            android:textColor="?attr/colorOnSurface"
+            app:layout_constraintEnd_toStartOf="@+id/textViewStatusBadge"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/textViewStatusBadge"
-            android:layout_marginEnd="8dp"
             tools:text="PATIENT MONITOR MINDRAY UMEC-10" />
+
+        <TextView
+            android:id="@+id/textViewStatusBadge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/badge_activate_background"
+            android:paddingHorizontal="10dp"
+            android:paddingVertical="4dp"
+            android:textAppearance="?attr/textAppearanceLabelSmall"
+            android:textColor="?attr/colorOnPrimaryContainer"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="Active" />
 
         <LinearLayout
             android:id="@+id/layoutCode"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
             android:layout_marginTop="8dp"
             android:background="?attr/selectableItemBackground"
-            android:paddingVertical="4dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:padding="4dp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/textViewItemName">
 
             <TextView
                 android:id="@+id/textViewItemCode"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="12sp"
                 android:textAppearance="?attr/textAppearanceBodyMedium"
-                android:textColor="@color/md_theme_secondary"
+                android:textColor="?attr/colorOnSurfaceVariant"
                 tools:text="04-C10118-000111" />
 
             <ImageView
@@ -58,51 +69,21 @@
                 android:layout_width="20dp"
                 android:layout_height="20dp"
                 android:layout_marginStart="8dp"
+                android:contentDescription="@string/copy_item_code"
                 android:src="@drawable/copy_24"
-                app:tint="@color/md_theme_secondary"
-                android:contentDescription="Copy Item Code"/>
+                app:tint="?attr/colorOnSurfaceVariant" />
         </LinearLayout>
 
-        <TextView
-            android:id="@+id/textViewStatusBadge"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Active"
-            android:textSize="12sp"
-            android:textStyle="bold"
-            android:paddingHorizontal="10dp"
-            android:paddingVertical="4dp"
-            android:background="@drawable/badge_activate_background" android:textColor="@color/md_theme_on_primary_container"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:text="Inactive" /> <LinearLayout
-        android:id="@+id/layoutClickForDetails"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center_vertical"
-        android:layout_marginTop="16dp"
-        android:paddingVertical="4dp"
-        android:background="?attr/selectableItemBackground"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/layoutCode">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="View Details"
-            android:textSize="11sp"
-            android:textAppearance="?attr/textAppearanceLabelLarge"
-            android:textColor="@color/md_theme_primary" />
-
         <ImageView
-            android:layout_width="16dp"
-            android:layout_height="16dp"
-            android:layout_marginStart="6dp"
-            android:src="@drawable/baseline_arrow_forward_ios_24"
-            app:tint="@color/md_theme_primary"
-            android:contentDescription="View Details"/>
-    </LinearLayout>
+            android:id="@+id/icon_arrow_details"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/info"
+            app:layout_constraintBottom_toBottomOf="@+id/layoutCode"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/layoutCode"
+            app:tint="?attr/colorPrimary"
+            android:contentDescription="@string/view_details"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </com.google.android.material.card.MaterialCardView>

@@ -8,11 +8,11 @@ public class AssetMediaFile {
     @SerializedName("assetId")
     private String assetId;
     @SerializedName("mediaFileId")
-    private String mediaFileId; /
+    private String mediaFileId;
     @SerializedName("type")
     private String type;
     @SerializedName("name")
-    private String name; /
+    private String name;
     @SerializedName("createdAt")
     private String createdAt;
     @SerializedName("updatedAt")

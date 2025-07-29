@@ -34,13 +34,12 @@ public class ActivationActivity extends AppCompatActivity {
     private Uri photoUri = null;
     private boolean isAssetReadyForActivation = false;
 
-    // --- ActivityResultLaunchers ---
     private final ActivityResultLauncher<String> requestPermissionLauncher =
             registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
                 if (isGranted) {
                     launchCamera();
                 } else {
-                    Toast.makeText(this, "Izin kamera dibutuhkan untuk mengambil foto.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, getString(R.string.camera_permission_denied), Toast.LENGTH_SHORT).show();
                 }
             });
 
@@ -50,7 +49,7 @@ public class ActivationActivity extends AppCompatActivity {
                     Glide.with(this).load(photoUri).into(binding.ivAssetPhoto);
                     validateInputs();
                 } else {
-                    Toast.makeText(this, "Gagal mengambil foto.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, getString(R.string.failed_to_capture_photo), Toast.LENGTH_SHORT).show();
                 }
             });
 
@@ -61,14 +60,13 @@ public class ActivationActivity extends AppCompatActivity {
                     String qrCode = result.getData().getStringExtra(ScannerActivity.EXTRA_QR_CODE_RESULT);
                     if (qrCode != null && !qrCode.isEmpty()) {
                         scannedAssetCode = qrCode;
-                        binding.tvQrResult.setText("Kode Aset: " + scannedAssetCode);
+                        binding.tvQrResult.setText("Asset Code: " + scannedAssetCode);
                         viewModel.checkAssetStatus(scannedAssetCode);
                     }
                 } else {
-                    Toast.makeText(this, "Scan QR dibatalkan atau gagal.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, getString(R.string.scan_cancelled), Toast.LENGTH_SHORT).show();
                 }
             });
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -104,13 +102,12 @@ public class ActivationActivity extends AppCompatActivity {
             if (scannedAssetCode != null && photoUri != null && isAssetReadyForActivation) {
                 viewModel.startActivationProcess(scannedAssetCode);
             } else {
-                Toast.makeText(this, "Pindai aset, ambil foto, dan pastikan aset siap diaktivasi.", Toast.LENGTH_LONG).show();
+                Toast.makeText(this, "Scan asset, take photo, and ensure asset is ready for activation.", Toast.LENGTH_LONG).show();
             }
         });
     }
 
     private void setupObservers() {
-        // Observer untuk hasil pengecekan status
         viewModel.getStatusCheckState().observe(this, state -> {
             binding.progressBar.setVisibility(View.GONE);
 
@@ -127,17 +124,17 @@ public class ActivationActivity extends AppCompatActivity {
                         binding.tvStatusBadge.setText(statusData.getStatus());
                         binding.tvStatusBadge.setVisibility(View.VISIBLE);
                     }
-                    Toast.makeText(this, "Aset ini sudah memiliki proses aktivasi.", Toast.LENGTH_LONG).show();
+                    Toast.makeText(this, getString(R.string.asset_in_process), Toast.LENGTH_LONG).show();
                     break;
                 case NOT_FOUND:
                     isAssetReadyForActivation = true;
                     binding.tvStatusBadge.setVisibility(View.GONE);
-                    Toast.makeText(this, "Aset siap untuk diaktivasi.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, getString(R.string.asset_ready_to_activate), Toast.LENGTH_SHORT).show();
                     break;
                 case ERROR:
                     isAssetReadyForActivation = false;
                     binding.tvStatusBadge.setVisibility(View.GONE);
-                    Toast.makeText(this, "Gagal memeriksa status aset. Coba lagi.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, getString(R.string.failed_to_check_status), Toast.LENGTH_SHORT).show();
                     break;
             }
             validateInputs();
@@ -151,12 +148,12 @@ public class ActivationActivity extends AppCompatActivity {
                     break;
                 case SUCCESS:
                     binding.progressBar.setVisibility(View.GONE);
-                    Toast.makeText(this, "Proses aktivasi berhasil dimulai!", Toast.LENGTH_LONG).show();
+                    Toast.makeText(this, getString(R.string.activation_started_successfully), Toast.LENGTH_LONG).show();
                     finish();
                     break;
                 case ERROR:
                     binding.progressBar.setVisibility(View.GONE);
-                    Toast.makeText(this, "Gagal memulai proses aktivasi. Cek kembali data.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, getString(R.string.activation_failed), Toast.LENGTH_SHORT).show();
                     validateInputs();
                     break;
                 case IDLE:
@@ -178,20 +175,16 @@ public class ActivationActivity extends AppCompatActivity {
     private void launchCamera() {
         File imageDir = new File(getFilesDir(), "images");
         if (!imageDir.exists()) imageDir.mkdirs();
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(new Date());
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.US).format(new Date());
         File imageFile = new File(imageDir, "ACTIVATION_" + timeStamp + ".jpg");
         photoUri = FileProvider.getUriForFile(this, getApplicationContext().getPackageName() + ".provider", imageFile);
         takePictureLauncher.launch(photoUri);
     }
 
-    /**
-     * Mengaktifkan tombol "Start Activation" hanya jika SEMUA kondisi terpenuhi.
-     */
     private void validateInputs() {
         boolean conditionsMet = scannedAssetCode != null &&
                 photoUri != null &&
                 isAssetReadyForActivation;
-
         binding.btnStartActivation.setEnabled(conditionsMet);
     }
 }

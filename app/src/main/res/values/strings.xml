@@ -1,5 +1,136 @@
 <resources>
     <string name="app_name">Hamster</string>
-    <string name="navigation_drawer_open">Open navigation drawer</string>
-    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="login_title">Welcome Back</string>
+    <string name="login_subtitle">Sign in to continue</string>
+    <string name="label_email">Email</string>
+    <string name="label_password">Password</string>
+    <string name="login_button">Login</string>
+    <string name="login_in_progress">Logging in...</string>
+    <string name="login_failed">Login failed, please check your email and password.</string>
+
+    <string name="nav_header_title">User Name</string>
+    <string name="nav_header_subtitle">user@example.com</string>
+    <string name="menu_inventory">Inventory</string>
+    <string name="menu_activation_setting">Activation Settings</string>
+    <string name="menu_activation">Activation</string>
+    <string name="menu_logout">Logout</string>
+
+    <string name="title_inventory">Inventory</string>
+    <string name="search_hint">Search by name or code...</string>
+    <string name="filter">Filter</string>
+    <string name="search_dialog_title">Search Inventory</string>
+    <string name="search_dialog_message">Enter asset code</string>
+    <string name="dialog_cancel">Cancel</string>
+    <string name="dialog_next">Next</string>
+    <string name="asset_not_found">Asset not found</string>
+    <string name="search_results_for">Showing results for: %s</string>
+    <string name="filter_by_status">Filter by Status</string>
+    <string name="status_all">All</string>
+    <string name="status_active">Active</string>
+    <string name="status_inactive">Inactive</string>
+    <string name="data_not_found">Data Not Found</string>
+    <string name="try_other_keywords">Try different keywords or change your filters.</string>
+    <string name="failed_to_load_data">Failed to load data</string>
+
+    <string name="title_asset_detail">Asset Detail</string>
+    <string name="tab_info">Info</string>
+    <string name="tab_location">Location</string>
+    <string name="tab_maintenance">Maintenance</string>
+    <string name="tab_documents">Documents</string>
+    <string name="label_specification">Specifications</string>
+    <string name="label_procurement">Procurement</string>
+    <string name="asset_code">Asset Code</string>
+    <string name="asset_name">Asset Name</string>
+    <string name="description">Description</string>
+    <string name="title_activation">Start Asset Activation</string>
+    <string name="step_1_scan">1. Scan Asset</string>
+    <string name="button_scan_qr">Scan Asset QR Code</string>
+    <string name="asset_code_placeholder">Asset code will appear here</string>
+    <string name="status_pending_approval">Pending Approval</string>
+    <string name="step_2_take_photo">2. Take Proof Photo</string>
+    <string name="photo_preview_desc">Asset Photo Preview</string>
+    <string name="button_take_photo">Take Photo</string>
+    <string name="notes_optional_hint">Notes (Optional)</string>
+    <string name="button_start_activation">Start Activation</string>
+    <string name="camera_permission_denied">Camera permission denied.</string>
+    <string name="failed_to_capture_photo">Failed to capture photo.</string>
+    <string name="scan_cancelled">QR scan was cancelled or failed.</string>
+    <string name="asset_in_process">This asset already has an active activation process.</string>
+    <string name="asset_ready_to_activate">Asset is ready for activation.</string>
+    <string name="failed_to_check_status">Failed to check asset status. Please try again.</string>
+    <string name="activation_started_successfully">Activation process started successfully!</string>
+    <string name="activation_failed">Failed to start activation process.</string>
+
+    <string name="serial_number_photo">Serial Number Photo</string>
+    <string name="asset_photos_gallery">Asset Photos Gallery</string>
+    <string name="button_add">Add</string>
+    <string name="photo_deleted">Photo deleted</string>
+
+    <string name="label_name">Name</string>
+    <string name="label_hospital">Hospital</string>
+    <string name="label_building">Building</string>
+    <string name="label_floor">Floor</string>
+    <string name="label_room">Room</string>
+    <string name="dialog_search">Search</string>
+
+    <string name="section_main_info">Main Information</string>
+    <string name="hint_asset_name">Asset Name</string>
+    <string name="hint_inventory_parent">Inventory Parent</string>
+
+    <string name="section_code_id">Code &amp; Identification</string>
+    <string name="hint_main_code">Main Code</string>
+    <string name="hint_serial_number">Serial Number</string>
+    <string name="hint_additional_code_1">Additional Code 1 (Optional)</string>
+    <string name="hint_additional_code_2">Additional Code 2 (Optional)</string>
+
+    <string name="section_details_classification">Details &amp; Classification</string>
+    <string name="hint_category">Category</string>
+    <string name="hint_subcategory">Sub-Category</string>
+    <string name="hint_brand">Brand</string>
+    <string name="hint_condition">Condition</string>
+    <string name="hint_ownership">Ownership</string>
+    <string name="hint_type">Type</string>
+
+    <string name="section_quantity">Quantity</string>
+    <string name="hint_total">Total</string>
+    <string name="hint_unit">Unit</string>
+    <string name="hint_description">Description (Optional)</string>
+
+    <string name="section_placement_location">Placement Location</string>
+    <string name="hint_hospital">Hospital</string>
+    <string name="hint_building">Building</string>
+    <string name="hint_floor">Floor</string>
+    <string name="hint_room">Room</string>
+    <string name="hint_sub_room">Sub-Room</string>
+
+    <string name="section_person_in_charge">Person in Charge</string>
+    <string name="hint_division">Division</string>
+    <string name="hint_user">User</string>
+
+    <string name="section_purchase_info">Purchase Information</string>
+    <string name="hint_procurement_date">Procurement Date</string>
+    <string name="hint_purchase_price">Purchase Price</string>
+    <string name="hint_vendor">Vendor</string>
+    <string name="hint_po_number">PO Number</string>
+    <string name="label_po_document">Purchase Order (PO) Document</string>
+    <string name="status_no_file">No file attached</string>
+    <string name="button_choose_file">Choose File</string>
+
+    <string name="section_warranty_invoice">Warranty &amp; Invoice</string>
+    <string name="hint_invoice_number">Invoice Number</string>
+    <string name="label_invoice_document">Invoice Document</string>
+    <string name="hint_warranty_end_date">Warranty End Date</string>
+    <string name="hint_warranty_status">Warranty Status</string>
+    <string name="label_warranty_document">Warranty Document</string>
+
+    <string name="section_depreciation_info">Depreciation Information</string>
+    <string name="hint_depreciation_percent">Depreciation (%)</string>
+    <string name="hint_depreciation_value">Depreciation Value</string>
+    <string name="hint_depreciation_start_date">Depreciation Start Date</string>
+    <string name="hint_depreciation_duration">Duration (Months)</string>
+
+    <string name="copy_item_code">Copy Item Code</string>
+    <string name="view_details">View Details</string>
+
 </resources>

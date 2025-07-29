@@ -1,17 +1,21 @@
 package com.example.hamster.login;
 
 import android.app.Application;
-import android.util.Log;
+import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
+
+import com.example.hamster.R;
 import com.example.hamster.data.model.LoginRequest;
 import com.example.hamster.data.model.LoginResponse;
 import com.example.hamster.data.model.User;
 import com.example.hamster.data.network.ApiClient;
 import com.example.hamster.data.network.ApiService;
 import com.example.hamster.utils.SessionManager;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -26,16 +30,27 @@ public class LoginViewModel extends AndroidViewModel {
     }
 
     private final MutableLiveData<LoginResult> loginResult = new MutableLiveData<>();
-    private final MutableLiveData<User> userData = new MutableLiveData<>();
+    private final MutableLiveData<User> user = new MutableLiveData<>();
+    private final MutableLiveData<String> errorMessage = new MutableLiveData<>();
     private final SessionManager sessionManager;
 
     public LoginViewModel(@NonNull Application application) {
         super(application);
-        this.sessionManager = new SessionManager(application);
+        sessionManager = new SessionManager(application);
     }
 
-    public LiveData<LoginResult> getLoginResult() { return loginResult; }
-    public LiveData<User> getUser() { return userData; }
+    public LiveData<LoginResult> getLoginResult() {
+        return loginResult;
+    }
+
+    public LiveData<User> getUser() {
+        return user;
+    }
+
+    // --- ADD THIS GETTER METHOD ---
+    public LiveData<String> getErrorMessage() {
+        return errorMessage;
+    }
 
     public void login(String email, String password) {
         loginResult.setValue(LoginResult.LOADING);
@@ -48,26 +63,24 @@ public class LoginViewModel extends AndroidViewModel {
             public void onResponse(@NonNull Call<LoginResponse> call, @NonNull Response<LoginResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     LoginResponse loginResponse = response.body();
-                    if (loginResponse.isSuccess()) {
-                        String token = loginResponse.getData().getAccessToken();
-                        User user = loginResponse.getData().getUser();
-
-                        sessionManager.saveAuthToken(token);
-                        sessionManager.saveUser(user);
-
-                        userData.setValue(user);
-                        loginResult.setValue(LoginResult.SUCCESS);
-                    } else {
-                        loginResult.setValue(LoginResult.INVALID_CREDENTIALS);
-                    }
+                    sessionManager.createLoginSession(
+                            loginResponse.getData().getAccessToken(),
+                            loginResponse.getData().getRefreshToken(),
+                            loginResponse.getData().getUser()
+                    );
+                    user.setValue(loginResponse.getData().getUser());
+                    loginResult.setValue(LoginResult.SUCCESS);
                 } else {
+                    // Post specific error messages
+                    errorMessage.setValue(getApplication().getString(R.string.login_failed));
                     loginResult.setValue(LoginResult.INVALID_CREDENTIALS);
                 }
             }
 
             @Override
             public void onFailure(@NonNull Call<LoginResponse> call, @NonNull Throwable t) {
-                Log.e("LoginViewModel", "API call failed: ", t);
+                // Post specific error messages
+                errorMessage.setValue("Failed to connect to the server.");
                 loginResult.setValue(LoginResult.API_ERROR);
             }
         });

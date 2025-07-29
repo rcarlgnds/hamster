@@ -17,7 +17,7 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            app:title="Mulai Aktivasi Aset" />
+            app:title="@string/title_activation" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -28,7 +28,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="1. Pindai Aset"
+                android:text="@string/step_1_scan"
                 android:textAppearance="?attr/textAppearanceTitleMedium"
                 android:layout_marginBottom="8dp"/>
 
@@ -48,7 +48,7 @@
                         style="@style/Widget.Material3.Button.TonalButton"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Pindai QR Code Aset"
+                        android:text="@string/button_scan_qr"
                         app:icon="@android:drawable/ic_menu_camera" />
 
                     <TextView
@@ -57,7 +57,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="12dp"
                         android:padding="12dp"
-                        android:text="Kode aset akan muncul di sini"
+                        android:text="@string/asset_code_placeholder"
                         android:textAlignment="center"
                         android:textAppearance="?attr/textAppearanceBodyLarge" />
 
@@ -75,16 +75,15 @@
                         android:textColor="@android:color/white"
                         android:textStyle="bold"
                         android:visibility="gone"
-                        tools:text="Pending Approval"
+                        tools:text="@string/status_pending_approval"
                         tools:visibility="visible" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
-
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="2. Ambil Foto Bukti"
+                android:text="@string/step_2_take_photo"
                 android:textAppearance="?attr/textAppearanceTitleMedium"
                 android:layout_marginTop="24dp"
                 android:layout_marginBottom="8dp"/>
@@ -107,7 +106,7 @@
                         android:scaleType="centerCrop"
                         android:src="@drawable/ic_broken_image"
                         android:background="?attr/colorSurfaceContainerLowest"
-                        android:contentDescription="Pratinjau Foto Aset" />
+                        android:contentDescription="@string/photo_preview_desc" />
 
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/btnTakePhoto"
@@ -115,17 +114,16 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="12dp"
-                        android:text="Ambil Foto" />
+                        android:text="@string/button_take_photo" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
-
 
             <com.google.android.material.textfield.TextInputLayout
                 style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
-                android:hint="Catatan (Opsional)">
+                android:hint="@string/notes_optional_hint">
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/etNotes"
                     android:layout_width="match_parent"
@@ -141,7 +139,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:enabled="false"
-                android:text="Mulai Aktivasi" />
+                android:text="@string/button_start_activation" />
 
             <ProgressBar
                 android:id="@+id/progressBar"
