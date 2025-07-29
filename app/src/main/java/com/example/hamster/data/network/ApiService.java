@@ -84,6 +84,7 @@ import com.example.hamster.data.model.response.UnreadCountResponse;
 import com.example.hamster.data.model.response.UserResponse;
 import com.example.hamster.data.model.response.VendorResponse;
 import com.example.hamster.data.model.response.WorkingUnitResponse;
+import com.example.hamster.data.model.token.RefreshTokenResponse;
 
 import java.util.List;
 import java.util.Map;
@@ -113,7 +114,7 @@ public interface ApiService {
     Call<User> getCurrentUser();
 
     @POST("auth/refresh")
-    Call<LoginResponse> refreshToken(@Body RefreshTokenRequest request);
+    Call<RefreshTokenResponse> refreshToken(@Body RefreshTokenRequest request);
 
     // --- Users ---
     @GET("users/options")

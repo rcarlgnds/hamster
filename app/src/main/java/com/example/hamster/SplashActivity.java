@@ -16,7 +16,7 @@ public class SplashActivity extends AppCompatActivity {
 
         SessionManager sessionManager = new SessionManager(this);
 
-        if (sessionManager.fetchAuthToken() != null) {
+        if (sessionManager.getAuthToken() != null) {
             navigateTo(DashboardActivity.class);
         } else {
             navigateTo(LoginActivity.class);
