@@ -31,7 +31,6 @@ public class AssetMediaFile {
     public String getUpdatedAt() { return updatedAt; }
     public MediaFile getMediaFile() { return mediaFile; }
 
-    // Setters (jika dibutuhkan, tapi biasanya tidak untuk data yang diterima)
     public void setId(String id) { this.id = id; }
     public void setAssetId(String assetId) { this.assetId = assetId; }
     public void setMediaFileId(String mediaFileId) { this.mediaFileId = mediaFileId; }

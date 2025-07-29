@@ -87,8 +87,6 @@ public class AssetDetailActivity extends AppCompatActivity {
 
         Log.d(TAG, "Tombol simpan ditekan. Memulai proses pengumpulan data.");
 
-        // Panggil collectDataForSave hanya pada fragment yang membutuhkannya (seperti Dokumen)
-        // Fragment lain sudah mengupdate ViewModel secara real-time.
         for (int i = 0; i < pagerAdapter.getItemCount(); i++) {
             Fragment fragment = pagerAdapter.getFragment(i);
             if (fragment instanceof FragmentDataCollector) {

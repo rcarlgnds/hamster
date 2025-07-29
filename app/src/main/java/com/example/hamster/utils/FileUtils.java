@@ -6,13 +6,11 @@ import android.provider.OpenableColumns;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
-import android.database.Cursor; // Tambahkan import ini
+import android.database.Cursor;
 
 public class FileUtils {
 
-    // Metode ini mungkin perlu lebih kompleks tergantung pada Uri
-    // Untuk Uri dari kamera yang disimpan via FileProvider, ini harusnya cukup
-    // Untuk Uri dari Gallery/Downloads, ini mungkin perlu menyalin file ke internal storage
+
     public static File getFile(Context context, Uri uri) {
         if (uri == null) return null;
 

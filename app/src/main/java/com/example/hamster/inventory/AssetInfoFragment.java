@@ -76,8 +76,6 @@ public class AssetInfoFragment extends Fragment {
         viewModel.getSubCategoryOptions().observe(getViewLifecycleOwner(), options -> populateDropdown(acSubCategory, options, subCategoryList));
         viewModel.getBrandOptions().observe(getViewLifecycleOwner(), options -> populateDropdown(acBrand, options, brandList));
 
-        // === INI BAGIAN YANG DIPERBAIKI ===
-        // Menggunakan lambda untuk menyediakan argumen yang dibutuhkan oleh populateStringDropdown
         viewModel.getOwnershipOptions().observe(getViewLifecycleOwner(), options -> populateStringDropdown(acOwnership, options));
         viewModel.getConditionOptions().observe(getViewLifecycleOwner(), options -> populateStringDropdown(acCondition, options));
     }

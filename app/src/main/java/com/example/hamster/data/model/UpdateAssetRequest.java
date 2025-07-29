@@ -1,11 +1,9 @@
-// File: app/src/main/java/com/example/hamster/data/model/UpdateAssetRequest.java
 package com.example.hamster.data.model;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class UpdateAssetRequest {
-    // --- Existing fields (dibiarkan seperti sebelumnya) ---
     private String code;
     private String name;
     private String ownership;
@@ -25,11 +23,11 @@ public class UpdateAssetRequest {
     private String code3;
     private String parentId;
     private String description;
-    private Integer total; // Gunakan Integer untuk nullable number
+    private Integer total;
     private String unit;
-    private Long procurementDate; // Gunakan Long untuk nullable timestamp
+    private Long procurementDate;
     private Long warrantyExpirationDate;
-    private Double purchasePrice; // Gunakan Double untuk nullable number
+    private Double purchasePrice;
     private String poNumber;
     private String invoiceNumber;
     private Double depreciation;
@@ -47,9 +45,8 @@ public class UpdateAssetRequest {
     private List<String> keepUserManualDocuments;
     private List<String> keepCustomDocuments;
 
-    // --- Constructor (jika ada, tambahkan sesuai kebutuhanmu) ---
+    // --- Constructor ---
     public UpdateAssetRequest() {
-        // Inisialisasi daftar kosong agar tidak null
         this.keepPoDocuments = new ArrayList<>();
         this.keepInvoiceDocuments = new ArrayList<>();
         this.keepWarrantyDocuments = new ArrayList<>();
@@ -151,7 +148,6 @@ public class UpdateAssetRequest {
     public Integer getDepreciationDurationMonth() { return depreciationDurationMonth; }
     public void setDepreciationDurationMonth(Integer depreciationDurationMonth) { this.depreciationDurationMonth = depreciationDurationMonth; }
 
-    // --- BARU: Getter dan Setter untuk Fields "keep" ---
     public List<String> getKeepPoDocuments() { return keepPoDocuments; }
     public void setKeepPoDocuments(List<String> keepPoDocuments) { this.keepPoDocuments = keepPoDocuments; }
 

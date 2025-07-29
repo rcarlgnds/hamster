@@ -52,9 +52,8 @@ public class LoginViewModel extends AndroidViewModel {
                         String token = loginResponse.getData().getAccessToken();
                         User user = loginResponse.getData().getUser();
 
-                        // --- [DIUBAH] Simpan token DAN data user ---
                         sessionManager.saveAuthToken(token);
-                        sessionManager.saveUser(user); // <-- Simpan objek User
+                        sessionManager.saveUser(user);
 
                         userData.setValue(user);
                         loginResult.setValue(LoginResult.SUCCESS);

@@ -1,4 +1,3 @@
-// File: app/src/main/java/com/example/hamster/data/network/ApiService.java
 package com.example.hamster.data.network;
 
 import android.app.Notification;

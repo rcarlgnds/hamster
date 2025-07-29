@@ -1,11 +1,10 @@
-// File: app/src/main/java/com/example/hamster/data/model/MediaFile.java
 package com.example.hamster.data.model;
 
 import com.google.gson.annotations.SerializedName;
 
 public class MediaFile {
     @SerializedName("id")
-    private String id; // Ini ID file fisik (11a63851-...)
+    private String id;
     @SerializedName("filename")
     private String filename;
     @SerializedName("originalName")
@@ -13,9 +12,9 @@ public class MediaFile {
     @SerializedName("mimeType")
     private String mimeType;
     @SerializedName("size")
-    private Long size; // Atau Integer
+    private Long size;
     @SerializedName("url")
-    private String url; // Path relatif: /uploads/...
+    private String url;
     @SerializedName("path")
     private String path;
 
@@ -28,7 +27,7 @@ public class MediaFile {
     public String getUrl() { return url; }
     public String getPath() { return path; }
 
-    // Setters (jika dibutuhkan)
+    // Setters
     public void setId(String id) { this.id = id; }
     public void setFilename(String filename) { this.filename = filename; }
     public void setOriginalName(String originalName) { this.originalName = originalName; }

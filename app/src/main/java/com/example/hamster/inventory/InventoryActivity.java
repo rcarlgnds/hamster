@@ -1,5 +1,6 @@
 package com.example.hamster.inventory;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -16,6 +17,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.hamster.R;
+import com.example.hamster.data.model.Asset;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.textfield.TextInputEditText;
 
@@ -96,10 +98,33 @@ public class InventoryActivity extends AppCompatActivity {
         buttonCancel.setOnClickListener(v -> dialog.dismiss());
 
         buttonNext.setOnClickListener(v -> {
-            String code = editTextCode.getText().toString();
-            Toast.makeText(this, "Mencari kode: " + code, Toast.LENGTH_SHORT).show();
-            dialog.dismiss();
-            // TODO: Implementasikan logika pencarian di sini
+            String code = editTextCode.getText().toString().trim();
+            if (code.isEmpty()) {
+                Toast.makeText(this, "Silakan masukkan kode inventaris", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            if (adapter == null || adapter.getAssetList().isEmpty()) {
+                Toast.makeText(this, "Daftar inventaris masih dimuat atau kosong.", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            Asset foundAsset = null;
+            for (Asset asset : adapter.getAssetList()) {
+                if (asset.getCode() != null && asset.getCode().equalsIgnoreCase(code)) {
+                    foundAsset = asset;
+                    break;
+                }
+            }
+
+            if (foundAsset != null) {
+                dialog.dismiss();
+                Intent intent = new Intent(InventoryActivity.this, AssetDetailActivity.class);
+                intent.putExtra("ASSET_ID", foundAsset.getId());
+                startActivity(intent);
+            } else {
+                Toast.makeText(this, "Aset dengan kode '" + code + "' tidak ditemukan.", Toast.LENGTH_LONG).show();
+            }
         });
 
         dialog.show();

@@ -151,12 +151,9 @@ public class AssetDetailViewModel extends AndroidViewModel {
 
     private void initializePendingUpdate(Asset asset) {
         if (asset == null) {
-            // Jika tidak ada data aset sama sekali, pastikan request kosong
             pendingUpdateRequest = new UpdateAssetRequest();
             return;
         }
-
-        // --- Salin Properti dari 'Asset' ke 'pendingUpdateRequest' ---
 
         // 1. Info Aset
         pendingUpdateRequest.setName(asset.getName());

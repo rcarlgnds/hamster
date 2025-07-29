@@ -1,4 +1,3 @@
-// File: app/src/main/java/com/example/hamster/utils/SessionManager.java
 package com.example.hamster.utils;
 
 import android.content.Context;

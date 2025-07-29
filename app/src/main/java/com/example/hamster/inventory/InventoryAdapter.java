@@ -30,6 +30,11 @@ public class InventoryAdapter extends RecyclerView.Adapter<InventoryAdapter.View
         this.assetList = assetList;
     }
 
+    public List<Asset> getAssetList() {
+        return this.assetList;
+    }
+
+
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {

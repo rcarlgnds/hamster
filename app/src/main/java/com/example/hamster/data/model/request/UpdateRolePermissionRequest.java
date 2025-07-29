@@ -3,7 +3,7 @@ package com.example.hamster.data.model.request;
 public class UpdateRolePermissionRequest {
     private String divisionId;
     private String positionId;
-    private String permissions; // JSON string or comma separated, adjust as needed
+    private String permissions;
 
     public UpdateRolePermissionRequest(String divisionId, String positionId, String permissions) {
         this.divisionId = divisionId;
