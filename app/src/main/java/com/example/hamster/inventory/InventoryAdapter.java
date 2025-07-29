@@ -13,27 +13,23 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.hamster.R;
 import com.example.hamster.data.model.Asset;
+import com.google.android.material.card.MaterialCardView;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class InventoryAdapter extends RecyclerView.Adapter<InventoryAdapter.ViewHolder> {
 
-    private final List<Asset> assetList;
-    private int copiedPosition = -1;
+    private List<Asset> assetList;
 
     public InventoryAdapter(List<Asset> assetList) {
+        // Initialize with a new list to prevent modification issues
         this.assetList = new ArrayList<>(assetList);
     }
-    public List<Asset> getAssetList() {
-        return this.assetList;
-    }
-
 
     @NonNull
     @Override
@@ -45,78 +41,68 @@ public class InventoryAdapter extends RecyclerView.Adapter<InventoryAdapter.View
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Asset asset = assetList.get(position);
-        Context context = holder.itemView.getContext();
-
-        holder.itemName.setText(asset.getName());
-        holder.itemCode.setText(asset.getCode());
-
-        if (asset.getStatus() != null) {
-            holder.itemStatus.setText(asset.getStatus());
-            if (asset.getStatus().equalsIgnoreCase("Active")) {
-                holder.itemStatus.setBackgroundResource(R.drawable.badge_activate_background);
-                holder.itemStatus.setTextColor(ContextCompat.getColor(context, R.color.md_theme_on_primary_container));
-            } else {
-                holder.itemStatus.setBackgroundResource(R.drawable.badge_inactivate_background);
-                holder.itemStatus.setTextColor(ContextCompat.getColor(context, R.color.md_theme_on_inactive_badge));
-            }
-
-        }
-
-        final boolean isCopied = position == copiedPosition;
-        int colorToApply = isCopied ?
-                ContextCompat.getColor(context, R.color.yellow_20) :
-                ContextCompat.getColor(context, R.color.yellow_10);
-
-        holder.itemCode.setTextColor(colorToApply);
-        holder.iconCopy.setColorFilter(colorToApply);
-
-        holder.codeLayout.setOnClickListener(v -> {
-            ClipboardManager clipboard = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
-            ClipData clip = ClipData.newPlainText("Item Code", asset.getCode());
-            clipboard.setPrimaryClip(clip);
-            Toast.makeText(context, "Code copied: " + asset.getCode(), Toast.LENGTH_SHORT).show();
-
-            if (copiedPosition != -1) {
-                notifyItemChanged(copiedPosition);
-            }
-            copiedPosition = holder.getAdapterPosition();
-            notifyItemChanged(copiedPosition);
-        });
-
-
-        holder.detailsLayout.setOnClickListener(v -> {
-            Intent intent = new Intent(context, AssetDetailActivity.class);
-            intent.putExtra("ASSET_ID", asset.getId());
-            context.startActivity(intent);
-        });
+        holder.bind(asset);
     }
 
     @Override
     public int getItemCount() {
-        return assetList != null ? assetList.size() : 0;
+        return assetList.size();
     }
 
     public void updateData(List<Asset> newAssets) {
-        assetList.clear();
+        this.assetList.clear();
         if (newAssets != null) {
-            assetList.addAll(newAssets);
+            this.assetList.addAll(newAssets);
         }
         notifyDataSetChanged();
     }
 
-    static class ViewHolder extends RecyclerView.ViewHolder {
-        TextView itemName, itemCode, itemStatus;
-        LinearLayout codeLayout, detailsLayout;
+    public List<Asset> getAssetList() {
+        return this.assetList;
+    }
+
+    public static class ViewHolder extends RecyclerView.ViewHolder {
+        MaterialCardView cardRoot;
+        TextView textViewItemName;
+        TextView textViewItemCode;
+        TextView textViewStatusBadge;
         ImageView iconCopy;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            itemName = itemView.findViewById(R.id.textViewItemName);
-            itemCode = itemView.findViewById(R.id.textViewItemCode);
-            itemStatus = itemView.findViewById(R.id.textViewStatusBadge);
-            codeLayout = itemView.findViewById(R.id.layoutCode);
-            detailsLayout = itemView.findViewById(R.id.layoutClickForDetails);
+            cardRoot = itemView.findViewById(R.id.card_root);
+            textViewItemName = itemView.findViewById(R.id.textViewItemName);
+            textViewItemCode = itemView.findViewById(R.id.textViewItemCode);
+            textViewStatusBadge = itemView.findViewById(R.id.textViewStatusBadge);
             iconCopy = itemView.findViewById(R.id.iconCopy);
+        }
+
+        public void bind(final Asset asset) {
+            textViewItemName.setText(asset.getName());
+            textViewItemCode.setText(asset.getCode());
+
+            if ("Active".equalsIgnoreCase(asset.getStatus())) {
+                textViewStatusBadge.setText(R.string.status_active);
+                textViewStatusBadge.setBackgroundResource(R.drawable.badge_activate_background);
+            } else {
+                textViewStatusBadge.setText(R.string.status_inactive);
+                textViewStatusBadge.setBackgroundResource(R.drawable.badge_inactivate_background);
+            }
+
+            cardRoot.setOnClickListener(v -> {
+                Context context = itemView.getContext();
+                Intent intent = new Intent(context, AssetDetailActivity.class);
+                intent.putExtra("ASSET_ID", asset.getId());
+                context.startActivity(intent);
+            });
+
+            iconCopy.setOnClickListener(v -> {
+                Context context = itemView.getContext();
+                ClipboardManager clipboard = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
+                ClipData clip = ClipData.newPlainText("Asset Code", asset.getCode());
+                clipboard.setPrimaryClip(clip);
+                Toast.makeText(context, "Code copied to clipboard", Toast.LENGTH_SHORT).show();
+            });
         }
     }
 }

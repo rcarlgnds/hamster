@@ -133,4 +133,7 @@
     <string name="copy_item_code">Copy Item Code</string>
     <string name="view_details">View Details</string>
 
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
 </resources>
