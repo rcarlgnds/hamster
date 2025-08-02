@@ -122,21 +122,30 @@ public class ActivationActivity extends AppCompatActivity {
                 case FOUND:
                     isAssetReadyForActivation = false;
                     binding.groupActivation.setVisibility(View.GONE);
-
                     AssetActivationStatus statusData = viewModel.getAssetStatusData().getValue();
+
                     if (statusData != null && statusData.getStatus() != null) {
+                        String statusFromServer = statusData.getStatus().toUpperCase();
+
                         binding.tvStatusBadge.setText(statusData.getStatus());
                         binding.tvStatusBadge.setVisibility(View.VISIBLE);
 
-                        String status = statusData.getStatus().toUpperCase();
-                        if (status.contains("PENDING")) {
-                            binding.tvStatusBadge.setBackgroundResource(R.drawable.badge_pending_background);
-                        } else if (status.contains("APPROVED")) {
-                            // ganti dengan R.drawable.badge_approved_background jika ada
-                            binding.tvStatusBadge.setBackgroundResource(R.drawable.badge_activate_background);
+                        switch (statusFromServer) {
+                            case "PENDING":
+                                binding.tvStatusBadge.setBackgroundResource(R.drawable.badge_pending_background);
+                                break;
+                            case "APPROVED":
+                                binding.tvStatusBadge.setBackgroundResource(R.drawable.badge_activate_background);
+                                break;
+                            case "REJECTED":
+                                binding.tvStatusBadge.setBackgroundColor(ContextCompat.getColor(this, android.R.color.holo_red_dark));
+                                break;
+                            default:
+                                binding.tvStatusBadge.setBackgroundColor(ContextCompat.getColor(this, android.R.color.darker_gray));
+                                break;
                         }
                     }
-                    Toast.makeText(this, getString(R.string.asset_in_process), Toast.LENGTH_LONG).show();
+                    Toast.makeText(this, "This asset already has an activation process.", Toast.LENGTH_LONG).show();
                     break;
 
                 case NOT_FOUND:

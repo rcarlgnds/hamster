@@ -2,7 +2,7 @@ package com.example.hamster.data.model;
 
 import com.google.gson.annotations.SerializedName;
 
-public class  {
+public class ApprovalStatus {
 
     @SerializedName("step")
     private int step;
