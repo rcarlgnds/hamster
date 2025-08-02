@@ -63,7 +63,9 @@ import com.example.hamster.data.model.request.UpdateVendorRequest;
 import com.example.hamster.data.model.request.UpdateWorkingUnitRequest;
 import com.example.hamster.data.model.response.AssetActivationResponse;
 import com.example.hamster.data.model.response.AssetActivationSettingResponse;
+import com.example.hamster.data.model.response.AssetActivationStatusResponse;
 import com.example.hamster.data.model.response.AssetApprovalStatusResponse;
+import com.example.hamster.data.model.response.AssetByCodeResponse;
 import com.example.hamster.data.model.response.AssetCategoryResponse;
 import com.example.hamster.data.model.response.AssetSubCategoryResponse;
 import com.example.hamster.data.model.response.BrandResponse;
@@ -456,7 +458,7 @@ public interface ApiService {
     Call<AssetsResponse> getDeletedAssets(@Query("page") int page, @Query("limit") int limit);
 
     @GET("assets/by-code/{code}")
-    Call<Asset> getAssetByCode(@Path("code") String assetCode);
+    Call<AssetByCodeResponse> getAssetByCode(@Path("code") String assetCode);
 
     @GET("assets/{id}")
     Call<AssetDetailResponse> getAssetById(@Path("id") String assetId);
@@ -609,7 +611,7 @@ public interface ApiService {
     Call<Void> approveAssetActivation(@Body ApproveActivationRequest request);
 
     @GET("asset-activation/status/{assetId}")
-    Call<AssetActivationStatus> getAssetActivationStatus(@Path("assetId") String assetId);
+    Call<AssetActivationStatusResponse> getAssetActivationStatus(@Path("assetId") String assetId);
 
     @PUT("asset-activation/settings/{id}")
     Call<AssetActivationSetting> updateApprovalSetting(@Path("id") String settingId, @Body UpdateAssetActivationSettingRequest request);

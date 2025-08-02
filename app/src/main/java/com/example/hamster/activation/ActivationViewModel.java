@@ -9,6 +9,8 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.example.hamster.data.model.Asset;
 import com.example.hamster.data.model.AssetActivationStatus;
+import com.example.hamster.data.model.response.AssetActivationStatusResponse;
+import com.example.hamster.data.model.response.AssetByCodeResponse;
 import com.example.hamster.data.network.ApiClient;
 import com.example.hamster.data.network.ApiService;
 import com.example.hamster.utils.FileUtils;
@@ -46,11 +48,12 @@ public class ActivationViewModel extends AndroidViewModel {
     public void checkAssetStatus(String assetCode) {
         statusCheckState.setValue(StatusCheckState.LOADING);
 
-        apiService.getAssetByCode(assetCode).enqueue(new Callback<Asset>() {
+        apiService.getAssetByCode(assetCode).enqueue(new Callback<AssetByCodeResponse>() {
             @Override
-            public void onResponse(@NonNull Call<Asset> call, @NonNull Response<Asset> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    currentAssetId = response.body().getId();
+            public void onResponse(@NonNull Call<AssetByCodeResponse> call, @NonNull Response<AssetByCodeResponse> response) {
+                if (response.isSuccessful() && response.body() != null && response.body().getData() != null) {
+                    Asset asset = response.body().getData();
+                    currentAssetId = asset.getId();
                     fetchActivationStatusById(currentAssetId);
                 } else {
                     statusCheckState.setValue(StatusCheckState.NOT_FOUND);
@@ -59,7 +62,7 @@ public class ActivationViewModel extends AndroidViewModel {
             }
 
             @Override
-            public void onFailure(@NonNull Call<Asset> call, @NonNull Throwable t) {
+            public void onFailure(@NonNull Call<AssetByCodeResponse> call, @NonNull Throwable t) {
                 statusCheckState.setValue(StatusCheckState.ERROR);
                 assetStatusData.setValue(null);
             }
@@ -67,12 +70,12 @@ public class ActivationViewModel extends AndroidViewModel {
     }
 
     private void fetchActivationStatusById(String assetId) {
-        apiService.getAssetActivationStatus(assetId).enqueue(new Callback<AssetActivationStatus>() {
+        apiService.getAssetActivationStatus(assetId).enqueue(new Callback<AssetActivationStatusResponse>() {
             @Override
-            public void onResponse(@NonNull Call<AssetActivationStatus> call, @NonNull Response<AssetActivationStatus> response) {
-                if (response.isSuccessful() && response.body() != null) {
+            public void onResponse(@NonNull Call<AssetActivationStatusResponse> call, @NonNull Response<AssetActivationStatusResponse> response) {
+                if (response.isSuccessful() && response.body() != null && response.body().getData() != null) {
                     statusCheckState.setValue(StatusCheckState.FOUND);
-                    assetStatusData.setValue(response.body());
+                    assetStatusData.setValue(response.body().getData());
                 } else if (response.code() == 404) {
                     statusCheckState.setValue(StatusCheckState.NOT_FOUND);
                     assetStatusData.setValue(null);
@@ -83,7 +86,7 @@ public class ActivationViewModel extends AndroidViewModel {
             }
 
             @Override
-            public void onFailure(@NonNull Call<AssetActivationStatus> call, @NonNull Throwable t) {
+            public void onFailure(@NonNull Call<AssetActivationStatusResponse> call, @NonNull Throwable t) {
                 statusCheckState.setValue(StatusCheckState.ERROR);
                 assetStatusData.setValue(null);
             }

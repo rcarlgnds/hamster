@@ -26,7 +26,7 @@ public class AssetActivationStatus {
     @SerializedName("approvals")
     private List<ApprovalStatus> approvals;
 
-    // Getters
+    // --- Getters ---
     public String getAssetId() {
         return assetId;
     }

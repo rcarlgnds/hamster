@@ -115,26 +115,47 @@ public class ActivationActivity extends AppCompatActivity {
                 case LOADING:
                     binding.progressBar.setVisibility(View.VISIBLE);
                     binding.tvStatusBadge.setVisibility(View.GONE);
+                    binding.groupActivation.setVisibility(View.GONE);
                     isAssetReadyForActivation = false;
                     break;
+
                 case FOUND:
                     isAssetReadyForActivation = false;
+                    binding.groupActivation.setVisibility(View.GONE);
+
                     AssetActivationStatus statusData = viewModel.getAssetStatusData().getValue();
                     if (statusData != null && statusData.getStatus() != null) {
                         binding.tvStatusBadge.setText(statusData.getStatus());
                         binding.tvStatusBadge.setVisibility(View.VISIBLE);
+
+                        String status = statusData.getStatus().toUpperCase();
+                        if (status.contains("PENDING")) {
+                            binding.tvStatusBadge.setBackgroundResource(R.drawable.badge_pending_background);
+                        } else if (status.contains("APPROVED")) {
+                            // ganti dengan R.drawable.badge_approved_background jika ada
+                            binding.tvStatusBadge.setBackgroundResource(R.drawable.badge_activate_background);
+                        }
                     }
                     Toast.makeText(this, getString(R.string.asset_in_process), Toast.LENGTH_LONG).show();
                     break;
+
                 case NOT_FOUND:
                     isAssetReadyForActivation = true;
                     binding.tvStatusBadge.setVisibility(View.GONE);
+                    binding.groupActivation.setVisibility(View.VISIBLE);
                     Toast.makeText(this, getString(R.string.asset_ready_to_activate), Toast.LENGTH_SHORT).show();
                     break;
+
                 case ERROR:
                     isAssetReadyForActivation = false;
                     binding.tvStatusBadge.setVisibility(View.GONE);
+                    binding.groupActivation.setVisibility(View.GONE);
                     Toast.makeText(this, getString(R.string.failed_to_check_status), Toast.LENGTH_SHORT).show();
+                    break;
+
+                case IDLE:
+                    binding.tvStatusBadge.setVisibility(View.GONE);
+                    binding.groupActivation.setVisibility(View.GONE);
                     break;
             }
             validateInputs();
