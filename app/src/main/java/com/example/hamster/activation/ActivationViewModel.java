@@ -2,6 +2,7 @@ package com.example.hamster.activation;
 
 import android.app.Application;
 import android.net.Uri;
+import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
@@ -26,9 +27,9 @@ import retrofit2.Response;
 
 public class ActivationViewModel extends AndroidViewModel {
 
+    private static final String TAG = "ActivationVM";
     public enum ActivationProcessState { IDLE, LOADING, SUCCESS, ERROR }
     public enum StatusCheckState { IDLE, LOADING, FOUND, NOT_FOUND, ERROR }
-
     private final ApiService apiService;
     private final MutableLiveData<ActivationProcessState> activationState = new MutableLiveData<>(ActivationProcessState.IDLE);
     private final MutableLiveData<StatusCheckState> statusCheckState = new MutableLiveData<>(StatusCheckState.IDLE);
@@ -40,14 +41,12 @@ public class ActivationViewModel extends AndroidViewModel {
         apiService = ApiClient.getClient(application).create(ApiService.class);
     }
 
-    public LiveData<ActivationProcessState> getActivationState() { return activationState; }
     public LiveData<StatusCheckState> getStatusCheckState() { return statusCheckState; }
     public LiveData<AssetActivationStatus> getAssetStatusData() { return assetStatusData; }
-
+    public LiveData<ActivationProcessState> getActivationState() { return activationState; }
 
     public void checkAssetStatus(String assetCode) {
         statusCheckState.setValue(StatusCheckState.LOADING);
-
         apiService.getAssetByCode(assetCode).enqueue(new Callback<AssetByCodeResponse>() {
             @Override
             public void onResponse(@NonNull Call<AssetByCodeResponse> call, @NonNull Response<AssetByCodeResponse> response) {
@@ -57,14 +56,13 @@ public class ActivationViewModel extends AndroidViewModel {
                     fetchActivationStatusById(currentAssetId);
                 } else {
                     statusCheckState.setValue(StatusCheckState.NOT_FOUND);
-                    assetStatusData.setValue(null);
                 }
             }
 
             @Override
             public void onFailure(@NonNull Call<AssetByCodeResponse> call, @NonNull Throwable t) {
+                Log.e(TAG, "onFailure getAssetByCode", t);
                 statusCheckState.setValue(StatusCheckState.ERROR);
-                assetStatusData.setValue(null);
             }
         });
     }
@@ -74,48 +72,38 @@ public class ActivationViewModel extends AndroidViewModel {
             @Override
             public void onResponse(@NonNull Call<AssetActivationStatusResponse> call, @NonNull Response<AssetActivationStatusResponse> response) {
                 if (response.isSuccessful() && response.body() != null && response.body().getData() != null) {
-                    statusCheckState.setValue(StatusCheckState.FOUND);
                     assetStatusData.setValue(response.body().getData());
+                    statusCheckState.setValue(StatusCheckState.FOUND);
                 } else if (response.code() == 404) {
                     statusCheckState.setValue(StatusCheckState.NOT_FOUND);
-                    assetStatusData.setValue(null);
                 } else {
                     statusCheckState.setValue(StatusCheckState.ERROR);
-                    assetStatusData.setValue(null);
                 }
             }
 
             @Override
             public void onFailure(@NonNull Call<AssetActivationStatusResponse> call, @NonNull Throwable t) {
+                Log.e(TAG, "onFailure getAssetActivationStatus", t);
                 statusCheckState.setValue(StatusCheckState.ERROR);
-                assetStatusData.setValue(null);
             }
         });
     }
 
     public void startActivationProcess(String assetCode, Uri photoUri) {
         activationState.setValue(ActivationProcessState.LOADING);
-
         File photoFile = FileUtils.getFile(getApplication(), photoUri);
         if (photoFile == null) {
             activationState.setValue(ActivationProcessState.ERROR);
             return;
         }
-
         RequestBody assetCodeBody = RequestBody.create(MediaType.parse("multipart/form-data"), assetCode);
         RequestBody photoBody = RequestBody.create(MediaType.parse(getApplication().getContentResolver().getType(photoUri)), photoFile);
         MultipartBody.Part photoPart = MultipartBody.Part.createFormData("photo", photoFile.getName(), photoBody);
-
         apiService.startAssetActivation(assetCodeBody, photoPart).enqueue(new Callback<Void>() {
             @Override
             public void onResponse(@NonNull Call<Void> call, @NonNull Response<Void> response) {
-                if (response.isSuccessful()) {
-                    activationState.setValue(ActivationProcessState.SUCCESS);
-                } else {
-                    activationState.setValue(ActivationProcessState.ERROR);
-                }
+                activationState.setValue(response.isSuccessful() ? ActivationProcessState.SUCCESS : ActivationProcessState.ERROR);
             }
-
             @Override
             public void onFailure(@NonNull Call<Void> call, @NonNull Throwable t) {
                 activationState.setValue(ActivationProcessState.ERROR);
