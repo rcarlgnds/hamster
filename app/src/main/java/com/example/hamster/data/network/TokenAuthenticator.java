@@ -42,9 +42,15 @@ public class TokenAuthenticator implements Authenticator {
 
             if (refreshResponse.isSuccessful() && refreshResponse.body() != null && refreshResponse.body().getData() != null) {
                 String newAccessToken = refreshResponse.body().getData().getAccessToken();
+                String newRefreshToken = refreshResponse.body().getData().getRefreshToken();
+
 
                 if (newAccessToken != null && !newAccessToken.isEmpty()) {
                     sessionManager.saveAuthToken(newAccessToken);
+                    if(newRefreshToken != null && !newRefreshToken.isEmpty()){
+                        sessionManager.saveRefreshToken(newRefreshToken);
+                    }
+
 
                     return response.request().newBuilder()
                             .header("Authorization", "Bearer " + newAccessToken)

@@ -466,7 +466,7 @@ public interface ApiService {
     Call<Asset> updateAsset(
             @Path("id") String assetId,
             @PartMap Map<String, RequestBody> fields,
-            @Part List<MultipartBody.Part> fileParts // Ini akan berisi semua file baru dan juga 'keep' IDs
+            @Part List<MultipartBody.Part> fileParts
     );
 
     @DELETE("assets/{id}")
@@ -598,8 +598,12 @@ public interface ApiService {
     @GET("asset-activation/pending-approvals")
     Call<PendingApprovalsResponse> getPendingApprovals(@Query("page") int page, @Query("limit") int limit);
 
+    @Multipart
     @POST("asset-activation/start")
-    Call<Void> startAssetActivation(@Body StartActivationRequest body);
+    Call<Void> startAssetActivation(
+            @Part("assetCode") RequestBody assetCode,
+            @Part MultipartBody.Part photo
+    );
 
     @POST("asset-activation/approve")
     Call<Void> approveAssetActivation(@Body ApproveActivationRequest request);

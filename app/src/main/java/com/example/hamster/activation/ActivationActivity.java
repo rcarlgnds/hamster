@@ -100,9 +100,9 @@ public class ActivationActivity extends AppCompatActivity {
 
         binding.btnStartActivation.setOnClickListener(v -> {
             if (scannedAssetCode != null && photoUri != null && isAssetReadyForActivation) {
-                viewModel.startActivationProcess(scannedAssetCode);
+                viewModel.startActivationProcess(scannedAssetCode, photoUri);
             } else {
-                Toast.makeText(this, "Scan asset, take photo, and ensure asset is ready for activation.", Toast.LENGTH_LONG).show();
+                Toast.makeText(this, "Scan asset, take photo, and ensure asset is ready.", Toast.LENGTH_LONG).show();
             }
         });
     }

@@ -85,14 +85,6 @@
             </PendingDiffInfo>
           </value>
         </entry>
-        <entry key="$PROJECT_DIR$/app/src/main/java/com/example/hamster/data/model/request/CreatePositionRequest.java">
-          <value>
-            <PendingDiffInfo>
-              <option name="filePath" value="$PROJECT_DIR$/app/src/main/java/com/example/hamster/data/model/request/CreatePositionRequest.java" />
-              <option name="updatedContent" value="package com.example.hamster.data.model.request;&#10;&#10;public class CreatePositionRequest {&#10;    private String name;&#10;    private String code;&#10;    private String description;&#10;&#10;    public CreatePositionRequest(String name, String code, String description) {&#10;        this.name = name;&#10;        this.code = code;&#10;        this.description = description;&#10;    }&#10;&#10;    public String getName() {&#10;        return name;&#10;    }&#10;    public void setName(String name) {&#10;        this.name = name;&#10;    }&#10;    public String getCode() {&#10;        return code;&#10;    }&#10;    public void setCode(String code) {&#10;        this.code = code;&#10;    }&#10;    public String getDescription() {&#10;        return description;&#10;    }&#10;    public void setDescription(String description) {&#10;        this.description = description;&#10;    }&#10;}&#10;" />
-            </PendingDiffInfo>
-          </value>
-        </entry>
         <entry key="$PROJECT_DIR$/app/src/main/java/com/example/hamster/data/model/request/CreateRoomRequest.java">
           <value>
             <PendingDiffInfo>
@@ -189,14 +181,6 @@
               <option name="filePath" value="$PROJECT_DIR$/app/src/main/java/com/example/hamster/data/model/request/UpdateBuildingRequest.java" />
               <option name="originalContent" value="package com.example.hamster.data.model.request;&#10;&#10;public class UpdateBuildingRequest {&#10;    // TODO: Add fields&#10;}&#10;&#10;" />
               <option name="updatedContent" value="package com.example.hamster.data.model.request;&#10;&#10;public class UpdateBuildingRequest {&#10;    private String name;&#10;    private String code;&#10;    private String hospitalId;&#10;    private String address;&#10;&#10;    public UpdateBuildingRequest(String name, String code, String hospitalId, String address) {&#10;        this.name = name;&#10;        this.code = code;&#10;        this.hospitalId = hospitalId;&#10;        this.address = address;&#10;    }&#10;&#10;    // Getters &amp; Setters&#10;    public String getName() {&#10;        return name;&#10;    }&#10;    public void setName(String name) {&#10;        this.name = name;&#10;    }&#10;    public String getCode() {&#10;        return code;&#10;    }&#10;    public void setCode(String code) {&#10;        this.code = code;&#10;    }&#10;    public String getHospitalId() {&#10;        return hospitalId;&#10;    }&#10;    public void setHospitalId(String hospitalId) {&#10;        this.hospitalId = hospitalId;&#10;    }&#10;    public String getAddress() {&#10;        return address;&#10;    }&#10;    public void setAddress(String address) {&#10;        this.address = address;&#10;    }&#10;}" />
-            </PendingDiffInfo>
-          </value>
-        </entry>
-        <entry key="$PROJECT_DIR$/app/src/main/java/com/example/hamster/data/model/request/UpdateDivisionRequest.java">
-          <value>
-            <PendingDiffInfo>
-              <option name="filePath" value="$PROJECT_DIR$/app/src/main/java/com/example/hamster/data/model/request/UpdateDivisionRequest.java" />
-              <option name="updatedContent" value="package com.example.hamster.data.model.request;&#10;&#10;public class UpdateDivisionRequest {&#10;    private String name;&#10;    private String code;&#10;    private String description;&#10;&#10;    public UpdateDivisionRequest(String name, String code, String description) {&#10;        this.name = name;&#10;        this.code = code;&#10;        this.description = description;&#10;    }&#10;&#10;    public String getName() {&#10;        return name;&#10;    }&#10;    public void setName(String name) {&#10;        this.name = name;&#10;    }&#10;    public String getCode() {&#10;        return code;&#10;    }&#10;    public void setCode(String code) {&#10;        this.code = code;&#10;    }&#10;    public String getDescription() {&#10;        return description;&#10;    }&#10;    public void setDescription(String description) {&#10;        this.description = description;&#10;    }&#10;}&#10;" />
             </PendingDiffInfo>
           </value>
         </entry>
