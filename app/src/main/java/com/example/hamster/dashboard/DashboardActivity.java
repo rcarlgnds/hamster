@@ -1,31 +1,33 @@
 package com.example.hamster.dashboard;
 
-import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.ActionBarDrawerToggle;
+
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.core.view.GravityCompat;
-import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.hamster.R;
-import com.example.hamster.SplashActivity;
-import com.example.hamster.activation.ActivationActivity;
 import com.example.hamster.data.model.User;
-import com.example.hamster.inventory.InventoryActivity;
 import com.example.hamster.utils.SessionManager;
-import com.google.android.material.navigation.NavigationView;
+import com.google.android.material.button.MaterialButton;
+import com.google.android.material.textfield.TextInputEditText;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class DashboardActivity extends AppCompatActivity {
 
-    private DrawerLayout drawerLayout;
-    private ActionBarDrawerToggle toggle;
+    private RecyclerView rvFeatures;
+    private FeatureAdapter featureAdapter;
     private SessionManager sessionManager;
-
+    private TextInputEditText etSearch;
+    private MaterialButton btnLogout;
+    private TextView tvWelcomeUser;
+    private TextView tvUserRole;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,73 +36,62 @@ public class DashboardActivity extends AppCompatActivity {
 
         sessionManager = new SessionManager(this);
 
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        rvFeatures = findViewById(R.id.rv_features);
+        etSearch = findViewById(R.id.et_search);
+        btnLogout = findViewById(R.id.btn_logout);
+        tvWelcomeUser = findViewById(R.id.tv_welcome_user);
+        tvUserRole = findViewById(R.id.tv_user_role);
 
-        drawerLayout = findViewById(R.id.drawer_layout);
-        NavigationView navigationView = findViewById(R.id.nav_view);
+        setupUserProfile();
+        setupFeatures();
+        setupSearch();
+        setupLogoutButton();
+    }
 
-        toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar,
-                R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawerLayout.addDrawerListener(toggle);
-        toggle.syncState();
+    private void setupUserProfile() {
+        User currentUser = sessionManager.getUser();
+        if (currentUser != null) {
+            String welcomeMessage = "Welcome, " + currentUser.getFirstName();
+            tvWelcomeUser.setText(welcomeMessage);
 
-        navigationView.setNavigationItemSelectedListener(item -> {
-            int itemId = item.getItemId();
-            if (itemId == R.id.nav_inventory) {
-                Intent intent = new Intent(DashboardActivity.this, InventoryActivity.class);
-                startActivity(intent);
+            tvUserRole.setText(currentUser.getEmail());
+        }
+    }
+
+    private void setupFeatures() {
+        List<FeatureAdapter.Feature> features = new ArrayList<>();
+        features.add(new FeatureAdapter.Feature("Inventory", R.drawable.ic_inventory));
+        features.add(new FeatureAdapter.Feature("Activation", R.drawable.ic_activation));
+
+        featureAdapter = new FeatureAdapter(this, features);
+        rvFeatures.setAdapter(featureAdapter);
+    }
+
+    private void setupSearch() {
+        etSearch.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (featureAdapter != null) {
+                    featureAdapter.filter(s.toString());
+                }
             }
-            else if (itemId == R.id.nav_activation) {
-                Intent intent = new Intent(DashboardActivity.this, ActivationActivity.class);
-                startActivity(intent);
-            }
-            else if (itemId == R.id.nav_logout) {
-                logoutUser();
-            }
 
-            drawerLayout.closeDrawer(GravityCompat.START);
-            return true;
+            @Override
+            public void afterTextChanged(Editable s) {}
         });
-
-
-        displayUserData();
     }
 
-    private void displayUserData() {
-        TextView textViewUserName = findViewById(R.id.textViewUserName);
-        TextView textViewUserEmail = findViewById(R.id.textViewUserEmail);
-        TextView textViewUserPosition = findViewById(R.id.textViewUserPosition);
-
-        User user = sessionManager.getUser();
-
-        if (user != null) {
-            String fullName = user.getFirstName() + " " + user.getLastName();
-            textViewUserName.setText(fullName);
-            textViewUserEmail.setText(user.getEmail());
-
-            if (user.getPosition() != null) {
-                textViewUserPosition.setText(user.getPosition().getName());
-            }
-
-            Toast.makeText(this, "Selamat datang, " + user.getFirstName(), Toast.LENGTH_LONG).show();
-        }
-    }
-
-    private void logoutUser() {
-        sessionManager.logout();
-        Intent intent = new Intent(DashboardActivity.this, SplashActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        startActivity(intent);
-        finish();
-    }
-
-    @Override
-    public void onBackPressed() {
-        if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
-            drawerLayout.closeDrawer(GravityCompat.START);
-        } else {
-            super.onBackPressed();
-        }
+    private void setupLogoutButton() {
+        btnLogout.setOnClickListener(v -> {
+            new AlertDialog.Builder(this)
+                    .setTitle("Logout")
+                    .setMessage("Are you sure you want to logout?")
+                    .setPositiveButton("Yes", (dialog, which) -> sessionManager.logout())
+                    .setNegativeButton("No", null)
+                    .show();
+        });
     }
 }

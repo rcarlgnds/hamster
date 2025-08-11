@@ -28,8 +28,11 @@ import retrofit2.Response;
 public class ActivationViewModel extends AndroidViewModel {
 
     private static final String TAG = "ActivationVM";
-    public enum ActivationProcessState { IDLE, LOADING, SUCCESS, ERROR }
-    public enum StatusCheckState { IDLE, LOADING, FOUND, NOT_FOUND, ERROR }
+
+    public enum ActivationProcessState {IDLE, LOADING, SUCCESS, ERROR}
+
+    public enum StatusCheckState {IDLE, LOADING, FOUND, NOT_FOUND, ERROR}
+
     private final ApiService apiService;
     private final MutableLiveData<ActivationProcessState> activationState = new MutableLiveData<>(ActivationProcessState.IDLE);
     private final MutableLiveData<StatusCheckState> statusCheckState = new MutableLiveData<>(StatusCheckState.IDLE);
@@ -41,9 +44,17 @@ public class ActivationViewModel extends AndroidViewModel {
         apiService = ApiClient.getClient(application).create(ApiService.class);
     }
 
-    public LiveData<StatusCheckState> getStatusCheckState() { return statusCheckState; }
-    public LiveData<AssetActivationStatus> getAssetStatusData() { return assetStatusData; }
-    public LiveData<ActivationProcessState> getActivationState() { return activationState; }
+    public LiveData<StatusCheckState> getStatusCheckState() {
+        return statusCheckState;
+    }
+
+    public LiveData<AssetActivationStatus> getAssetStatusData() {
+        return assetStatusData;
+    }
+
+    public LiveData<ActivationProcessState> getActivationState() {
+        return activationState;
+    }
 
     public void checkAssetStatus(String assetCode) {
         statusCheckState.setValue(StatusCheckState.LOADING);
@@ -104,6 +115,7 @@ public class ActivationViewModel extends AndroidViewModel {
             public void onResponse(@NonNull Call<Void> call, @NonNull Response<Void> response) {
                 activationState.setValue(response.isSuccessful() ? ActivationProcessState.SUCCESS : ActivationProcessState.ERROR);
             }
+
             @Override
             public void onFailure(@NonNull Call<Void> call, @NonNull Throwable t) {
                 activationState.setValue(ActivationProcessState.ERROR);
