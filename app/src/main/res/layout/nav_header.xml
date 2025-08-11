@@ -13,7 +13,7 @@
         android:layout_width="161dp"
         android:layout_height="81dp"
         android:contentDescription="Hamster Logo"
-        android:src="@drawable/hamster_logo"
+        android:src="@drawable/images_hamster_logo"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 

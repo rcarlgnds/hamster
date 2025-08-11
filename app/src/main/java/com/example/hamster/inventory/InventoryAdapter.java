@@ -83,10 +83,10 @@ public class InventoryAdapter extends RecyclerView.Adapter<InventoryAdapter.View
 
             if ("Active".equalsIgnoreCase(asset.getStatus())) {
                 textViewStatusBadge.setText(R.string.status_active);
-                textViewStatusBadge.setBackgroundResource(R.drawable.badge_activate_background);
+                textViewStatusBadge.setBackgroundResource(R.drawable.bg_badge_activate_background);
             } else {
                 textViewStatusBadge.setText(R.string.status_inactive);
-                textViewStatusBadge.setBackgroundResource(R.drawable.badge_inactivate_background);
+                textViewStatusBadge.setBackgroundResource(R.drawable.bg_badge_inactivate_background);
             }
 
             cardRoot.setOnClickListener(v -> {

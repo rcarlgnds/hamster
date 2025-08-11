@@ -24,13 +24,13 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="64dp"
-            android:background="@drawable/gradient_bottom_dark"
+            android:background="@drawable/bg_gradient_bottom_dark"
             android:layout_gravity="top"/>
 
         <View
             android:layout_width="match_parent"
             android:layout_height="64dp"
-            android:background="@drawable/gradient_bottom_dark"
+            android:background="@drawable/bg_gradient_bottom_dark"
             android:layout_gravity="bottom"/>
 
         <com.google.android.material.button.MaterialButton

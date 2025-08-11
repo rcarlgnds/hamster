@@ -35,7 +35,7 @@
             android:id="@+id/textViewStatusBadge"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/badge_activate_background"
+            android:background="@drawable/bg_badge_activate_background"
             android:paddingHorizontal="10dp"
             android:paddingVertical="4dp"
             android:textAppearance="?attr/textAppearanceLabelSmall"
@@ -70,7 +70,7 @@
                 android:layout_height="20dp"
                 android:layout_marginStart="8dp"
                 android:contentDescription="@string/copy_item_code"
-                android:src="@drawable/copy_24"
+                android:src="@drawable/ic_copy"
                 app:tint="?attr/colorOnSurfaceVariant" />
         </LinearLayout>
 

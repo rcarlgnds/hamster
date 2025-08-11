@@ -98,7 +98,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_margin="16dp"
-        android:src="@drawable/baseline_search_24"
+        android:src="@drawable/ic_search"
         app:tint="@color/md_theme_on_primary_container"
         app:backgroundTint="@color/md_theme_primary_container"
         android:contentDescription="@string/search_dialog_title"/>

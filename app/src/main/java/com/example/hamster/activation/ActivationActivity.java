@@ -132,10 +132,10 @@ public class ActivationActivity extends AppCompatActivity {
 
                         switch (statusFromServer) {
                             case "PENDING":
-                                binding.tvStatusBadge.setBackgroundResource(R.drawable.badge_pending_background);
+                                binding.tvStatusBadge.setBackgroundResource(R.drawable.bg_badge_pending_background);
                                 break;
                             case "APPROVED":
-                                binding.tvStatusBadge.setBackgroundResource(R.drawable.badge_activate_background);
+                                binding.tvStatusBadge.setBackgroundResource(R.drawable.bg_badge_activate_background);
                                 break;
                             case "REJECTED":
                                 binding.tvStatusBadge.setBackgroundColor(ContextCompat.getColor(this, android.R.color.holo_red_dark));
