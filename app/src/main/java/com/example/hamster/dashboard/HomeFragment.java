@@ -43,14 +43,12 @@ public class HomeFragment extends Fragment {
 
         rvFeatures = view.findViewById(R.id.rv_features);
         etSearch = view.findViewById(R.id.et_search);
-        btnLogout = view.findViewById(R.id.btn_logout);
         tvWelcomeUser = view.findViewById(R.id.tv_welcome_user);
         tvUserRole = view.findViewById(R.id.tv_user_role);
 
         setupUserProfile();
         setupFeatures();
         setupSearch();
-        setupLogoutButton();
 
         return view;
     }
@@ -90,14 +88,4 @@ public class HomeFragment extends Fragment {
         });
     }
 
-    private void setupLogoutButton() {
-        btnLogout.setOnClickListener(v -> {
-            new AlertDialog.Builder(requireContext())
-                    .setTitle("Logout")
-                    .setMessage("Are you sure you want to logout?")
-                    .setPositiveButton("Yes", (dialog, which) -> sessionManager.logout())
-                    .setNegativeButton("No", null)
-                    .show();
-        });
-    }
 }
