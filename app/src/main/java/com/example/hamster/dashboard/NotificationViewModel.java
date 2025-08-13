@@ -1,8 +1,8 @@
 package com.example.hamster.dashboard;
 
-import android.app.Application; // Import Application
-import androidx.annotation.NonNull; // Import NonNull
-import androidx.lifecycle.AndroidViewModel; // Ganti ke AndroidViewModel
+import android.app.Application;
+import androidx.annotation.NonNull;
+import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
@@ -30,28 +30,25 @@ public class NotificationViewModel extends AndroidViewModel {
         apiService = ApiClient.getClient(application).create(ApiService.class);
     }
 
-    public LiveData<List<Notification>> getNotificationsLiveData() {
-        return notificationsLiveData;
-    }
+    // LiveData Getters
+    public LiveData<List<Notification>> getNotificationsLiveData() { return notificationsLiveData; }
+    public LiveData<Boolean> getIsLoading() { return isLoading; }
+    public LiveData<String> getErrorMessage() { return errorMessage; }
 
-    public LiveData<Boolean> getIsLoading() {
-        return isLoading;
-    }
-
-    public LiveData<String> getErrorMessage() {
-        return errorMessage;
-    }
-
-    public void fetchNotifications() {
+    public void fetchNotifications(int page, int limit) {
         isLoading.setValue(true);
-        apiService.getNotifications().enqueue(new Callback<NotificationResponse>() {
+        apiService.getNotifications(page, limit, false).enqueue(new Callback<NotificationResponse>() {
             @Override
             public void onResponse(@NonNull Call<NotificationResponse> call, @NonNull Response<NotificationResponse> response) {
                 isLoading.setValue(false);
                 if (response.isSuccessful() && response.body() != null && response.body().isSuccess()) {
-                    notificationsLiveData.setValue(response.body().getData());
+                    if (response.body().getData() != null && response.body().getData().getNotificationList() != null) {
+                        notificationsLiveData.setValue(response.body().getData().getNotificationList());
+                    } else {
+                        errorMessage.setValue("No notification data found.");
+                    }
                 } else {
-                    errorMessage.setValue("Failed to load notifications. Please try again.");
+                    errorMessage.setValue("Failed to load notifications. Code: " + response.code());
                 }
             }
 

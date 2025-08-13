@@ -51,8 +51,7 @@ public class NotificationsFragment extends Fragment {
 
         observeViewModel();
 
-        notificationViewModel.fetchNotifications();
-    }
+        notificationViewModel.fetchNotifications(1, 20);    }
 
     private void setupRecyclerView() {
         rvNotifications.setLayoutManager(new LinearLayoutManager(getContext()));

@@ -505,8 +505,12 @@ public interface ApiService {
     @POST("notifications")
     Call<Notification> createNotification(@Body CreateNotificationRequest request);
 
-    @GET("notifications")
-    Call<NotificationResponse> getNotifications(@Query("page") int page, @Query("limit") int limit);
+    @GET("api/notifications")
+    Call<NotificationResponse> getNotifications(
+            @Query("page") int page,
+            @Query("limit") int limit,
+            @Query("unreadOnly") boolean unreadOnly
+    );
 
     @GET("notifications/unread-count")
     Call<UnreadCountResponse> getUnreadNotificationCount();

@@ -1,23 +1,24 @@
 package com.example.hamster.data.model.response;
 
-import com.example.hamster.data.model.Notification;
-
-import java.util.List;
+import com.example.hamster.data.model.NotificationData;
+import com.google.gson.annotations.SerializedName;
 
 public class NotificationResponse {
+
+    @SerializedName("success")
     private boolean success;
+
+    @SerializedName("message")
     private String message;
-    private List<Notification> data;
+
+    @SerializedName("data")
+    private NotificationData data;
 
     public boolean isSuccess() {
         return success;
     }
 
-    public String getMessage() {
-        return message;
-    }
-
-    public List<Notification> getData() {
+    public NotificationData getData() {
         return data;
     }
 }
