@@ -31,7 +31,7 @@ public class ActivationViewModel extends AndroidViewModel {
 
     public enum ActivationProcessState {IDLE, LOADING, SUCCESS, ERROR}
 
-    public enum StatusCheckState {IDLE, LOADING, FOUND, NOT_FOUND, ERROR}
+    public enum StatusCheckState {IDLE, LOADING, FOUND_READY_TO_ACTIVATE, FOUND_ALREADY_ACTIVATED, NOT_FOUND, ERROR}
 
     private final ApiService apiService;
     private final MutableLiveData<ActivationProcessState> activationState = new MutableLiveData<>(ActivationProcessState.IDLE);
@@ -82,9 +82,12 @@ public class ActivationViewModel extends AndroidViewModel {
         apiService.getAssetActivationStatus(assetId).enqueue(new Callback<AssetActivationStatusResponse>() {
             @Override
             public void onResponse(@NonNull Call<AssetActivationStatusResponse> call, @NonNull Response<AssetActivationStatusResponse> response) {
-                if (response.isSuccessful() && response.body() != null && response.body().getData() != null) {
+                if (response.isSuccessful() && response.body() != null && response.body().getData() != null && response.body().getData().getCurrentStep() == 0) {
                     assetStatusData.setValue(response.body().getData());
-                    statusCheckState.setValue(StatusCheckState.FOUND);
+                    statusCheckState.setValue(StatusCheckState.FOUND_READY_TO_ACTIVATE);
+                } else if (response.isSuccessful() && response.body() != null && response.body().getData() != null && response.body().getData().getCurrentStep() != 0) {
+                    assetStatusData.setValue(response.body().getData());
+                    statusCheckState.setValue(StatusCheckState.FOUND_ALREADY_ACTIVATED);
                 } else if (response.code() == 404) {
                     statusCheckState.setValue(StatusCheckState.NOT_FOUND);
                 } else {

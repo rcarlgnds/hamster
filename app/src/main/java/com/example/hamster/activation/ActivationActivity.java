@@ -119,15 +119,45 @@ public class ActivationActivity extends AppCompatActivity {
                     isAssetReadyForActivation = false;
                     break;
 
-                case FOUND:
+                case FOUND_READY_TO_ACTIVATE:
+                    isAssetReadyForActivation = false;
+                    binding.groupActivation.setVisibility(View.VISIBLE);
+                    AssetActivationStatus statusDataReadyToActivate = viewModel.getAssetStatusData().getValue();
+
+                    if (statusDataReadyToActivate != null && statusDataReadyToActivate.getStatus() != null) {
+                        String statusFromServer = statusDataReadyToActivate.getStatus().toUpperCase();
+
+                        binding.tvStatusBadge.setText(statusDataReadyToActivate.getStatus());
+                        binding.tvStatusBadge.setVisibility(View.VISIBLE);
+
+                        switch (statusFromServer) {
+                            case "PENDING":
+                                binding.tvStatusBadge.setBackgroundResource(R.drawable.bg_badge_pending_background);
+                                break;
+                            case "APPROVED":
+                                binding.tvStatusBadge.setBackgroundResource(R.drawable.bg_badge_activate_background);
+                                break;
+                            case "REJECTED":
+                                binding.tvStatusBadge.setBackgroundColor(ContextCompat.getColor(this, android.R.color.holo_red_dark));
+                                break;
+                            default:
+                                binding.tvStatusBadge.setBackgroundColor(ContextCompat.getColor(this, android.R.color.darker_gray));
+                                break;
+                        }
+                    }
+                    isAssetReadyForActivation = true;
+                    Toast.makeText(this, "This asset is ready to be activated.", Toast.LENGTH_LONG).show();
+                    break;
+
+                case FOUND_ALREADY_ACTIVATED:
                     isAssetReadyForActivation = false;
                     binding.groupActivation.setVisibility(View.GONE);
-                    AssetActivationStatus statusData = viewModel.getAssetStatusData().getValue();
+                    AssetActivationStatus statusDataAlreadyActivated = viewModel.getAssetStatusData().getValue();
 
-                    if (statusData != null && statusData.getStatus() != null) {
-                        String statusFromServer = statusData.getStatus().toUpperCase();
+                    if (statusDataAlreadyActivated != null && statusDataAlreadyActivated.getStatus() != null) {
+                        String statusFromServer = statusDataAlreadyActivated.getStatus().toUpperCase();
 
-                        binding.tvStatusBadge.setText(statusData.getStatus());
+                        binding.tvStatusBadge.setText(statusDataAlreadyActivated.getStatus());
                         binding.tvStatusBadge.setVisibility(View.VISIBLE);
 
                         switch (statusFromServer) {
@@ -149,7 +179,7 @@ public class ActivationActivity extends AppCompatActivity {
                     break;
 
                 case NOT_FOUND:
-                    isAssetReadyForActivation = true;
+                    isAssetReadyForActivation = false;
                     binding.tvStatusBadge.setVisibility(View.GONE);
                     binding.groupActivation.setVisibility(View.VISIBLE);
                     Toast.makeText(this, getString(R.string.asset_ready_to_activate), Toast.LENGTH_SHORT).show();
