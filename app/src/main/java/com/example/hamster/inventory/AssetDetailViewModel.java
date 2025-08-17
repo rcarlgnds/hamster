@@ -325,10 +325,29 @@ public class AssetDetailViewModel extends AndroidViewModel {
         return fields;
     }
 
+    public void updateMaintenanceDocuments(Uri poDoc, Uri invoiceDoc, Uri warrantyDoc) {
+        pendingUpdateRequest.setPoDocumentUri(poDoc);
+        pendingUpdateRequest.setInvoiceDocumentUri(invoiceDoc);
+        pendingUpdateRequest.setWarrantyDocumentUri(warrantyDoc);
+    }
+
     private List<MultipartBody.Part> buildFileParts() {
         List<MultipartBody.Part> fileParts = new ArrayList<>();
+        // Foto dari tab Documents
         addFilesToParts(fileParts, "serialNumberPhoto", newSerialNumberPhotoUris);
         addFilesToParts(fileParts, "assetPhotos", newAssetPhotoUris);
+
+        // File dari tab Maintenance
+        if (pendingUpdateRequest.getPoDocumentUri() != null) {
+            fileParts.add(createFilePart("poDocument", pendingUpdateRequest.getPoDocumentUri()));
+        }
+        if (pendingUpdateRequest.getInvoiceDocumentUri() != null) {
+            fileParts.add(createFilePart("invoiceDocument", pendingUpdateRequest.getInvoiceDocumentUri()));
+        }
+        if (pendingUpdateRequest.getWarrantyDocumentUri() != null) {
+            fileParts.add(createFilePart("warrantyDocument", pendingUpdateRequest.getWarrantyDocumentUri()));
+        }
+
         return fileParts;
     }
 

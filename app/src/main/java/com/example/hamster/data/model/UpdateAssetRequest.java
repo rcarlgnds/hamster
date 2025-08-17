@@ -1,5 +1,7 @@
 package com.example.hamster.data.model;
 
+import android.net.Uri;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,11 +40,40 @@ public class UpdateAssetRequest {
     private Long effectiveUsageDate;
 
     private Integer depreciationDurationMonth;
+    private transient Uri poDocumentUri;
+    private transient Uri invoiceDocumentUri;
+    private transient Uri warrantyDocumentUri;
 
-    // --- Fields untuk menyimpan ID foto/dokumen yang akan dipertahankan ---
+
     private List<String> keepPoDocuments;
     private List<String> keepInvoiceDocuments;
     private List<String> keepWarrantyDocuments;
+
+
+    public Uri getPoDocumentUri() {
+        return poDocumentUri;
+    }
+
+    public void setPoDocumentUri(Uri poDocumentUri) {
+        this.poDocumentUri = poDocumentUri;
+    }
+
+    public Uri getInvoiceDocumentUri() {
+        return invoiceDocumentUri;
+    }
+
+    public void setInvoiceDocumentUri(Uri invoiceDocumentUri) {
+        this.invoiceDocumentUri = invoiceDocumentUri;
+    }
+
+    public Uri getWarrantyDocumentUri() {
+        return warrantyDocumentUri;
+    }
+
+    public void setWarrantyDocumentUri(Uri warrantyDocumentUri) {
+        this.warrantyDocumentUri = warrantyDocumentUri;
+    }
+
     private List<String> keepSerialNumberPhotos;
     private List<String> keepAssetPhotos;
     private List<String> keepLicenseDocuments;

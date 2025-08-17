@@ -1,46 +1,51 @@
 package com.example.hamster.inventory;
 
-import android.app.DatePickerDialog;
+import android.net.Uri;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
+import android.provider.OpenableColumns;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.AutoCompleteTextView;
-import android.widget.EditText;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.hamster.R;
-
 import com.example.hamster.data.model.Asset;
-import com.example.hamster.data.model.OptionItem;
+import com.example.hamster.data.model.AssetMediaFile;
+import com.example.hamster.data.network.ApiClient;
 import com.google.android.material.textfield.TextInputEditText;
 
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
+import java.util.Objects;
 import java.util.function.Consumer;
 
-public class AssetMaintenanceFragment extends Fragment {
+public class AssetMaintenanceFragment extends Fragment implements FragmentDataCollector {
 
     private AssetDetailViewModel viewModel;
-    private TextInputEditText etPurchasePrice, etPoNumber, etInvoiceNumber, etDepreciationPercent, etDepreciationValue, etDepreciationDuration;
-    private AutoCompleteTextView acVendor;
 
+    // View Components
     private TextInputEditText etProcurementDate, etWarrantyDate, etDepreciationStart, etEffectiveUsageDate;
+    private TextView textPODocumentStatus, textInvoiceDocumentStatus, textWarrantyDocumentStatus;
+    private ImageView iconPODocument, iconInvoiceDocument, iconWarrantyDocument;
+    private Button buttonChoosePODocument, buttonChooseInvoiceDocument, buttonChooseWarrantyDocument;
 
-    private List<OptionItem> vendorList = new ArrayList<>();
-    private boolean isUserAction = true;
+    // File Handling State
+    private ActivityResultLauncher<String[]> filePickerLauncher;
+    private Consumer<Uri> currentFileCallback;
+    private DocumentItem poDocument = new DocumentItem();
+    private DocumentItem invoiceDocument = new DocumentItem();
+    private DocumentItem warrantyDocument = new DocumentItem();
 
+    // --- Lifecycle Methods ---
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_asset_maintenance, container, false);
@@ -52,164 +57,177 @@ public class AssetMaintenanceFragment extends Fragment {
         viewModel = new ViewModelProvider(requireActivity()).get(AssetDetailViewModel.class);
 
         initializeViews(view);
+        initializeFilePicker();
         setupListeners();
         setupObservers();
     }
 
+    // --- Initialization ---
     private void initializeViews(View view) {
         etProcurementDate = view.findViewById(R.id.etProcurementDate);
-        etPurchasePrice = view.findViewById(R.id.editTextPurchasePrice);
-        etPoNumber = view.findViewById(R.id.editTextPONumber);
-        etInvoiceNumber = view.findViewById(R.id.editTextInvoiceNumber);
         etWarrantyDate = view.findViewById(R.id.editTextWarrantyDate);
-        acVendor = view.findViewById(R.id.autoCompleteVendor);
-        etDepreciationPercent = view.findViewById(R.id.editTextDepreciationPercent);
-        etDepreciationValue = view.findViewById(R.id.editTextDepreciationValue);
         etDepreciationStart = view.findViewById(R.id.editTextDepreciationStart);
         etEffectiveUsageDate = view.findViewById(R.id.editTextEffectiveUsageDate);
-        etDepreciationDuration = view.findViewById(R.id.editTextDepreciationDuration);
 
-        etProcurementDate.setFocusable(false);
-        etProcurementDate.setClickable(true);
-        etWarrantyDate.setFocusable(false);
-        etWarrantyDate.setClickable(true);
-        etDepreciationStart.setFocusable(false);
-        etDepreciationStart.setClickable(true);
-        etEffectiveUsageDate.setFocusable(false);
-        etEffectiveUsageDate.setClickable(true);
+        textPODocumentStatus = view.findViewById(R.id.textPODocumentStatus);
+        textInvoiceDocumentStatus = view.findViewById(R.id.textInvoiceDocumentStatus);
+        textWarrantyDocumentStatus = view.findViewById(R.id.textWarrantyDocumentStatus);
+
+        iconPODocument = view.findViewById(R.id.iconPODocument);
+        iconInvoiceDocument = view.findViewById(R.id.iconInvoiceDocument);
+        iconWarrantyDocument = view.findViewById(R.id.iconWarrantyDocument);
+
+        buttonChoosePODocument = view.findViewById(R.id.buttonChoosePODocument);
+        buttonChooseInvoiceDocument = view.findViewById(R.id.buttonChooseInvoiceDocument);
+        buttonChooseWarrantyDocument = view.findViewById(R.id.buttonChooseWarrantyDocument);
+    }
+
+    private void initializeFilePicker() {
+        filePickerLauncher = registerForActivityResult(new ActivityResultContracts.OpenDocument(), uri -> {
+            if (uri != null && currentFileCallback != null) {
+                checkFileSizeAndProceed(uri, currentFileCallback);
+            }
+        });
     }
 
     private void setupListeners() {
-        // Listener untuk field teks biasa
-        addTextWatcher(etPurchasePrice, text -> viewModel.updateField(req -> req.setPurchasePrice(parseDouble(text))));
-        addTextWatcher(etPoNumber, text -> viewModel.updateField(req -> req.setPoNumber(text)));
-        addTextWatcher(etInvoiceNumber, text -> viewModel.updateField(req -> req.setInvoiceNumber(text)));
-        addTextWatcher(etDepreciationPercent, text -> viewModel.updateField(req -> req.setDepreciation(parseDouble(text))));
-        addTextWatcher(etDepreciationValue, text -> viewModel.updateField(req -> req.setDepreciationValue(parseDouble(text))));
-        addTextWatcher(etDepreciationDuration, text -> viewModel.updateField(req -> req.setDepreciationDurationMonth(parseInteger(text))));
 
-        // Listener untuk dropdown (AutoCompleteTextView)
-        acVendor.setOnItemClickListener((parent, view, position, id) -> {
-            OptionItem selected = (OptionItem) parent.getItemAtPosition(position);
-            if (selected != null) {
-                viewModel.updateField(req -> req.setVendorId(selected.getId()));
-            }
-        });
+        buttonChoosePODocument.setOnClickListener(v -> openFilePicker(uri -> {
+            poDocument = new DocumentItem(uri);
+            updateDocumentUI(poDocument, textPODocumentStatus, iconPODocument);
+        }));
 
-        // Listener untuk field tanggal
-        etProcurementDate.setOnClickListener(v -> showDatePickerDialog(etProcurementDate, timestamp -> viewModel.updateField(req -> req.setProcurementDate(timestamp))));
-        etWarrantyDate.setOnClickListener(v -> showDatePickerDialog(etWarrantyDate, timestamp -> viewModel.updateField(req -> req.setWarrantyExpirationDate(timestamp))));
-        etDepreciationStart.setOnClickListener(v -> showDatePickerDialog(etDepreciationStart, timestamp -> viewModel.updateField(req -> req.setDepreciationStartDate(timestamp))));
-        etEffectiveUsageDate.setOnClickListener(v -> showDatePickerDialog(etEffectiveUsageDate, timestamp -> viewModel.updateField(req -> req.setEffectiveUsageDate(timestamp))));
+        buttonChooseInvoiceDocument.setOnClickListener(v -> openFilePicker(uri -> {
+            invoiceDocument = new DocumentItem(uri);
+            updateDocumentUI(invoiceDocument, textInvoiceDocumentStatus, iconInvoiceDocument);
+        }));
+
+        buttonChooseWarrantyDocument.setOnClickListener(v -> openFilePicker(uri -> {
+            warrantyDocument = new DocumentItem(uri);
+            updateDocumentUI(warrantyDocument, textWarrantyDocumentStatus, iconWarrantyDocument);
+        }));
     }
 
     private void setupObservers() {
-        viewModel.getAssetData().observe(getViewLifecycleOwner(), asset -> {
-            if (asset == null) return;
-            isUserAction = false;
-            updateUI(asset);
-            isUserAction = true;
-        });
-
-        viewModel.getVendorOptions().observe(getViewLifecycleOwner(), options -> {
-            if (options == null || getContext() == null) return;
-            vendorList.clear();
-            vendorList.addAll(options);
-            ArrayAdapter<OptionItem> adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_dropdown_item_1line, vendorList);
-            acVendor.setAdapter(adapter);
-
-            if (viewModel.getAssetData().getValue() != null && viewModel.getAssetData().getValue().getVendor() != null) {
-                acVendor.setText(viewModel.getAssetData().getValue().getVendor().getName(), false);
-            }
-        });
+        viewModel.getAssetData().observe(getViewLifecycleOwner(), this::displayAssetData);
     }
 
-    private void updateUI(Asset asset) {
-        etProcurementDate.setText(formatDate(asset.getProcurementDate() != null ? asset.getProcurementDate() * 1000L : null));
-        etWarrantyDate.setText(formatDate(asset.getWarrantyExpirationDate() != null ? asset.getWarrantyExpirationDate() * 1000L : null));
-        etDepreciationStart.setText(formatDate(asset.getDepreciationStartDate() != null ? asset.getDepreciationStartDate() * 1000L : null));
-        etEffectiveUsageDate.setText(formatDate(asset.getEffectiveUsageDate() != null ? asset.getEffectiveUsageDate() * 1000L : null));
+    private void displayAssetData(Asset asset) {
+        if (asset == null) return;
 
 
-        etPoNumber.setText(asset.getPoNumber());
-        etInvoiceNumber.setText(asset.getInvoiceNumber());
-
-        if (asset.getPurchasePrice() != null) etPurchasePrice.setText(String.valueOf(asset.getPurchasePrice()));
-        if (asset.getDepreciation() != null) etDepreciationPercent.setText(String.valueOf(asset.getDepreciation()));
-        if (asset.getDepreciationValue() != null) etDepreciationValue.setText(String.valueOf(asset.getDepreciationValue()));
-        if (asset.getDepreciationDurationMonth() != null) etDepreciationDuration.setText(String.valueOf(asset.getDepreciationDurationMonth()));
-
-        if (asset.getVendor() != null) {
-            acVendor.setText(asset.getVendor().getName(), false);
-        }
-    }
-
-    private void showDatePickerDialog(final EditText targetEditText, final Consumer<Long> onDateSelected) {
-        final Calendar calendar = Calendar.getInstance();
-        String existingDateStr = targetEditText.getText().toString();
-
-        if (!existingDateStr.isEmpty()) {
-            try {
-                SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
-                Date d = sdf.parse(existingDateStr);
-                if (d != null) {
-                    calendar.setTime(d);
+        if (asset.getMediaFiles() != null) {
+            for (AssetMediaFile media : asset.getMediaFiles()) {
+                if (media.getMediaFile() != null) {
+                    String fullUrl = ApiClient.BASE_MEDIA_URL + media.getMediaFile().getUrl();
+                    String fileName = media.getMediaFile().getOriginalName();
+                    switch (media.getType()) {
+                        case "PO_DOCUMENT":
+                            poDocument = new DocumentItem(fullUrl, media.getId(), fileName);
+                            break;
+                        case "INVOICE_DOCUMENT":
+                            invoiceDocument = new DocumentItem(fullUrl, media.getId(), fileName);
+                            break;
+                        case "WARRANTY_DOCUMENT":
+                            warrantyDocument = new DocumentItem(fullUrl, media.getId(), fileName);
+                            break;
+                    }
                 }
-            } catch (Exception e) {
             }
         }
+        updateAllDocumentUIs();
+    }
 
-        DatePickerDialog datePickerDialog = new DatePickerDialog(
-                requireContext(),
-                (view, year, month, dayOfMonth) -> {
-                    Calendar selectedDate = Calendar.getInstance();
-                    selectedDate.clear();
-                    selectedDate.set(year, month, dayOfMonth);
+    // --- UI Update Logic ---
+    private void updateAllDocumentUIs() {
+        updateDocumentUI(poDocument, textPODocumentStatus, iconPODocument);
+        updateDocumentUI(invoiceDocument, textInvoiceDocumentStatus, iconInvoiceDocument);
+        updateDocumentUI(warrantyDocument, textWarrantyDocumentStatus, iconWarrantyDocument);
+    }
 
-                    long timestamp = selectedDate.getTimeInMillis();
-                    targetEditText.setText(formatDate(timestamp));
-                    onDateSelected.accept(timestamp);
-                },
-                calendar.get(Calendar.YEAR),
-                calendar.get(Calendar.MONTH),
-                calendar.get(Calendar.DAY_OF_MONTH)
+    private void updateDocumentUI(DocumentItem doc, TextView statusView, ImageView iconView) {
+        if (doc.isSet()) {
+            statusView.setText(doc.getFileName(requireContext()));
+            iconView.setImageResource(R.drawable.ic_check_circle);
+        } else {
+            statusView.setText(R.string.status_no_file);
+            iconView.setImageResource(R.drawable.ic_cancel);
+        }
+    }
+
+    // --- File Picker Logic ---
+    private void openFilePicker(Consumer<Uri> callback) {
+        this.currentFileCallback = callback;
+        String[] mimeTypes = {"image/jpeg", "image/png", "application/pdf"};
+        filePickerLauncher.launch(mimeTypes);
+    }
+
+    private void checkFileSizeAndProceed(Uri uri, Consumer<Uri> callback) {
+        if (getContext() == null) return;
+        try (android.database.Cursor cursor = requireContext().getContentResolver().query(uri, null, null, null, null)) {
+            if (cursor != null && cursor.moveToFirst()) {
+                int sizeIndex = cursor.getColumnIndex(OpenableColumns.SIZE);
+                if (!cursor.isNull(sizeIndex)) {
+                    long fileSize = cursor.getLong(sizeIndex);
+                    long maxSize = 10 * 1024 * 1024; // 10 MB
+
+                    if (fileSize > maxSize) {
+                        Toast.makeText(getContext(), "Ukuran file tidak boleh melebihi 10 MB", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                }
+            }
+        } catch (Exception e) {
+            Log.e("FileSizeCheck", "Gagal memeriksa ukuran file", e);
+        }
+        callback.accept(uri);
+    }
+
+    // --- Data Collection for Saving ---
+    @Override
+    public void collectDataForSave() {
+        if (viewModel == null) return;
+        viewModel.updateMaintenanceDocuments(
+                poDocument.isNew() ? poDocument.localUri : null,
+                invoiceDocument.isNew() ? invoiceDocument.localUri : null,
+                warrantyDocument.isNew() ? warrantyDocument.localUri : null
         );
-        datePickerDialog.show();
-    }
-    private void addTextWatcher(EditText editText, Consumer<String> onTextChanged) {
-        editText.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (isUserAction) {
-                    onTextChanged.accept(s.toString());
-                }
-            }
-            @Override
-            public void afterTextChanged(Editable s) {}
+
+        viewModel.updateField(req -> {
+            if(poDocument.isExisting()) req.getKeepPoDocuments().add(poDocument.mediaId);
+            if(invoiceDocument.isExisting()) req.getKeepInvoiceDocuments().add(invoiceDocument.mediaId);
+            if(warrantyDocument.isExisting()) req.getKeepWarrantyDocuments().add(warrantyDocument.mediaId);
         });
     }
 
-    private String formatDate(Long timestamp) {
-        if (timestamp == null || timestamp == 0) return "";
-        Date date = new Date(timestamp);
-        return new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(date);
-    }
+    // --- Helper Class & Method ---
+    private static class DocumentItem {
+        Uri localUri;
+        String remoteUrl;
+        String mediaId;
+        String originalName;
 
-    private Double parseDouble(String text) {
-        try {
-            return Double.parseDouble(text);
-        } catch (NumberFormatException e) {
-            return null;
+        DocumentItem() {}
+        DocumentItem(Uri localUri) { this.localUri = localUri; }
+        DocumentItem(String remoteUrl, String mediaId, String name) {
+            this.remoteUrl = remoteUrl;
+            this.mediaId = mediaId;
+            this.originalName = name;
         }
-    }
 
-    private Integer parseInteger(String text) {
-        try {
-            return Integer.parseInt(text);
-        } catch (NumberFormatException e) {
-            return null;
+        boolean isSet() { return localUri != null || remoteUrl != null; }
+        boolean isNew() { return localUri != null; }
+        boolean isExisting() { return mediaId != null && localUri == null; }
+
+        String getFileName(android.content.Context context) {
+            if (localUri != null) {
+                try (android.database.Cursor cursor = context.getContentResolver().query(localUri, null, null, null, null)) {
+                    if (cursor != null && cursor.moveToFirst()) {
+                        return cursor.getString(cursor.getColumnIndexOrThrow(OpenableColumns.DISPLAY_NAME));
+                    }
+                }
+            }
+            return originalName != null ? originalName : "File lama";
         }
     }
 }
