@@ -144,7 +144,7 @@ public class AssetMaintenanceFragment extends Fragment {
     }
 
     private void showDatePickerDialog(final EditText targetEditText, final Consumer<Long> onDateSelected) {
-        Calendar calendar = Calendar.getInstance();
+        final Calendar calendar = Calendar.getInstance();
         String existingDateStr = targetEditText.getText().toString();
 
         if (!existingDateStr.isEmpty()) {
@@ -155,7 +155,6 @@ public class AssetMaintenanceFragment extends Fragment {
                     calendar.setTime(d);
                 }
             } catch (Exception e) {
-                System.out.println("Error parsing date: " + e.getMessage());
             }
         }
 
@@ -163,7 +162,9 @@ public class AssetMaintenanceFragment extends Fragment {
                 requireContext(),
                 (view, year, month, dayOfMonth) -> {
                     Calendar selectedDate = Calendar.getInstance();
+                    selectedDate.clear();
                     selectedDate.set(year, month, dayOfMonth);
+
                     long timestamp = selectedDate.getTimeInMillis();
                     targetEditText.setText(formatDate(timestamp));
                     onDateSelected.accept(timestamp);
@@ -174,7 +175,6 @@ public class AssetMaintenanceFragment extends Fragment {
         );
         datePickerDialog.show();
     }
-
     private void addTextWatcher(EditText editText, Consumer<String> onTextChanged) {
         editText.addTextChangedListener(new TextWatcher() {
             @Override
@@ -192,7 +192,8 @@ public class AssetMaintenanceFragment extends Fragment {
 
     private String formatDate(Long timestamp) {
         if (timestamp == null || timestamp == 0) return "";
-        Date date = new Date(timestamp);
+
+        Date date = new Date(timestamp * 1000L);
         return new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(date);
     }
 
