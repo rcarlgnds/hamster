@@ -145,17 +145,17 @@ public class AssetMaintenanceFragment extends Fragment {
 
     private void showDatePickerDialog(final EditText targetEditText, final Consumer<Long> onDateSelected) {
         Calendar calendar = Calendar.getInstance();
+        String existingDateStr = targetEditText.getText().toString();
 
-        String existingDate = targetEditText.getText().toString();
-
-        if (!existingDate.isEmpty()) {
+        if (!existingDateStr.isEmpty()) {
             try {
-                Date date = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).parse(existingDate);
-                if (date != null) {
-                    calendar.setTime(date);
+                SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+                Date d = sdf.parse(existingDateStr);
+                if (d != null) {
+                    calendar.setTime(d);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                System.out.println("Error parsing date: " + e.getMessage());
             }
         }
 
@@ -164,9 +164,9 @@ public class AssetMaintenanceFragment extends Fragment {
                 (view, year, month, dayOfMonth) -> {
                     Calendar selectedDate = Calendar.getInstance();
                     selectedDate.set(year, month, dayOfMonth);
-
-                    targetEditText.setText(formatDate(selectedDate.getTimeInMillis()));
-                    onDateSelected.accept(selectedDate.getTimeInMillis());
+                    long timestamp = selectedDate.getTimeInMillis();
+                    targetEditText.setText(formatDate(timestamp));
+                    onDateSelected.accept(timestamp);
                 },
                 calendar.get(Calendar.YEAR),
                 calendar.get(Calendar.MONTH),
@@ -174,8 +174,6 @@ public class AssetMaintenanceFragment extends Fragment {
         );
         datePickerDialog.show();
     }
-
-    // --- Helper Methods ---
 
     private void addTextWatcher(EditText editText, Consumer<String> onTextChanged) {
         editText.addTextChangedListener(new TextWatcher() {

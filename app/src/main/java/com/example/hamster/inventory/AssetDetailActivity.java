@@ -2,7 +2,6 @@ package com.example.hamster.inventory;
 
 import android.os.Bundle;
 import android.util.Log;
-import android.util.SparseArray;
 import android.widget.Button;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
@@ -44,6 +43,8 @@ public class AssetDetailActivity extends AppCompatActivity {
 
         pagerAdapter = new AssetDetailPagerAdapter(this);
         binding.viewPager.setAdapter(pagerAdapter);
+        binding.viewPager.setOffscreenPageLimit(4);
+
 
         new TabLayoutMediator(binding.tabLayout, binding.viewPager, (tab, position) -> {
             switch (position) {
@@ -88,7 +89,7 @@ public class AssetDetailActivity extends AppCompatActivity {
         Log.d(TAG, "Tombol simpan ditekan. Memulai proses pengumpulan data.");
 
         for (int i = 0; i < pagerAdapter.getItemCount(); i++) {
-            Fragment fragment = pagerAdapter.getFragment(i);
+            Fragment fragment = getSupportFragmentManager().findFragmentByTag("f" + i);
             if (fragment instanceof FragmentDataCollector) {
                 Log.d(TAG, "Mengumpulkan data dari fragment: " + fragment.getClass().getSimpleName());
                 ((FragmentDataCollector) fragment).collectDataForSave();
@@ -100,30 +101,22 @@ public class AssetDetailActivity extends AppCompatActivity {
     }
 
     private static class AssetDetailPagerAdapter extends FragmentStateAdapter {
-        private final SparseArray<Fragment> registeredFragments = new SparseArray<>();
 
         public AssetDetailPagerAdapter(FragmentActivity fa) { super(fa); }
 
         @NonNull
         @Override
         public Fragment createFragment(int position) {
-            final Fragment fragment;
             switch (position) {
-                case 0: fragment = new AssetInfoFragment(); break;
-                case 1: fragment = new AssetLocationFragment(); break;
-                case 2: fragment = new AssetMaintenanceFragment(); break;
-                case 3: fragment = new AssetDocumentsFragment(); break;
-                default: fragment = new Fragment();
+                case 0: return new AssetInfoFragment();
+                case 1: return new AssetLocationFragment();
+                case 2: return new AssetMaintenanceFragment();
+                case 3: return new AssetDocumentsFragment();
+                default: throw new IllegalStateException("Posisi fragment tidak valid: " + position);
             }
-            registeredFragments.put(position, fragment);
-            return fragment;
         }
 
         @Override
         public int getItemCount() { return 4; }
-
-        public Fragment getFragment(int position) {
-            return registeredFragments.get(position);
-        }
     }
 }
