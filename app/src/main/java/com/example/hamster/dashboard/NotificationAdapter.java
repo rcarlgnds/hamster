@@ -6,33 +6,48 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
+
 import com.example.hamster.R;
 import com.example.hamster.data.model.Notification;
+import com.google.android.material.card.MaterialCardView;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
+import java.util.TimeZone;
 
-public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapter.ViewHolder> {
+public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapter.NotificationViewHolder> {
 
+    private List<Notification> notificationList;
+    private final OnNotificationClickListener listener;
     private final Context context;
-    private final List<Notification> notificationList;
 
-    public NotificationAdapter(Context context, List<Notification> notificationList) {
+    public interface OnNotificationClickListener {
+        void onNotificationClick(Notification notification, int position);
+    }
+
+    public NotificationAdapter(Context context, List<Notification> notificationList, OnNotificationClickListener listener) {
         this.context = context;
         this.notificationList = notificationList;
+        this.listener = listener;
     }
 
     @NonNull
     @Override
-    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(context).inflate(R.layout.item_notification, parent, false);
-        return new ViewHolder(view);
+    public NotificationViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_notification, parent, false);
+        return new NotificationViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull NotificationViewHolder holder, int position) {
         Notification notification = notificationList.get(position);
-        holder.bind(notification);
+        holder.bind(notification, position, listener);
     }
 
     @Override
@@ -40,22 +55,55 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
         return notificationList.size();
     }
 
-    static class ViewHolder extends RecyclerView.ViewHolder {
-        ImageView icon;
-        TextView title;
-        TextView message;
+    public void updateData(List<Notification> newNotifications) {
+        this.notificationList = newNotifications;
+        notifyDataSetChanged();
+    }
 
-        public ViewHolder(@NonNull View itemView) {
+    class NotificationViewHolder extends RecyclerView.ViewHolder {
+        private final MaterialCardView cardView;
+        private final TextView title, message, timestamp;
+        private final ImageView icon;
+        private final View unreadIndicator;
+
+        public NotificationViewHolder(@NonNull View itemView) {
             super(itemView);
-            icon = itemView.findViewById(R.id.iv_notification_icon);
-            title = itemView.findViewById(R.id.tv_notification_title);
-            message = itemView.findViewById(R.id.tv_notification_message);
+            cardView = itemView.findViewById(R.id.card_view);
+            title = itemView.findViewById(R.id.notification_title);
+            message = itemView.findViewById(R.id.notification_message);
+            timestamp = itemView.findViewById(R.id.notification_timestamp);
+            icon = itemView.findViewById(R.id.icon_notification_type);
+            unreadIndicator = itemView.findViewById(R.id.unread_indicator);
         }
 
-        public void bind(final Notification notification) {
-            if (notification != null) {
-                title.setText(notification.getTitle());
-                message.setText(notification.getBody());
+        public void bind(final Notification notification, final int position, final OnNotificationClickListener listener) {
+            title.setText(notification.getTitle());
+            message.setText(notification.getMessage());
+            timestamp.setText(formatTimestamp(notification.getCreatedAt()));
+
+            itemView.setOnClickListener(v -> listener.onNotificationClick(notification, position));
+
+            if (notification.isRead()) {
+                unreadIndicator.setVisibility(View.GONE);
+                cardView.setCardBackgroundColor(ContextCompat.getColor(context, android.R.color.transparent));
+                cardView.setStrokeWidth(0);
+
+            } else {
+                unreadIndicator.setVisibility(View.VISIBLE);
+//                cardView.setCardBackgroundColor(ContextCompat.getColor(context, R.color.unread_notification_bg));
+//                cardView.setStrokeColor(ContextCompat.getColor(context, R.color.colorPrimary));
+                cardView.setStrokeWidth(2);
+            }
+        }
+
+        private String formatTimestamp(long timestampInSeconds) {
+            try {
+                Date date = new Date(timestampInSeconds * 1000L);
+                SimpleDateFormat sdf = new SimpleDateFormat("dd MMM yyyy, HH:mm", Locale.getDefault());
+                sdf.setTimeZone(TimeZone.getDefault());
+                return sdf.format(date);
+            } catch (Exception e) {
+                return "Invalid date";
             }
         }
     }

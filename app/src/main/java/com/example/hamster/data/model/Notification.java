@@ -1,24 +1,29 @@
 package com.example.hamster.data.model;
 
-import java.io.Serializable;
+import com.google.gson.annotations.SerializedName;
 import java.util.Date;
 
-public class Notification implements Serializable {
+public class Notification {
+
+    @SerializedName("id")
     private String id;
+
+    @SerializedName("title")
     private String title;
-    private String body;
-    private String link;
-    private NotificationType type;
-    private String userId;
+
+    @SerializedName("body")
+    private String message;
+
+    @SerializedName("isRead")
     private boolean isRead;
-    private Date readAt;
-    private Date createdAt;
-    private Date updatedAt;
 
-    // Relasi
-    private User user;
+    @SerializedName("createdAt")
+    private long createdAt;
 
-    // Getters
+    @SerializedName("data")
+    private NotificationData data;
+
+    // --- Getters ---
     public String getId() {
         return id;
     }
@@ -27,39 +32,24 @@ public class Notification implements Serializable {
         return title;
     }
 
-    public String getBody() {
-        return body;
-    }
-
-    public String getLink() {
-        return link;
-    }
-
-    public NotificationType getType() {
-        return type;
-    }
-
-    public String getUserId() {
-        return userId;
+    public String getMessage() {
+        return message;
     }
 
     public boolean isRead() {
         return isRead;
     }
 
-    public Date getReadAt() {
-        return readAt;
-    }
-
-    public Date getCreatedAt() {
+    public long getCreatedAt() {
         return createdAt;
     }
 
-    public Date getUpdatedAt() {
-        return updatedAt;
+    public NotificationData getData() {
+        return data;
     }
 
-    public User getUser() {
-        return user;
+    // --- Setter ---
+    public void setRead(boolean read) { // Setter yang hilang
+        isRead = read;
     }
 }

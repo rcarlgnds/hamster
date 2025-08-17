@@ -135,5 +135,7 @@
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="mark_all_as_read">Mark as all read</string>
+    <string name="no_notifications_found">You have no notifications</string>
 
 </resources>
