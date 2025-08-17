@@ -505,7 +505,7 @@ public interface ApiService {
     @POST("notifications")
     Call<Notification> createNotification(@Body CreateNotificationRequest request);
 
-    @GET("api/notifications")
+    @GET("notifications")
     Call<NotificationResponse> getNotifications(
             @Query("page") int page,
             @Query("limit") int limit,

@@ -2,48 +2,80 @@
 <com.google.android.material.card.MaterialCardView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/card_view"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginHorizontal="16dp"
+    android:layout_marginStart="12dp"
+    android:layout_marginEnd="12dp"
     android:layout_marginTop="8dp"
-    android:layout_marginBottom="8dp"
-    app:cardElevation="2dp">
+    android:layout_marginBottom="4dp"
+    app:cardElevation="2dp"
+    app:cardCornerRadius="12dp"
+    android:clickable="true"
+    android:focusable="true"
+    android:foreground="?android:attr/selectableItemBackground">
 
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
         android:padding="16dp">
 
         <ImageView
-            android:id="@+id/iv_notification_icon"
+            android:id="@+id/icon_notification_type"
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:src="@drawable/ic_notifications"
-            app:tint="?attr/colorPrimary" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:src="@drawable/ic_info"
+            app:tint="?attr/colorPrimary"
+            android:background="@drawable/bg_circle_background"
+            android:padding="8dp"/>
 
-        <LinearLayout
+        <View
+            android:id="@+id/unread_indicator"
+            android:layout_width="10dp"
+            android:layout_height="10dp"
+            android:background="@drawable/bg_unread_indicator_red"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:visibility="gone"
+            tools:visibility="visible"/>
+
+        <TextView
+            android:id="@+id/notification_title"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:orientation="vertical"
-            android:layout_marginStart="16dp">
+            android:layout_marginStart="16dp"
+            android:textAppearance="?attr/textAppearanceTitleMedium"
+            android:textStyle="bold"
+            tools:text="Asset Maintenance"
+            app:layout_constraintStart_toEndOf="@id/icon_notification_type"
+            app:layout_constraintTop_toTopOf="@id/icon_notification_type"
+            app:layout_constraintEnd_toStartOf="@id/unread_indicator"
+            android:layout_marginEnd="8dp"/>
 
-            <TextView
-                android:id="@+id/tv_notification_title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Notification Title"
-                android:textAppearance="?attr/textAppearanceBodyLarge"
-                android:textStyle="bold"/>
+        <TextView
+            android:id="@+id/notification_message"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:textAppearance="?attr/textAppearanceBodyMedium"
+            tools:text="Asset 'GENSET-001' requires maintenance."
+            app:layout_constraintStart_toStartOf="@id/notification_title"
+            app:layout_constraintTop_toBottomOf="@id/notification_title"
+            app:layout_constraintEnd_toEndOf="parent"/>
 
-            <TextView
-                android:id="@+id/tv_notification_message"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="This is a sample notification message."
-                android:textAppearance="?attr/textAppearanceBodyMedium"
-                android:layout_marginTop="4dp"/>
-        </LinearLayout>
-    </LinearLayout>
+        <TextView
+            android:id="@+id/notification_timestamp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:textAppearance="?attr/textAppearanceCaption"
+            android:textColor="?android:attr/textColorSecondary"
+            tools:text="17 Aug 2025, 12:30"
+            app:layout_constraintStart_toStartOf="@id/notification_message"
+            app:layout_constraintTop_toBottomOf="@id/notification_message"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </com.google.android.material.card.MaterialCardView>

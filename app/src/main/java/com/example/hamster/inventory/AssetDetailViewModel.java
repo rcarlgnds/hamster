@@ -92,7 +92,6 @@ public class AssetDetailViewModel extends AndroidViewModel {
         errorMessage.setValue(null);
     }
 
-    // --- Metode Update Real-time dari Fragment ---
     public void updateField(UpdateAction action) {
         action.update(pendingUpdateRequest);
     }
@@ -107,10 +106,10 @@ public class AssetDetailViewModel extends AndroidViewModel {
         pendingUpdateRequest.setDepreciation(data.getDepreciation());
         pendingUpdateRequest.setDepreciationValue(data.getDepreciationValue());
         pendingUpdateRequest.setDepreciationStartDate(data.getDepreciationStartDate());
+        pendingUpdateRequest.setEffectiveUsageDate(data.getEffectiveUsageDate());
         pendingUpdateRequest.setDepreciationDurationMonth(data.getDepreciationDurationMonth());
     }
 
-    // --- Menerima data dokumen HANYA saat tombol save ditekan ---
     public void updateDocumentsData(List<Uri> newSerialUris, List<String> keepSerialIds, List<Uri> newAssetUris, List<String> keepAssetIds) {
         updateUriList(this.newSerialNumberPhotoUris, newSerialUris);
         updateUriList(this.newAssetPhotoUris, newAssetUris);
@@ -125,8 +124,6 @@ public class AssetDetailViewModel extends AndroidViewModel {
         }
     }
 
-
-    // --- Logika Fetch & Save ---
     public void fetchAssetById(String assetId) {
         isLoading.setValue(true);
         apiService.getAssetById(assetId).enqueue(new Callback<AssetDetailResponse>() {
@@ -157,6 +154,8 @@ public class AssetDetailViewModel extends AndroidViewModel {
 
         // 1. Info Aset
         pendingUpdateRequest.setName(asset.getName());
+        pendingUpdateRequest.setAliasNameTeramedik(asset.getAliasNameTeramedik());
+        pendingUpdateRequest.setAliasNameHamster(asset.getAliasNameHamster());
         pendingUpdateRequest.setCode(asset.getCode());
         pendingUpdateRequest.setOwnership(asset.getOwnership());
         pendingUpdateRequest.setCondition(asset.getCondition());
@@ -186,6 +185,7 @@ public class AssetDetailViewModel extends AndroidViewModel {
         pendingUpdateRequest.setDepreciation(asset.getDepreciation());
         pendingUpdateRequest.setDepreciationValue(asset.getDepreciationValue());
         pendingUpdateRequest.setDepreciationStartDate(asset.getDepreciationStartDate());
+        pendingUpdateRequest.setEffectiveUsageDate(asset.getEffectiveUsageDate());
         pendingUpdateRequest.setDepreciationDurationMonth(asset.getDepreciationDurationMonth());
 
         if (asset.getVendor() != null) pendingUpdateRequest.setVendorId(asset.getVendor().getId());
@@ -219,7 +219,6 @@ public class AssetDetailViewModel extends AndroidViewModel {
                 }
             }
 
-            // Set ID yang sudah ada ke pendingUpdateRequest agar tidak terhapus saat update
             pendingUpdateRequest.setKeepSerialNumberPhotos(serialNumberPhotoIds);
             pendingUpdateRequest.setKeepAssetPhotos(assetPhotoIds);
             pendingUpdateRequest.setKeepPoDocuments(poDocumentIds);
@@ -267,6 +266,8 @@ public class AssetDetailViewModel extends AndroidViewModel {
         addPart(fields, "code2", request.getCode2());
         addPart(fields, "code3", request.getCode3());
         addPart(fields, "name", request.getName());
+        addPart(fields, "aliasNameTeramedik", request.getAliasNameTeramedik());
+        addPart(fields, "aliasNameHamster", request.getAliasNameHamster());
         addPart(fields, "parentId", request.getParentId());
         addPart(fields, "type", request.getType());
         addPart(fields, "serialNumber", request.getSerialNumber());
@@ -310,6 +311,9 @@ public class AssetDetailViewModel extends AndroidViewModel {
         if (request.getDepreciationStartDate() != null) {
             addPart(fields, "depreciationStartDate", String.valueOf(request.getDepreciationStartDate()));
         }
+        if (request.getEffectiveUsageDate() != null) {
+            addPart(fields, "effectiveUsageDate", String.valueOf(request.getEffectiveUsageDate()));
+        }
         if (request.getDepreciationDurationMonth() != null) {
             addPart(fields, "depreciationDurationMonth", String.valueOf(request.getDepreciationDurationMonth()));
         }
@@ -321,10 +325,29 @@ public class AssetDetailViewModel extends AndroidViewModel {
         return fields;
     }
 
+    public void updateMaintenanceDocuments(Uri poDoc, Uri invoiceDoc, Uri warrantyDoc) {
+        pendingUpdateRequest.setPoDocumentUri(poDoc);
+        pendingUpdateRequest.setInvoiceDocumentUri(invoiceDoc);
+        pendingUpdateRequest.setWarrantyDocumentUri(warrantyDoc);
+    }
+
     private List<MultipartBody.Part> buildFileParts() {
         List<MultipartBody.Part> fileParts = new ArrayList<>();
+        // Foto dari tab Documents
         addFilesToParts(fileParts, "serialNumberPhoto", newSerialNumberPhotoUris);
         addFilesToParts(fileParts, "assetPhotos", newAssetPhotoUris);
+
+        // File dari tab Maintenance
+        if (pendingUpdateRequest.getPoDocumentUri() != null) {
+            fileParts.add(createFilePart("poDocument", pendingUpdateRequest.getPoDocumentUri()));
+        }
+        if (pendingUpdateRequest.getInvoiceDocumentUri() != null) {
+            fileParts.add(createFilePart("invoiceDocument", pendingUpdateRequest.getInvoiceDocumentUri()));
+        }
+        if (pendingUpdateRequest.getWarrantyDocumentUri() != null) {
+            fileParts.add(createFilePart("warrantyDocument", pendingUpdateRequest.getWarrantyDocumentUri()));
+        }
+
         return fileParts;
     }
 
@@ -421,7 +444,6 @@ public class AssetDetailViewModel extends AndroidViewModel {
         errorMessage.setValue("Gagal: " + response.code() + " - " + errorBody);
     }
 
-    // Interface fungsional untuk pembaruan yang bersih
     @FunctionalInterface
     public interface UpdateAction {
         void update(UpdateAssetRequest request);

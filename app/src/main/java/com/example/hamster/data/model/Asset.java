@@ -10,6 +10,8 @@ public class Asset implements Serializable {
     private String code2;
     private String code3;
     private String name;
+    private String aliasNameTeramedik;
+    private String aliasNameHamster;
     private String type;
     private String serialNumber;
     private String ownership;
@@ -35,6 +37,7 @@ public class Asset implements Serializable {
     private Double depreciation;
     private Double depreciationValue;
     private Long depreciationStartDate;
+    private Long effectiveUsageDate;
     private Integer depreciationDurationMonth;
     private String parentId;
     private Long deletedAt;
@@ -77,6 +80,14 @@ public class Asset implements Serializable {
 
     public String getName() {
         return name;
+    }
+
+    public String getAliasNameTeramedik() {
+        return aliasNameTeramedik;
+    }
+
+    public String getAliasNameHamster() {
+        return aliasNameHamster;
     }
 
     public String getType() {
@@ -177,6 +188,10 @@ public class Asset implements Serializable {
 
     public Long getDepreciationStartDate() {
         return depreciationStartDate;
+    }
+
+    public Long getEffectiveUsageDate() {
+        return effectiveUsageDate;
     }
 
     public Integer getDepreciationDurationMonth() {

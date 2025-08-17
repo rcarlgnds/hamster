@@ -20,7 +20,7 @@ import java.util.List;
 
 public class AssetInfoFragment extends Fragment {
     private AssetDetailViewModel viewModel;
-    private TextInputEditText etCode, etName, etSerial, etDesc;
+    private TextInputEditText etCode, etName, etSerial, etDesc, etAliasNameTeramedik, etAliasNameHamster;
     private AutoCompleteTextView acOwnership, acCategory, acSubCategory, acBrand, acCondition;
 
     private List<OptionItem> categoryList = new ArrayList<>();
@@ -47,6 +47,8 @@ public class AssetInfoFragment extends Fragment {
     private void initializeViews(View view) {
         etCode = view.findViewById(R.id.editTextCode);
         etName = view.findViewById(R.id.editTextName);
+        etAliasNameTeramedik = view.findViewById(R.id.editTextAliasNameTeramedik);
+        etAliasNameHamster = view.findViewById(R.id.editTextAliasNameHamster);
         etSerial = view.findViewById(R.id.editTextSerial);
         etDesc = view.findViewById(R.id.editTextDescription);
         acOwnership = view.findViewById(R.id.autoCompleteOwnership);
@@ -62,6 +64,8 @@ public class AssetInfoFragment extends Fragment {
             isProgrammaticChange = true;
             etCode.setText(asset.getCode());
             etName.setText(asset.getName());
+            etAliasNameTeramedik.setText(asset.getAliasNameTeramedik());
+            etAliasNameHamster.setText(asset.getAliasNameHamster());
             etSerial.setText(asset.getSerialNumber());
             etDesc.setText(asset.getDescription());
             acOwnership.setText(asset.getOwnership(), false);
@@ -82,6 +86,8 @@ public class AssetInfoFragment extends Fragment {
 
     private void setupInputListeners() {
         etName.addTextChangedListener(new SimpleTextWatcher(text -> viewModel.updateField(req -> req.setName(text))));
+        etAliasNameTeramedik.addTextChangedListener(new SimpleTextWatcher(text -> viewModel.updateField(req -> req.setAliasNameTeramedik(text))));
+        etAliasNameHamster.addTextChangedListener(new SimpleTextWatcher(text -> viewModel.updateField(req -> req.setAliasNameHamster(text))));
         etCode.addTextChangedListener(new SimpleTextWatcher(text -> viewModel.updateField(req -> req.setCode(text))));
         etSerial.addTextChangedListener(new SimpleTextWatcher(text -> viewModel.updateField(req -> req.setSerialNumber(text))));
         etDesc.addTextChangedListener(new SimpleTextWatcher(text -> viewModel.updateField(req -> req.setDescription(text))));

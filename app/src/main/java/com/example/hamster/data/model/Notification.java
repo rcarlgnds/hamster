@@ -1,65 +1,37 @@
 package com.example.hamster.data.model;
 
-import java.io.Serializable;
+import com.google.gson.annotations.SerializedName;
 import java.util.Date;
 
-public class Notification implements Serializable {
+public class Notification {
+
+    @SerializedName("id")
     private String id;
+
+    @SerializedName("title")
     private String title;
-    private String body;
-    private String link;
-    private NotificationType type;
-    private String userId;
+
+    @SerializedName("body")
+    private String message;
+
+    @SerializedName("isRead")
     private boolean isRead;
-    private Date readAt;
+
+    @SerializedName("createdAt")
     private Date createdAt;
-    private Date updatedAt;
 
-    // Relasi
-    private User user;
+    @SerializedName("data")
+    private NotificationData data;
 
-    // Getters
-    public String getId() {
-        return id;
-    }
+    // --- Getters ---
+    public String getId() { return id; }
+    public String getTitle() { return title; }
+    public String getMessage() { return message; }
+    public boolean isRead() { return isRead; }
+    public Date getCreatedAt() { return createdAt; }
+    public NotificationData getData() { return data; }
 
-    public String getTitle() {
-        return title;
-    }
-
-    public String getBody() {
-        return body;
-    }
-
-    public String getLink() {
-        return link;
-    }
-
-    public NotificationType getType() {
-        return type;
-    }
-
-    public String getUserId() {
-        return userId;
-    }
-
-    public boolean isRead() {
-        return isRead;
-    }
-
-    public Date getReadAt() {
-        return readAt;
-    }
-
-    public Date getCreatedAt() {
-        return createdAt;
-    }
-
-    public Date getUpdatedAt() {
-        return updatedAt;
-    }
-
-    public User getUser() {
-        return user;
+    public void setRead(boolean read) { // Setter yang tadinya hilang
+        isRead = read;
     }
 }

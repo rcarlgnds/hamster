@@ -1,9 +1,14 @@
 package com.example.hamster.data.model.response;
 
-public class UnreadCountResponse {
-    private int count;
+import com.example.hamster.data.model.UnreadCountData;
 
-    public int getCount() {
-        return count;
+public class UnreadCountResponse {
+    private boolean success;
+    private String message;
+    private UnreadCountData data;
+    private long timestamp;
+
+    public UnreadCountData getData() {
+        return data;
     }
 }
