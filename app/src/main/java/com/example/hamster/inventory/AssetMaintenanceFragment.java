@@ -125,10 +125,11 @@ public class AssetMaintenanceFragment extends Fragment {
     }
 
     private void updateUI(Asset asset) {
-        etProcurementDate.setText(formatDate(asset.getProcurementDate()));
-        etWarrantyDate.setText(formatDate(asset.getWarrantyExpirationDate()));
-        etDepreciationStart.setText(formatDate(asset.getDepreciationStartDate()));
-        etEffectiveUsageDate.setText(formatDate(asset.getEffectiveUsageDate()));
+        etProcurementDate.setText(formatDate(asset.getProcurementDate() != null ? asset.getProcurementDate() * 1000L : null));
+        etWarrantyDate.setText(formatDate(asset.getWarrantyExpirationDate() != null ? asset.getWarrantyExpirationDate() * 1000L : null));
+        etDepreciationStart.setText(formatDate(asset.getDepreciationStartDate() != null ? asset.getDepreciationStartDate() * 1000L : null));
+        etEffectiveUsageDate.setText(formatDate(asset.getEffectiveUsageDate() != null ? asset.getEffectiveUsageDate() * 1000L : null));
+
 
         etPoNumber.setText(asset.getPoNumber());
         etInvoiceNumber.setText(asset.getInvoiceNumber());
@@ -192,8 +193,7 @@ public class AssetMaintenanceFragment extends Fragment {
 
     private String formatDate(Long timestamp) {
         if (timestamp == null || timestamp == 0) return "";
-
-        Date date = new Date(timestamp * 1000L);
+        Date date = new Date(timestamp);
         return new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(date);
     }
 
