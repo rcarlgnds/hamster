@@ -36,7 +36,7 @@ public class AssetMaintenanceFragment extends Fragment {
     private TextInputEditText etPurchasePrice, etPoNumber, etInvoiceNumber, etDepreciationPercent, etDepreciationValue, etDepreciationDuration;
     private AutoCompleteTextView acVendor;
 
-    private TextInputEditText etProcurementDate, etWarrantyDate, etDepreciationStart;
+    private TextInputEditText etProcurementDate, etWarrantyDate, etDepreciationStart, etEffectiveUsageDate;
 
     private List<OptionItem> vendorList = new ArrayList<>();
     private boolean isUserAction = true;
@@ -66,6 +66,7 @@ public class AssetMaintenanceFragment extends Fragment {
         etDepreciationPercent = view.findViewById(R.id.editTextDepreciationPercent);
         etDepreciationValue = view.findViewById(R.id.editTextDepreciationValue);
         etDepreciationStart = view.findViewById(R.id.editTextDepreciationStart);
+        etEffectiveUsageDate = view.findViewById(R.id.editTextEffectiveUsageDate);
         etDepreciationDuration = view.findViewById(R.id.editTextDepreciationDuration);
 
         etProcurementDate.setFocusable(false);
@@ -74,6 +75,8 @@ public class AssetMaintenanceFragment extends Fragment {
         etWarrantyDate.setClickable(true);
         etDepreciationStart.setFocusable(false);
         etDepreciationStart.setClickable(true);
+        etEffectiveUsageDate.setFocusable(false);
+        etEffectiveUsageDate.setClickable(true);
     }
 
     private void setupListeners() {
@@ -97,6 +100,7 @@ public class AssetMaintenanceFragment extends Fragment {
         etProcurementDate.setOnClickListener(v -> showDatePickerDialog(etProcurementDate, timestamp -> viewModel.updateField(req -> req.setProcurementDate(timestamp))));
         etWarrantyDate.setOnClickListener(v -> showDatePickerDialog(etWarrantyDate, timestamp -> viewModel.updateField(req -> req.setWarrantyExpirationDate(timestamp))));
         etDepreciationStart.setOnClickListener(v -> showDatePickerDialog(etDepreciationStart, timestamp -> viewModel.updateField(req -> req.setDepreciationStartDate(timestamp))));
+        etEffectiveUsageDate.setOnClickListener(v -> showDatePickerDialog(etEffectiveUsageDate, timestamp -> viewModel.updateField(req -> req.setEffectiveUsageDate(timestamp))));
     }
 
     private void setupObservers() {
@@ -124,6 +128,7 @@ public class AssetMaintenanceFragment extends Fragment {
         etProcurementDate.setText(formatDate(asset.getProcurementDate()));
         etWarrantyDate.setText(formatDate(asset.getWarrantyExpirationDate()));
         etDepreciationStart.setText(formatDate(asset.getDepreciationStartDate()));
+        etEffectiveUsageDate.setText(formatDate(asset.getEffectiveUsageDate()));
 
         etPoNumber.setText(asset.getPoNumber());
         etInvoiceNumber.setText(asset.getInvoiceNumber());

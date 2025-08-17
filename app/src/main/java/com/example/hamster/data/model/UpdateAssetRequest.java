@@ -6,6 +6,8 @@ import java.util.List;
 public class UpdateAssetRequest {
     private String code;
     private String name;
+    private String aliasNameTeramedik;
+    private String aliasNameHamster;
     private String ownership;
     private String categoryId;
     private String subcategoryId;
@@ -33,6 +35,8 @@ public class UpdateAssetRequest {
     private Double depreciation;
     private Double depreciationValue;
     private Long depreciationStartDate;
+    private Long effectiveUsageDate;
+
     private Integer depreciationDurationMonth;
 
     // --- Fields untuk menyimpan ID foto/dokumen yang akan dipertahankan ---
@@ -57,118 +61,331 @@ public class UpdateAssetRequest {
         this.keepCustomDocuments = new ArrayList<>();
     }
 
-    // --- Getter dan Setter untuk Existing Fields ---
-    public String getCode() { return code; }
-    public void setCode(String code) { this.code = code; }
+    public String getCode() {
+        return code;
+    }
 
-    public String getName() { return name; }
-    public void setName(String name) { this.name = name; }
+    public void setCode(String code) {
+        this.code = code;
+    }
 
-    public String getOwnership() { return ownership; }
-    public void setOwnership(String ownership) { this.ownership = ownership; }
+    public String getName() {
+        return name;
+    }
 
-    public String getCategoryId() { return categoryId; }
-    public void setCategoryId(String categoryId) { this.categoryId = categoryId; }
+    public void setName(String name) {
+        this.name = name;
+    }
 
-    public String getSubcategoryId() { return subcategoryId; }
-    public void setSubcategoryId(String subcategoryId) { this.subcategoryId = subcategoryId; }
+    public String getAliasNameTeramedik() {
+        return aliasNameTeramedik;
+    }
 
-    public String getBrandId() { return brandId; }
-    public void setBrandId(String brandId) { this.brandId = brandId; }
+    public void setAliasNameTeramedik(String aliasNameTeramedik) {
+        this.aliasNameTeramedik = aliasNameTeramedik;
+    }
 
-    public String getCondition() { return condition; }
-    public void setCondition(String condition) { this.condition = condition; }
+    public String getAliasNameHamster() {
+        return aliasNameHamster;
+    }
 
-    public String getRoomId() { return roomId; }
-    public void setRoomId(String roomId) { this.roomId = roomId; }
+    public void setAliasNameHamster(String aliasNameHamster) {
+        this.aliasNameHamster = aliasNameHamster;
+    }
 
-    public String getSubRoomId() { return subRoomId; }
-    public void setSubRoomId(String subRoomId) { this.subRoomId = subRoomId; }
+    public String getOwnership() {
+        return ownership;
+    }
 
-    public String getResponsibleDivisionId() { return responsibleDivisionId; }
-    public void setResponsibleDivisionId(String responsibleDivisionId) { this.responsibleDivisionId = responsibleDivisionId; }
+    public void setOwnership(String ownership) {
+        this.ownership = ownership;
+    }
 
-    public String getResponsibleWorkingUnitId() { return responsibleWorkingUnitId; }
-    public void setResponsibleWorkingUnitId(String responsibleWorkingUnitId) { this.responsibleWorkingUnitId = responsibleWorkingUnitId; }
+    public String getCategoryId() {
+        return categoryId;
+    }
 
-    public String getResponsibleUserId() { return responsibleUserId; }
-    public void setResponsibleUserId(String responsibleUserId) { this.responsibleUserId = responsibleUserId; }
+    public void setCategoryId(String categoryId) {
+        this.categoryId = categoryId;
+    }
 
-    public String getVendorId() { return vendorId; }
-    public void setVendorId(String vendorId) { this.vendorId = vendorId; }
+    public String getSubcategoryId() {
+        return subcategoryId;
+    }
 
-    public String getType() { return type; }
-    public void setType(String type) { this.type = type; }
+    public void setSubcategoryId(String subcategoryId) {
+        this.subcategoryId = subcategoryId;
+    }
 
-    public String getSerialNumber() { return serialNumber; }
-    public void setSerialNumber(String serialNumber) { this.serialNumber = serialNumber; }
+    public String getBrandId() {
+        return brandId;
+    }
 
-    public String getCode2() { return code2; }
-    public void setCode2(String code2) { this.code2 = code2; }
+    public void setBrandId(String brandId) {
+        this.brandId = brandId;
+    }
 
-    public String getCode3() { return code3; }
-    public void setCode3(String code3) { this.code3 = code3; }
+    public String getCondition() {
+        return condition;
+    }
 
-    public String getParentId() { return parentId; }
-    public void setParentId(String parentId) { this.parentId = parentId; }
+    public void setCondition(String condition) {
+        this.condition = condition;
+    }
 
-    public String getDescription() { return description; }
-    public void setDescription(String description) { this.description = description; }
+    public String getRoomId() {
+        return roomId;
+    }
 
-    public Integer getTotal() { return total; }
-    public void setTotal(Integer total) { this.total = total; }
+    public void setRoomId(String roomId) {
+        this.roomId = roomId;
+    }
 
-    public String getUnit() { return unit; }
-    public void setUnit(String unit) { this.unit = unit; }
+    public String getSubRoomId() {
+        return subRoomId;
+    }
 
-    public Long getProcurementDate() { return procurementDate; }
-    public void setProcurementDate(Long procurementDate) { this.procurementDate = procurementDate; }
+    public void setSubRoomId(String subRoomId) {
+        this.subRoomId = subRoomId;
+    }
 
-    public Long getWarrantyExpirationDate() { return warrantyExpirationDate; }
-    public void setWarrantyExpirationDate(Long warrantyExpirationDate) { this.warrantyExpirationDate = warrantyExpirationDate; }
+    public String getResponsibleDivisionId() {
+        return responsibleDivisionId;
+    }
 
-    public Double getPurchasePrice() { return purchasePrice; }
-    public void setPurchasePrice(Double purchasePrice) { this.purchasePrice = purchasePrice; }
+    public void setResponsibleDivisionId(String responsibleDivisionId) {
+        this.responsibleDivisionId = responsibleDivisionId;
+    }
 
-    public String getPoNumber() { return poNumber; }
-    public void setPoNumber(String poNumber) { this.poNumber = poNumber; }
+    public String getResponsibleWorkingUnitId() {
+        return responsibleWorkingUnitId;
+    }
 
-    public String getInvoiceNumber() { return invoiceNumber; }
-    public void setInvoiceNumber(String invoiceNumber) { this.invoiceNumber = invoiceNumber; }
+    public void setResponsibleWorkingUnitId(String responsibleWorkingUnitId) {
+        this.responsibleWorkingUnitId = responsibleWorkingUnitId;
+    }
 
-    public Double getDepreciation() { return depreciation; }
-    public void setDepreciation(Double depreciation) { this.depreciation = depreciation; }
+    public String getResponsibleUserId() {
+        return responsibleUserId;
+    }
 
-    public Double getDepreciationValue() { return depreciationValue; }
-    public void setDepreciationValue(Double depreciationValue) { this.depreciationValue = depreciationValue; }
+    public void setResponsibleUserId(String responsibleUserId) {
+        this.responsibleUserId = responsibleUserId;
+    }
 
-    public Long getDepreciationStartDate() { return depreciationStartDate; }
-    public void setDepreciationStartDate(Long depreciationStartDate) { this.depreciationStartDate = depreciationStartDate; }
+    public String getVendorId() {
+        return vendorId;
+    }
 
-    public Integer getDepreciationDurationMonth() { return depreciationDurationMonth; }
-    public void setDepreciationDurationMonth(Integer depreciationDurationMonth) { this.depreciationDurationMonth = depreciationDurationMonth; }
+    public void setVendorId(String vendorId) {
+        this.vendorId = vendorId;
+    }
 
-    public List<String> getKeepPoDocuments() { return keepPoDocuments; }
-    public void setKeepPoDocuments(List<String> keepPoDocuments) { this.keepPoDocuments = keepPoDocuments; }
+    public String getType() {
+        return type;
+    }
 
-    public List<String> getKeepInvoiceDocuments() { return keepInvoiceDocuments; }
-    public void setKeepInvoiceDocuments(List<String> keepInvoiceDocuments) { this.keepInvoiceDocuments = keepInvoiceDocuments; }
+    public void setType(String type) {
+        this.type = type;
+    }
 
-    public List<String> getKeepWarrantyDocuments() { return keepWarrantyDocuments; }
-    public void setKeepWarrantyDocuments(List<String> keepWarrantyDocuments) { this.keepWarrantyDocuments = keepWarrantyDocuments; }
+    public String getSerialNumber() {
+        return serialNumber;
+    }
 
-    public List<String> getKeepSerialNumberPhotos() { return keepSerialNumberPhotos; }
-    public void setKeepSerialNumberPhotos(List<String> keepSerialNumberPhotos) { this.keepSerialNumberPhotos = keepSerialNumberPhotos; }
+    public void setSerialNumber(String serialNumber) {
+        this.serialNumber = serialNumber;
+    }
 
-    public List<String> getKeepAssetPhotos() { return keepAssetPhotos; }
-    public void setKeepAssetPhotos(List<String> keepAssetPhotos) { this.keepAssetPhotos = keepAssetPhotos; }
+    public String getCode2() {
+        return code2;
+    }
 
-    public List<String> getKeepLicenseDocuments() { return keepLicenseDocuments; }
-    public void setKeepLicenseDocuments(List<String> keepLicenseDocuments) { this.keepLicenseDocuments = keepLicenseDocuments; }
+    public void setCode2(String code2) {
+        this.code2 = code2;
+    }
 
-    public List<String> getKeepUserManualDocuments() { return keepUserManualDocuments; }
-    public void setKeepUserManualDocuments(List<String> keepUserManualDocuments) { this.keepUserManualDocuments = keepUserManualDocuments; }
+    public String getCode3() {
+        return code3;
+    }
 
-    public List<String> getKeepCustomDocuments() { return keepCustomDocuments; }
-    public void setKeepCustomDocuments(List<String> keepCustomDocuments) { this.keepCustomDocuments = keepCustomDocuments; }
+    public void setCode3(String code3) {
+        this.code3 = code3;
+    }
+
+    public String getParentId() {
+        return parentId;
+    }
+
+    public void setParentId(String parentId) {
+        this.parentId = parentId;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public Integer getTotal() {
+        return total;
+    }
+
+    public void setTotal(Integer total) {
+        this.total = total;
+    }
+
+    public String getUnit() {
+        return unit;
+    }
+
+    public void setUnit(String unit) {
+        this.unit = unit;
+    }
+
+    public Long getProcurementDate() {
+        return procurementDate;
+    }
+
+    public void setProcurementDate(Long procurementDate) {
+        this.procurementDate = procurementDate;
+    }
+
+    public Long getWarrantyExpirationDate() {
+        return warrantyExpirationDate;
+    }
+
+    public void setWarrantyExpirationDate(Long warrantyExpirationDate) {
+        this.warrantyExpirationDate = warrantyExpirationDate;
+    }
+
+    public Double getPurchasePrice() {
+        return purchasePrice;
+    }
+
+    public void setPurchasePrice(Double purchasePrice) {
+        this.purchasePrice = purchasePrice;
+    }
+
+    public String getPoNumber() {
+        return poNumber;
+    }
+
+    public void setPoNumber(String poNumber) {
+        this.poNumber = poNumber;
+    }
+
+    public String getInvoiceNumber() {
+        return invoiceNumber;
+    }
+
+    public void setInvoiceNumber(String invoiceNumber) {
+        this.invoiceNumber = invoiceNumber;
+    }
+
+    public Double getDepreciation() {
+        return depreciation;
+    }
+
+    public void setDepreciation(Double depreciation) {
+        this.depreciation = depreciation;
+    }
+
+    public Double getDepreciationValue() {
+        return depreciationValue;
+    }
+
+    public void setDepreciationValue(Double depreciationValue) {
+        this.depreciationValue = depreciationValue;
+    }
+
+    public Long getDepreciationStartDate() {
+        return depreciationStartDate;
+    }
+
+    public void setDepreciationStartDate(Long depreciationStartDate) {
+        this.depreciationStartDate = depreciationStartDate;
+    }
+
+    public Long getEffectiveUsageDate() {
+        return effectiveUsageDate;
+    }
+
+    public void setEffectiveUsageDate(Long effectiveUsageDate) {
+        this.effectiveUsageDate = effectiveUsageDate;
+    }
+
+    public Integer getDepreciationDurationMonth() {
+        return depreciationDurationMonth;
+    }
+
+    public void setDepreciationDurationMonth(Integer depreciationDurationMonth) {
+        this.depreciationDurationMonth = depreciationDurationMonth;
+    }
+
+    public List<String> getKeepPoDocuments() {
+        return keepPoDocuments;
+    }
+
+    public void setKeepPoDocuments(List<String> keepPoDocuments) {
+        this.keepPoDocuments = keepPoDocuments;
+    }
+
+    public List<String> getKeepInvoiceDocuments() {
+        return keepInvoiceDocuments;
+    }
+
+    public void setKeepInvoiceDocuments(List<String> keepInvoiceDocuments) {
+        this.keepInvoiceDocuments = keepInvoiceDocuments;
+    }
+
+    public List<String> getKeepWarrantyDocuments() {
+        return keepWarrantyDocuments;
+    }
+
+    public void setKeepWarrantyDocuments(List<String> keepWarrantyDocuments) {
+        this.keepWarrantyDocuments = keepWarrantyDocuments;
+    }
+
+    public List<String> getKeepSerialNumberPhotos() {
+        return keepSerialNumberPhotos;
+    }
+
+    public void setKeepSerialNumberPhotos(List<String> keepSerialNumberPhotos) {
+        this.keepSerialNumberPhotos = keepSerialNumberPhotos;
+    }
+
+    public List<String> getKeepAssetPhotos() {
+        return keepAssetPhotos;
+    }
+
+    public void setKeepAssetPhotos(List<String> keepAssetPhotos) {
+        this.keepAssetPhotos = keepAssetPhotos;
+    }
+
+    public List<String> getKeepLicenseDocuments() {
+        return keepLicenseDocuments;
+    }
+
+    public void setKeepLicenseDocuments(List<String> keepLicenseDocuments) {
+        this.keepLicenseDocuments = keepLicenseDocuments;
+    }
+
+    public List<String> getKeepUserManualDocuments() {
+        return keepUserManualDocuments;
+    }
+
+    public void setKeepUserManualDocuments(List<String> keepUserManualDocuments) {
+        this.keepUserManualDocuments = keepUserManualDocuments;
+    }
+
+    public List<String> getKeepCustomDocuments() {
+        return keepCustomDocuments;
+    }
+
+    public void setKeepCustomDocuments(List<String> keepCustomDocuments) {
+        this.keepCustomDocuments = keepCustomDocuments;
+    }
 }
