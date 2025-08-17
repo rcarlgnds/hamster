@@ -4,15 +4,13 @@ import com.google.gson.annotations.SerializedName;
 import java.util.List;
 
 public class NotificationData {
-
     @SerializedName("data")
-    private List<Notification> notificationList;
+    private List<Notification> notifications;
 
-    @SerializedName("pagination")
     private Pagination pagination;
 
-    public List<Notification> getNotificationList() {
-        return notificationList;
+    public List<Notification> getNotifications() {
+        return notifications;
     }
 
     public Pagination getPagination() {

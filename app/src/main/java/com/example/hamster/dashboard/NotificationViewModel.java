@@ -1,21 +1,17 @@
 package com.example.hamster.dashboard;
 
 import android.app.Application;
-
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
-
 import com.example.hamster.data.model.Notification;
 import com.example.hamster.data.model.request.UpdateNotificationRequest;
 import com.example.hamster.data.model.response.NotificationResponse;
 import com.example.hamster.data.model.response.UnreadCountResponse;
 import com.example.hamster.data.network.ApiClient;
 import com.example.hamster.data.network.ApiService;
-
 import java.util.List;
-
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -33,16 +29,10 @@ public class NotificationViewModel extends AndroidViewModel {
         apiService = ApiClient.getClient(application).create(ApiService.class);
     }
 
-    public LiveData<List<Notification>> getNotifications() {
-        return notifications;
-    }
+    public LiveData<List<Notification>> getNotifications() { return notifications; }
     public LiveData<Integer> getUnreadCount() { return unreadCount; }
-    public LiveData<Boolean> getIsLoading() {
-        return isLoading;
-    }
-    public LiveData<String> getErrorMessage() {
-        return errorMessage;
-    }
+    public LiveData<Boolean> getIsLoading() { return isLoading; }
+    public LiveData<String> getErrorMessage() { return errorMessage; }
 
     public void fetchNotifications() {
         isLoading.setValue(true);
@@ -51,7 +41,6 @@ public class NotificationViewModel extends AndroidViewModel {
             public void onResponse(@NonNull Call<NotificationResponse> call, @NonNull Response<NotificationResponse> response) {
                 isLoading.setValue(false);
                 if (response.isSuccessful() && response.body() != null && response.body().getData() != null) {
-                    // --- FIX: Akses list notifikasi dengan benar ---
                     notifications.setValue(response.body().getData().getNotifications());
                 } else {
                     errorMessage.setValue("Gagal memuat notifikasi");
@@ -70,15 +59,12 @@ public class NotificationViewModel extends AndroidViewModel {
         apiService.getUnreadNotificationCount().enqueue(new Callback<UnreadCountResponse>() {
             @Override
             public void onResponse(@NonNull Call<UnreadCountResponse> call, @NonNull Response<UnreadCountResponse> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    // --- FIX: Akses unread count dengan benar ---
+                if (response.isSuccessful() && response.body() != null && response.body().getData() != null) {
                     unreadCount.setValue(response.body().getData().getCount());
                 }
             }
             @Override
-            public void onFailure(@NonNull Call<UnreadCountResponse> call, @NonNull Throwable t) {
-                // Handle error silently
-            }
+            public void onFailure(@NonNull Call<UnreadCountResponse> call, @NonNull Throwable t) { }
         });
     }
 
@@ -89,7 +75,6 @@ public class NotificationViewModel extends AndroidViewModel {
                 if (response.isSuccessful()) {
                     List<Notification> currentList = notifications.getValue();
                     if (currentList != null && !currentList.get(position).isRead()) {
-                        // --- FIX: Gunakan setter yang sudah dibuat ---
                         currentList.get(position).setRead(true);
                         notifications.postValue(currentList);
                         fetchUnreadCount();

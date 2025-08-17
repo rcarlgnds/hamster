@@ -87,7 +87,6 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
                 unreadIndicator.setVisibility(View.GONE);
                 cardView.setCardBackgroundColor(ContextCompat.getColor(context, android.R.color.transparent));
                 cardView.setStrokeWidth(0);
-
             } else {
                 unreadIndicator.setVisibility(View.VISIBLE);
 //                cardView.setCardBackgroundColor(ContextCompat.getColor(context, R.color.unread_notification_bg));
@@ -96,9 +95,9 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
             }
         }
 
-        private String formatTimestamp(long timestampInSeconds) {
+        private String formatTimestamp(Date date) {
+            if (date == null) return "No date";
             try {
-                Date date = new Date(timestampInSeconds * 1000L);
                 SimpleDateFormat sdf = new SimpleDateFormat("dd MMM yyyy, HH:mm", Locale.getDefault());
                 sdf.setTimeZone(TimeZone.getDefault());
                 return sdf.format(date);

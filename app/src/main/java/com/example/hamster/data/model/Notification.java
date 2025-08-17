@@ -18,38 +18,20 @@ public class Notification {
     private boolean isRead;
 
     @SerializedName("createdAt")
-    private long createdAt;
+    private Date createdAt;
 
     @SerializedName("data")
     private NotificationData data;
 
     // --- Getters ---
-    public String getId() {
-        return id;
-    }
+    public String getId() { return id; }
+    public String getTitle() { return title; }
+    public String getMessage() { return message; }
+    public boolean isRead() { return isRead; }
+    public Date getCreatedAt() { return createdAt; }
+    public NotificationData getData() { return data; }
 
-    public String getTitle() {
-        return title;
-    }
-
-    public String getMessage() {
-        return message;
-    }
-
-    public boolean isRead() {
-        return isRead;
-    }
-
-    public long getCreatedAt() {
-        return createdAt;
-    }
-
-    public NotificationData getData() {
-        return data;
-    }
-
-    // --- Setter ---
-    public void setRead(boolean read) { // Setter yang hilang
+    public void setRead(boolean read) { // Setter yang tadinya hilang
         isRead = read;
     }
 }
