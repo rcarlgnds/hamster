@@ -15,7 +15,8 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:title="Notifikasi"
-        app:titleCentered="true"/>
+        app:titleTextAppearance="@style/TextAppearance.Material3.HeadlineSmall"
+        />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/button_mark_all_read"

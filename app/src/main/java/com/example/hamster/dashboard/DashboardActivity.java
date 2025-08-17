@@ -13,37 +13,39 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 public class DashboardActivity extends AppCompatActivity {
 
     private NotificationViewModel notificationViewModel;
+    private BottomNavigationView navView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dashboard);
 
-        BottomNavigationView navView = findViewById(R.id.bottom_navigation);
+        navView = findViewById(R.id.bottom_navigation);
 
         notificationViewModel = new ViewModelProvider(this).get(NotificationViewModel.class);
-        setupBadgeObserver(navView);
+        setupBadgeObserver();
 
         navView.setOnItemSelectedListener(item -> {
             Fragment selectedFragment = null;
             int itemId = item.getItemId();
 
-            if (itemId == R.id.navigation_home) {
+            if (itemId == R.id.nav_home) {
                 selectedFragment = new HomeFragment();
-            } else if (itemId == R.id.navigation_notifications) {
+            } else if (itemId == R.id.nav_notifications) {
                 selectedFragment = new NotificationsFragment();
-            } else if (itemId == R.id.navigation_profile) {
+            } else if (itemId == R.id.nav_profile) {
                 selectedFragment = new ProfileFragment();
             }
 
             if (selectedFragment != null) {
                 loadFragment(selectedFragment);
             }
+
             return true;
         });
 
         if (savedInstanceState == null) {
-            navView.setSelectedItemId(R.id.navigation_home);
+            navView.setSelectedItemId(R.id.nav_home);
         }
     }
 
@@ -60,9 +62,9 @@ public class DashboardActivity extends AppCompatActivity {
         fragmentTransaction.commit();
     }
 
-    private void setupBadgeObserver(BottomNavigationView navView) {
+    private void setupBadgeObserver() {
         notificationViewModel.getUnreadCount().observe(this, count -> {
-            BadgeDrawable badge = navView.getOrCreateBadge(R.id.navigation_notifications);
+            BadgeDrawable badge = navView.getOrCreateBadge(R.id.nav_notifications);
             if (count != null && count > 0) {
                 badge.setVisible(true);
                 badge.setNumber(count);

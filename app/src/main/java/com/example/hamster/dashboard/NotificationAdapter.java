@@ -1,20 +1,19 @@
 package com.example.hamster.dashboard;
 
 import android.content.Context;
+import android.content.res.ColorStateList;
+import android.graphics.Typeface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.example.hamster.R;
 import com.example.hamster.data.model.Notification;
 import com.google.android.material.card.MaterialCardView;
-
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -83,20 +82,33 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
 
             itemView.setOnClickListener(v -> listener.onNotificationClick(notification, position));
 
+            icon.setImageResource(R.drawable.ic_info);
+
             if (notification.isRead()) {
                 unreadIndicator.setVisibility(View.GONE);
-                cardView.setCardBackgroundColor(ContextCompat.getColor(context, android.R.color.transparent));
+                cardView.setCardBackgroundColor(ContextCompat.getColor(context, R.color.read_notification_bg));
                 cardView.setStrokeWidth(0);
+
+                icon.setImageTintList(ColorStateList.valueOf(ContextCompat.getColor(context, R.color.gray_stroke)));
+                title.setTextColor(ContextCompat.getColor(context, R.color.gray_stroke));
+                title.setTypeface(null, Typeface.NORMAL);
+                message.setTextColor(ContextCompat.getColor(context, R.color.secondary_40));
+
             } else {
                 unreadIndicator.setVisibility(View.VISIBLE);
-//                cardView.setCardBackgroundColor(ContextCompat.getColor(context, R.color.unread_notification_bg));
-//                cardView.setStrokeColor(ContextCompat.getColor(context, R.color.colorPrimary));
+                cardView.setCardBackgroundColor(ContextCompat.getColor(context, R.color.unread_notification_bg));
+                cardView.setStrokeColor(ContextCompat.getColor(context, R.color.colorPrimary));
                 cardView.setStrokeWidth(2);
+
+                icon.setImageTintList(ColorStateList.valueOf(ContextCompat.getColor(context, R.color.colorPrimary)));
+                title.setTextColor(ContextCompat.getColor(context, R.color.black));
+                title.setTypeface(null, Typeface.BOLD);
+                message.setTextColor(ContextCompat.getColor(context, R.color.secondary_40));
             }
         }
 
         private String formatTimestamp(Date date) {
-            if (date == null) return "No date";
+            if (date == null) return "";
             try {
                 SimpleDateFormat sdf = new SimpleDateFormat("dd MMM yyyy, HH:mm", Locale.getDefault());
                 sdf.setTimeZone(TimeZone.getDefault());

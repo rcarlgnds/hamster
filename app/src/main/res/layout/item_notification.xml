@@ -36,7 +36,7 @@
             android:id="@+id/unread_indicator"
             android:layout_width="10dp"
             android:layout_height="10dp"
-            android:background="@drawable/bg_badge_activate_background"
+            android:background="@drawable/bg_unread_indicator_red"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             android:visibility="gone"
