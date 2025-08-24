@@ -92,7 +92,7 @@ public class FeatureAdapter extends RecyclerView.Adapter<FeatureAdapter.FeatureV
                 else if ("Activation".equalsIgnoreCase(feature.name)) {
                     context.startActivity(new Intent(context, ActivationActivity.class));
                 }
-                else if ("Activation Approval".equalsIgnoreCase(feature.name)) {
+                else if ("Approval".equalsIgnoreCase(feature.name)) {
                     context.startActivity(new Intent(context, ActivationApprovalActivity.class));
                 }
             });

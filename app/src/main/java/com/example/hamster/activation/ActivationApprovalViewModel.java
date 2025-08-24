@@ -60,24 +60,33 @@ public class ActivationApprovalViewModel extends AndroidViewModel {
         apiService.getPendingApprovals(1, 100).enqueue(new Callback<PendingApprovalsResponse>() {
             @Override
             public void onResponse(@NonNull Call<PendingApprovalsResponse> call, @NonNull Response<PendingApprovalsResponse> response) {
-                if (response.isSuccessful() && response.body() != null && response.body().getAssetIds() != null) {
+                isLoading.setValue(false);
+
+                if (response.isSuccessful() && response.body() != null) {
                     List<String> assetIds = response.body().getAssetIds();
-                    if (assetIds.isEmpty()) {
-                        approvalList.setValue(new ArrayList<>());
-                        isLoading.setValue(false);
-                    } else {
+
+                    if (assetIds != null && !assetIds.isEmpty()) {
                         fetchAssetDetails(assetIds);
+                    } else {
+                        approvalList.setValue(new ArrayList<>());
                     }
                 } else {
-                    errorMessage.setValue("GFail to load data.");
-                    isLoading.setValue(false);
+                    String errorBody = "No error body";
+                    try {
+                        if (response.errorBody() != null) {
+                            errorBody = response.errorBody().string();
+                        }
+                    } catch (Exception e) {
+                    }
+                    String detailedErrorMessage = "Failed to load approvals. Code: " + response.code() + ", Body: " + errorBody;
+                    errorMessage.setValue(detailedErrorMessage);
                 }
             }
 
             @Override
             public void onFailure(@NonNull Call<PendingApprovalsResponse> call, @NonNull Throwable t) {
-                errorMessage.setValue("Error: " + t.getMessage());
                 isLoading.setValue(false);
+                errorMessage.setValue("Network request failed: " + t.getMessage());
             }
         });
     }

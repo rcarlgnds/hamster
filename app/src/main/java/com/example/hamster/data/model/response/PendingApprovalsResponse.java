@@ -39,5 +39,7 @@ public class PendingApprovalsResponse {
     public void setAssetIds(List<String> assetIds) {
         this.assetIds = assetIds;
     }
+
+
 }
 
