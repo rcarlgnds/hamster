@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -18,14 +17,17 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.hamster.R;
+import com.example.hamster.data.model.ApprovalItem;
 import com.example.hamster.data.model.Asset;
 import com.example.hamster.data.model.AssetMediaFile;
 import com.example.hamster.data.network.ApiClient;
 import com.google.android.material.appbar.MaterialToolbar;
+import com.google.android.material.textfield.TextInputEditText;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 public class ActivationApprovalActivity extends AppCompatActivity {
@@ -35,74 +37,107 @@ public class ActivationApprovalActivity extends AppCompatActivity {
     private ApprovalAdapter adapter;
     private ProgressBar progressBar;
     private TextView tvEmptyMessage;
+    private ApprovalItem currentItem;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_activation_approval);
 
-        MaterialToolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        toolbar.setNavigationOnClickListener(v -> finish());
-
-        progressBar = findViewById(R.id.progressBar);
-        tvEmptyMessage = findViewById(R.id.tvEmptyMessage);
-        recyclerView = findViewById(R.id.recyclerViewApprovals);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-
-        adapter = new ApprovalAdapter(new ArrayList<>(), this::showConfirmationDialog);
-        recyclerView.setAdapter(adapter);
-
-        viewModel = new ViewModelProvider(this).get(ActivationApprovalViewModel.class);
+        setupToolbar();
+        setupViews();
+        setupViewModel();
+        setupRecyclerView();
         setupObservers();
 
         viewModel.fetchPendingApprovals();
     }
 
+    private void setupToolbar() {
+        MaterialToolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
+        toolbar.setNavigationOnClickListener(v -> finish());
+    }
+
+    private void setupViews() {
+        progressBar = findViewById(R.id.progressBar);
+        tvEmptyMessage = findViewById(R.id.tvEmptyMessage);
+        recyclerView = findViewById(R.id.recyclerViewApprovals);
+    }
+
+    private void setupViewModel() {
+        viewModel = new ViewModelProvider(this).get(ActivationApprovalViewModel.class);
+    }
+
+    private void setupRecyclerView() {
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        adapter = new ApprovalAdapter(this, new ArrayList<>(), this::onConfirmationClicked);
+        recyclerView.setAdapter(adapter);
+    }
+
+    private void onConfirmationClicked(ApprovalItem item) {
+        this.currentItem = item;
+        viewModel.fetchAssetDetailsById(item.getAssetId());
+    }
+
     private void setupObservers() {
         viewModel.getIsLoading().observe(this, isLoading -> {
             progressBar.setVisibility(isLoading ? View.VISIBLE : View.GONE);
-            if(isLoading) {
-                recyclerView.setVisibility(View.GONE);
-                tvEmptyMessage.setVisibility(View.GONE);
-            }
         });
 
-        viewModel.getApprovalList().observe(this, assets -> {
-            if (assets != null && !assets.isEmpty()) {
-                adapter.updateData(assets);
-                recyclerView.setVisibility(View.VISIBLE);
-                tvEmptyMessage.setVisibility(View.GONE);
-            } else {
-                recyclerView.setVisibility(View.GONE);
-                tvEmptyMessage.setVisibility(View.VISIBLE);
+        viewModel.getApprovalList().observe(this, items -> {
+            boolean isEmpty = items == null || items.isEmpty();
+            tvEmptyMessage.setVisibility(isEmpty ? View.VISIBLE : View.GONE);
+            recyclerView.setVisibility(isEmpty ? View.GONE : View.VISIBLE);
+            if (!isEmpty) {
+                adapter.updateData(items);
             }
         });
 
         viewModel.getErrorMessage().observe(this, error -> {
             if (error != null && !error.isEmpty()) {
-                Toast.makeText(this, error, Toast.LENGTH_LONG).show();
+                Toast.makeText(this, "Error: " + error, Toast.LENGTH_LONG).show();
             }
         });
 
         viewModel.getApprovalResult().observe(this, success -> {
-            if (success != null && success) {
-                Toast.makeText(this, "Activation Approval got approved successfully", Toast.LENGTH_SHORT).show();
-                viewModel.fetchPendingApprovals();
+            if (success != null) {
+                if (success) {
+                    Toast.makeText(this, "Approval processed successfully", Toast.LENGTH_SHORT).show();
+                    viewModel.fetchPendingApprovals();
+                } else {
+                }
+            }
+        });
+
+        viewModel.getAssetDetails().observe(this, asset -> {
+            if (asset != null) {
+                showConfirmationDialog();
             }
         });
     }
 
-    private void showConfirmationDialog(Asset asset) {
+    private void showConfirmationDialog() {
+        if (currentItem == null) {
+            Toast.makeText(this, "Error: No item data found.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        Asset asset = viewModel.getAssetDetails().getValue();
+        if (asset == null) {
+            Toast.makeText(this, "Error: Asset details not loaded.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        LayoutInflater inflater = this.getLayoutInflater();
-        View dialogView = inflater.inflate(R.layout.dialog_approval_confirmation, null);
+        View dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_approval_confirmation, null);
         builder.setView(dialogView);
 
         ImageView ivAssetPhoto = dialogView.findViewById(R.id.ivAssetPhoto);
         TextView tvScannedBy = dialogView.findViewById(R.id.tvScannedBy);
-        EditText etRemarks = dialogView.findViewById(R.id.etRemarks);
+        TextInputEditText etRemarks = dialogView.findViewById(R.id.etRemarks);
         Button btnCancel = dialogView.findViewById(R.id.btnCancel);
         Button btnReject = dialogView.findViewById(R.id.btnReject);
         Button btnApprove = dialogView.findViewById(R.id.btnApprove);
@@ -111,30 +146,31 @@ public class ActivationApprovalActivity extends AppCompatActivity {
         Glide.with(this)
                 .load(photoUrl)
                 .placeholder(R.drawable.ic_broken_image)
+                .error(R.drawable.ic_broken_image)
                 .into(ivAssetPhoto);
 
-        SimpleDateFormat sdf = new SimpleDateFormat("dd MMM yyyy, HH:mm:ss", Locale.getDefault());
-        String formattedDate = sdf.format(new Date(asset.getCreatedAt()));
-        String scannedByText = "Scanned by Admin at " + formattedDate;
+        SimpleDateFormat sdf = new SimpleDateFormat("dd MMM yyyy, HH:mm", Locale.getDefault());
+        long timestampInMillis = currentItem.getCreatedAt() * 1000L;
+        String formattedDate = sdf.format(new Date(timestampInMillis));
+        String scannedByText = "Request at " + formattedDate;
         tvScannedBy.setText(scannedByText);
 
         final AlertDialog dialog = builder.create();
+        dialog.show();
 
         btnCancel.setOnClickListener(v -> dialog.dismiss());
 
         btnReject.setOnClickListener(v -> {
-            String remarks = etRemarks.getText().toString();
-            viewModel.submitApproval(asset.getId(), false, remarks);
+            String remarks = etRemarks.getText() != null ? etRemarks.getText().toString() : "";
+            viewModel.submitApproval(currentItem.getTransactionId(), false, remarks);
             dialog.dismiss();
         });
 
         btnApprove.setOnClickListener(v -> {
-            String remarks = etRemarks.getText().toString();
-            viewModel.submitApproval(asset.getId(), true, remarks);
+            String remarks = etRemarks.getText() != null ? etRemarks.getText().toString() : "";
+            viewModel.submitApproval(currentItem.getTransactionId(), true, remarks);
             dialog.dismiss();
         });
-
-        dialog.show();
     }
 
     private String findActivationPhotoUrl(Asset asset) {

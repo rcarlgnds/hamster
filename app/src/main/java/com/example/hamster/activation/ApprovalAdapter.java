@@ -1,53 +1,58 @@
 package com.example.hamster.activation;
 
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
-
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.hamster.R;
-import com.example.hamster.data.model.Asset;
+import com.example.hamster.data.model.ApprovalItem;
 
 import java.util.List;
 
 public class ApprovalAdapter extends RecyclerView.Adapter<ApprovalAdapter.ApprovalViewHolder> {
 
-    private List<Asset> assetList;
+    private List<ApprovalItem> approvalList;
     private final OnConfirmationClickListener listener;
+    private final Context context;
 
     public interface OnConfirmationClickListener {
-        void onConfirmClick(Asset asset);
+        void onConfirmClick(ApprovalItem item);
     }
 
-    public ApprovalAdapter(List<Asset> assetList, OnConfirmationClickListener listener) {
-        this.assetList = assetList;
+    public ApprovalAdapter(Context context, List<ApprovalItem> approvalList, OnConfirmationClickListener listener) {
+        this.context = context;
+        this.approvalList = approvalList;
         this.listener = listener;
     }
 
     @NonNull
     @Override
     public ApprovalViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item_approval, parent, false);
+        View view = LayoutInflater.from(context).inflate(R.layout.list_item_approval, parent, false);
         return new ApprovalViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull ApprovalViewHolder holder, int position) {
-        Asset asset = assetList.get(position);
-        holder.bind(asset, listener);
+        ApprovalItem item = approvalList.get(position);
+        holder.bind(item, listener);
     }
 
     @Override
     public int getItemCount() {
-        return assetList.size();
+        return approvalList.size();
     }
 
-    public void updateData(List<Asset> newAssetList) {
-        this.assetList = newAssetList;
+    public void updateData(List<ApprovalItem> newApprovalList) {
+        this.approvalList.clear();
+        if (newApprovalList != null) {
+            this.approvalList.addAll(newApprovalList);
+        }
         notifyDataSetChanged();
     }
 
@@ -64,19 +69,13 @@ public class ApprovalAdapter extends RecyclerView.Adapter<ApprovalAdapter.Approv
             btnConfirmation = itemView.findViewById(R.id.btnConfirmation);
         }
 
-        public void bind(final Asset asset, final OnConfirmationClickListener listener) {
-            tvAssetCode.setText(asset.getCode());
-            tvAssetName.setText(asset.getName());
-
-            if (asset.getRoom() != null) {
-                tvRoom.setText(asset.getRoom().getName());
-            } else {
-                tvRoom.setText("-");
-            }
-
+        public void bind(final ApprovalItem item, final OnConfirmationClickListener listener) {
+            tvAssetCode.setText(item.getAssetCode());
+            tvAssetName.setText(item.getAssetName());
+            tvRoom.setText(item.getRoom());
             tvRole.setText("Inventory Confirmation");
 
-            btnConfirmation.setOnClickListener(v -> listener.onConfirmClick(asset));
+            btnConfirmation.setOnClickListener(v -> listener.onConfirmClick(item));
         }
     }
 }
