@@ -1,6 +1,9 @@
 package com.example.hamster.activation;
 
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -9,6 +12,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
@@ -16,10 +20,13 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.DataSource;
+import com.bumptech.glide.load.engine.GlideException;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 import com.example.hamster.R;
+import com.example.hamster.data.model.ActivationDetailData;
 import com.example.hamster.data.model.ApprovalItem;
-import com.example.hamster.data.model.Asset;
-import com.example.hamster.data.model.AssetMediaFile;
 import com.example.hamster.data.network.ApiClient;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.textfield.TextInputEditText;
@@ -27,7 +34,6 @@ import com.google.android.material.textfield.TextInputEditText;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import java.util.Locale;
 
 public class ActivationApprovalActivity extends AppCompatActivity {
@@ -80,7 +86,7 @@ public class ActivationApprovalActivity extends AppCompatActivity {
 
     private void onConfirmationClicked(ApprovalItem item) {
         this.currentItem = item;
-        viewModel.fetchAssetDetailsById(item.getAssetId());
+        viewModel.fetchActivationDetails(item.getTransactionId());
     }
 
     private void setupObservers() {
@@ -108,49 +114,78 @@ public class ActivationApprovalActivity extends AppCompatActivity {
                 if (success) {
                     Toast.makeText(this, "Approval processed successfully", Toast.LENGTH_SHORT).show();
                     viewModel.fetchPendingApprovals();
-                } else {
                 }
             }
         });
 
-        viewModel.getAssetDetails().observe(this, asset -> {
-            if (asset != null) {
-                showConfirmationDialog();
+        viewModel.getActivationDetails().observe(this, details -> {
+            if (details != null) {
+                showConfirmationDialog(details);
             }
         });
     }
 
-    private void showConfirmationDialog() {
-        if (currentItem == null) {
-            Toast.makeText(this, "Error: No item data found.", Toast.LENGTH_SHORT).show();
-            return;
-        }
-        Asset asset = viewModel.getAssetDetails().getValue();
-        if (asset == null) {
-            Toast.makeText(this, "Error: Asset details not loaded.", Toast.LENGTH_SHORT).show();
-            return;
-        }
+    private void showConfirmationDialog(ActivationDetailData details) {
+        if (currentItem == null) return;
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         View dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_approval_confirmation, null);
         builder.setView(dialogView);
 
         ImageView ivAssetPhoto = dialogView.findViewById(R.id.ivAssetPhoto);
+        ProgressBar imageProgressBar = dialogView.findViewById(R.id.imageProgressBar);
         TextView tvScannedBy = dialogView.findViewById(R.id.tvScannedBy);
         TextInputEditText etRemarks = dialogView.findViewById(R.id.etRemarks);
         Button btnCancel = dialogView.findViewById(R.id.btnCancel);
         Button btnReject = dialogView.findViewById(R.id.btnReject);
         Button btnApprove = dialogView.findViewById(R.id.btnApprove);
 
-        String photoUrl = findActivationPhotoUrl(asset);
+
+        btnApprove.setEnabled(false);
+        btnReject.setEnabled(false);
+
+        etRemarks.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {}
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                boolean isRemarksEmpty = s.toString().trim().isEmpty();
+                btnApprove.setEnabled(!isRemarksEmpty);
+                btnReject.setEnabled(!isRemarksEmpty);
+            }
+        });
+
+        imageProgressBar.setVisibility(View.VISIBLE);
+
+        String photoUrl = null;
+        if (details.getImage() != null && details.getImage().getUrl() != null) {
+            photoUrl = ApiClient.BASE_MEDIA_URL + details.getImage().getUrl();
+        }
+
         Glide.with(this)
                 .load(photoUrl)
-                .placeholder(R.drawable.ic_broken_image)
-                .error(R.drawable.ic_broken_image)
+                .listener(new RequestListener<Drawable>() {
+                    @Override
+                    public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                        imageProgressBar.setVisibility(View.GONE);
+                        ivAssetPhoto.setImageResource(R.drawable.ic_broken_image);
+                        return false;
+                    }
+
+                    @Override
+                    public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                        imageProgressBar.setVisibility(View.GONE);
+                        return false;
+                    }
+                })
                 .into(ivAssetPhoto);
 
         SimpleDateFormat sdf = new SimpleDateFormat("dd MMM yyyy, HH:mm", Locale.getDefault());
-        long timestampInMillis = currentItem.getCreatedAt() * 1000L;
+        long timestampInMillis = details.getStartedAt() * 1000L;
         String formattedDate = sdf.format(new Date(timestampInMillis));
         String scannedByText = "Request at " + formattedDate;
         tvScannedBy.setText(scannedByText);
@@ -171,16 +206,5 @@ public class ActivationApprovalActivity extends AppCompatActivity {
             viewModel.submitApproval(currentItem.getTransactionId(), true, remarks);
             dialog.dismiss();
         });
-    }
-
-    private String findActivationPhotoUrl(Asset asset) {
-        if (asset.getMediaFiles() != null) {
-            for (AssetMediaFile mediaFile : asset.getMediaFiles()) {
-                if ("ASSET_PHOTO".equals(mediaFile.getType()) && mediaFile.getMediaFile() != null) {
-                    return ApiClient.BASE_MEDIA_URL + mediaFile.getMediaFile().getUrl();
-                }
-            }
-        }
-        return null;
     }
 }

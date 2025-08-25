@@ -61,6 +61,7 @@ import com.example.hamster.data.model.request.UpdateSubRoomRequest;
 import com.example.hamster.data.model.request.UpdateUserRequest;
 import com.example.hamster.data.model.request.UpdateVendorRequest;
 import com.example.hamster.data.model.request.UpdateWorkingUnitRequest;
+import com.example.hamster.data.model.response.ActivationDetailResponse;
 import com.example.hamster.data.model.response.AssetActivationResponse;
 import com.example.hamster.data.model.response.AssetActivationSettingResponse;
 import com.example.hamster.data.model.response.AssetActivationStatusResponse;
@@ -627,7 +628,7 @@ public interface ApiService {
     Call<AssetActivationSetting> getApprovalSettingById(@Path("id") String settingId);
 
     @GET("asset-activation/{id}")
-    Call<AssetActivationResponse> getAssetActivationData(@Path("id") String transactionId);
+    Call<ActivationDetailResponse> getAssetActivationById(@Path("id") String transactionId);
 
 
     // --- Media ---

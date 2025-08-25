@@ -6,17 +6,15 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
+import com.example.hamster.data.model.ActivationDetailData;
 import com.example.hamster.data.model.ApprovalItem;
-import com.example.hamster.data.model.Asset;
-import com.example.hamster.data.model.AssetDetailResponse;
 import com.example.hamster.data.model.request.ApproveActivationRequest;
+import com.example.hamster.data.model.response.ActivationDetailResponse;
 import com.example.hamster.data.model.response.PendingApprovalsResponse;
 import com.example.hamster.data.network.ApiClient;
 import com.example.hamster.data.network.ApiService;
 
-import java.util.ArrayList;
 import java.util.List;
-
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -25,7 +23,7 @@ public class ActivationApprovalViewModel extends AndroidViewModel {
 
     private final ApiService apiService;
     private final MutableLiveData<List<ApprovalItem>> approvalList = new MutableLiveData<>();
-    private final MutableLiveData<Asset> assetDetails = new MutableLiveData<>();
+    private final MutableLiveData<ActivationDetailData> activationDetails = new MutableLiveData<>();
     private final MutableLiveData<Boolean> isLoading = new MutableLiveData<>(false);
     private final MutableLiveData<String> errorMessage = new MutableLiveData<>();
     private final MutableLiveData<Boolean> approvalResult = new MutableLiveData<>();
@@ -35,9 +33,8 @@ public class ActivationApprovalViewModel extends AndroidViewModel {
         apiService = ApiClient.getClient(application).create(ApiService.class);
     }
 
-
     public LiveData<List<ApprovalItem>> getApprovalList() { return approvalList; }
-    public LiveData<Asset> getAssetDetails() { return assetDetails; }
+    public LiveData<ActivationDetailData> getActivationDetails() { return activationDetails; }
     public LiveData<Boolean> getIsLoading() { return isLoading; }
     public LiveData<String> getErrorMessage() { return errorMessage; }
     public LiveData<Boolean> getApprovalResult() { return approvalResult; }
@@ -49,8 +46,7 @@ public class ActivationApprovalViewModel extends AndroidViewModel {
             public void onResponse(@NonNull Call<PendingApprovalsResponse> call, @NonNull Response<PendingApprovalsResponse> response) {
                 isLoading.setValue(false);
                 if (response.isSuccessful() && response.body() != null && response.body().getData() != null) {
-                    List<ApprovalItem> items = response.body().getData().getData();
-                    approvalList.setValue(items);
+                    approvalList.setValue(response.body().getData().getData());
                 } else {
                     handleApiError(response, "Failed to load approvals.");
                 }
@@ -64,21 +60,21 @@ public class ActivationApprovalViewModel extends AndroidViewModel {
         });
     }
 
-    public void fetchAssetDetailsById(String assetId) {
+    public void fetchActivationDetails(String transactionId) {
         isLoading.setValue(true);
-        apiService.getAssetById(assetId).enqueue(new Callback<AssetDetailResponse>() {
+        apiService.getAssetActivationById(transactionId).enqueue(new Callback<ActivationDetailResponse>() {
             @Override
-            public void onResponse(@NonNull Call<AssetDetailResponse> call, @NonNull Response<AssetDetailResponse> response) {
+            public void onResponse(@NonNull Call<ActivationDetailResponse> call, @NonNull Response<ActivationDetailResponse> response) {
                 isLoading.setValue(false);
                 if (response.isSuccessful() && response.body() != null) {
-                    assetDetails.setValue(response.body().getData());
+                    activationDetails.setValue(response.body().getData());
                 } else {
-                    handleApiError(response, "Failed to load asset details.");
+                    handleApiError(response, "Failed to load activation details.");
                 }
             }
 
             @Override
-            public void onFailure(@NonNull Call<AssetDetailResponse> call, @NonNull Throwable t) {
+            public void onFailure(@NonNull Call<ActivationDetailResponse> call, @NonNull Throwable t) {
                 isLoading.setValue(false);
                 errorMessage.setValue("Network request failed: " + t.getMessage());
             }
@@ -118,7 +114,7 @@ public class ActivationApprovalViewModel extends AndroidViewModel {
                 errorBody = response.errorBody().string();
             }
         } catch (Exception e) {
-
+            // Ignore
         }
         errorMessage.setValue(defaultMessage + " Code: " + response.code() + ". " + errorBody);
     }
