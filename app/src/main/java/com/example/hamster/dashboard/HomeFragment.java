@@ -32,7 +32,7 @@ public class HomeFragment extends Fragment {
     private TextView tvWelcomeUser;
     private TextView tvUserRole;
 
-    private static final String PERMISSION_ACTIVATION_APPROVAL = "ASSET_ACTIVATION.APPROVE_STEP1_ROOM";
+    private static final String PERMISSION_ACTIVATION_APPROVAL = "ASSET_ACTIVATION.APPROVE_ALL";
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
