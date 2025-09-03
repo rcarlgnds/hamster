@@ -35,7 +35,7 @@ public class User implements Serializable {
     private List<AssetApprovalTransaction> approvalTransactions;
     private List<Notification> notifications;
     private List<Permission> permissions;
-
+    private List<Control> controls;
 
     // Getters
     public String getId() {
@@ -148,5 +148,9 @@ public class User implements Serializable {
 
     public List<Permission> getPermissions() {
         return permissions;
+    }
+
+    public List<Control> getControls() {
+        return controls;
     }
 }

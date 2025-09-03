@@ -1,5 +1,7 @@
 package com.example.hamster.dashboard;
 
+import static android.content.ContentValues.TAG;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
@@ -16,6 +18,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.hamster.R;
 import com.example.hamster.activation.ActivationApprovalActivity;
+import com.example.hamster.data.model.Control;
 import com.example.hamster.data.model.Permission;
 import com.example.hamster.data.model.User;
 import com.example.hamster.utils.SessionManager;
@@ -32,7 +35,12 @@ public class HomeFragment extends Fragment {
     private TextView tvWelcomeUser;
     private TextView tvUserRole;
 
-    private static final String PERMISSION_ACTIVATION_APPROVAL = "ASSET_ACTIVATION.APPROVE_ALL";
+    private static final String PERMISSION_INVENTORY_VIEW = "ASSETS.VIEW_ALL_LIST";
+    private static final String PERMISSION_ACTIVATION_VIEW = "ASSET_ACTIVATION.VIEW_ALL_LIST";
+
+    private static final String CONTROL_APPROVAL_STEP_1 = "asset_activation_step_1";
+    private static final String CONTROL_APPROVAL_STEP_2 = "asset_activation_step_2";
+
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -68,15 +76,42 @@ public class HomeFragment extends Fragment {
 
     private void setupFeatures() {
         List<FeatureAdapter.Feature> features = new ArrayList<>();
-        features.add(new FeatureAdapter.Feature("Inventory", R.drawable.ic_inventory));
-        features.add(new FeatureAdapter.Feature("Activation", R.drawable.ic_activation));
 
-        if (userHasPermission(PERMISSION_ACTIVATION_APPROVAL)) {
+        if (userHasPermission(PERMISSION_INVENTORY_VIEW)) {
+            features.add(new FeatureAdapter.Feature("Inventory", R.drawable.ic_inventory));
+        }
+        if (userHasPermission(PERMISSION_ACTIVATION_VIEW)) {
+            features.add(new FeatureAdapter.Feature("Activation", R.drawable.ic_activation));
+        }
+        if (userHasAnyOfControls(CONTROL_APPROVAL_STEP_1, CONTROL_APPROVAL_STEP_2)) {
             features.add(new FeatureAdapter.Feature("Approval", R.drawable.ic_approval));
         }
 
         featureAdapter = new FeatureAdapter(requireContext(), features);
         rvFeatures.setAdapter(featureAdapter);
+    }
+
+    private boolean userHasAnyOfControls(String... requiredKeys) {
+        User currentUser = sessionManager.getUser();
+        if (currentUser == null || currentUser.getControls() == null || requiredKeys.length == 0) {
+            return false;
+        }
+
+        Log.d(TAG, "--- Memeriksa Kumpulan Control untuk user: " + currentUser.getEmail() + " ---");
+
+        for (Control userControl : currentUser.getControls()) {
+            if (userControl != null && userControl.getKey() != null) {
+                for (String requiredKey : requiredKeys) {
+                    if (requiredKey.equals(userControl.getKey())) {
+                        Log.i(TAG, "COCOK! Ditemukan control key yang valid: '" + requiredKey + "'. Akses diberikan.");
+                        return true;
+                    }
+                }
+            }
+        }
+
+        Log.w(TAG, "TIDAK COCOK. Tidak ada satupun control key yang valid ditemukan.");
+        return false;
     }
 
     private boolean userHasPermission(String requiredPermissionKey) {
@@ -103,8 +138,6 @@ public class HomeFragment extends Fragment {
         }
 
         Log.d("PermissionCheck", "NO MATCH FOUND. Returning false.");
-
-
         return false;
     }
 
