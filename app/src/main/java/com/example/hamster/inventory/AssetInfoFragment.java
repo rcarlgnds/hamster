@@ -21,11 +21,13 @@ import java.util.List;
 public class AssetInfoFragment extends Fragment {
     private AssetDetailViewModel viewModel;
     private TextInputEditText etCode, etName, etSerial, etDesc, etAliasNameTeramedik, etAliasNameHamster;
-    private AutoCompleteTextView acOwnership, acCategory, acSubCategory, acBrand, acCondition;
+    private AutoCompleteTextView acOwnership, acCategory, acSubCategory, acBrand, acCondition, acUnit;
 
     private List<OptionItem> categoryList = new ArrayList<>();
     private List<OptionItem> subCategoryList = new ArrayList<>();
     private List<OptionItem> brandList = new ArrayList<>();
+    private List<OptionItem> unitList = new ArrayList<>();
+
 
     private boolean isProgrammaticChange = false;
 
@@ -56,6 +58,8 @@ public class AssetInfoFragment extends Fragment {
         acCategory = view.findViewById(R.id.autoCompleteCategory);
         acSubCategory = view.findViewById(R.id.autoCompleteSubCategory);
         acBrand = view.findViewById(R.id.autoCompleteBrand);
+        acUnit = view.findViewById(R.id.autoCompleteUnit);
+
     }
 
     private void setupObservers() {
@@ -73,12 +77,20 @@ public class AssetInfoFragment extends Fragment {
             if (asset.getCategory() != null) acCategory.setText(asset.getCategory().getName(), false);
             if (asset.getSubcategory() != null) acSubCategory.setText(asset.getSubcategory().getName(), false);
             if (asset.getBrand() != null) acBrand.setText(asset.getBrand().getName(), false);
+
+            if (asset.getSubcategory() != null) {
+                acSubCategory.setText(asset.getSubcategory().getName(), false);
+                viewModel.fetchUnitOptions(asset.getSubcategory().getId());
+            }
+            acUnit.setText(asset.getUnit(), false);
+
             isProgrammaticChange = false;
         });
 
         viewModel.getCategoryOptions().observe(getViewLifecycleOwner(), options -> populateDropdown(acCategory, options, categoryList));
         viewModel.getSubCategoryOptions().observe(getViewLifecycleOwner(), options -> populateDropdown(acSubCategory, options, subCategoryList));
         viewModel.getBrandOptions().observe(getViewLifecycleOwner(), options -> populateDropdown(acBrand, options, brandList));
+        viewModel.getUnitOptions().observe(getViewLifecycleOwner(), options -> populateDropdown(acUnit, options, unitList));
 
         viewModel.getOwnershipOptions().observe(getViewLifecycleOwner(), options -> populateStringDropdown(acOwnership, options));
         viewModel.getConditionOptions().observe(getViewLifecycleOwner(), options -> populateStringDropdown(acCondition, options));
@@ -99,13 +111,32 @@ public class AssetInfoFragment extends Fragment {
             OptionItem selected = categoryList.get(position);
             viewModel.updateField(req -> req.setCategoryId(selected.getId()));
             viewModel.fetchSubCategoryOptions(selected.getId());
+
             acSubCategory.setText("", false);
             viewModel.updateField(req -> req.setSubcategoryId(null));
+            acUnit.setText("", false);
+            viewModel.updateField(req -> req.setUnit(null));
+            viewModel.fetchUnitOptions(null);
         });
 
         acSubCategory.setOnItemClickListener((parent, view, position, id) -> {
             OptionItem selected = subCategoryList.get(position);
             viewModel.updateField(req -> req.setSubcategoryId(selected.getId()));
+
+            viewModel.fetchUnitOptions(selected.getId());
+
+            acUnit.setText("", false);
+            viewModel.updateField(req -> req.setUnit(null));
+        });
+
+        acUnit.setOnItemClickListener((parent, view, position, id) -> {
+            OptionItem selected = unitList.get(position);
+            viewModel.updateField(req -> req.setUnit(selected.getName()));
+        });
+
+        acBrand.setOnItemClickListener((parent, view, position, id) -> {
+            OptionItem selected = brandList.get(position);
+            viewModel.updateField(req -> req.setBrandId(selected.getId()));
         });
 
         acBrand.setOnItemClickListener((parent, view, position, id) -> {

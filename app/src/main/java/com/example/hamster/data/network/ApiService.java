@@ -84,6 +84,7 @@ import com.example.hamster.data.model.response.RolePermissionResponse;
 import com.example.hamster.data.model.response.RoomResponse;
 import com.example.hamster.data.model.response.SubRoomResponse;
 import com.example.hamster.data.model.response.TemplateResponse;
+import com.example.hamster.data.model.response.UnitResponse;
 import com.example.hamster.data.model.response.UnreadCountResponse;
 import com.example.hamster.data.model.response.UserResponse;
 import com.example.hamster.data.model.response.VendorResponse;
@@ -657,4 +658,13 @@ public interface ApiService {
     // --- External ---
     @POST("external/assets")
     Call<Asset> createExternalAsset(@Body ExternalAssetRequest request);
+
+
+    // --- Unit ---
+    @GET("units")
+    Call<UnitResponse> getUnits(
+            @Query("page") int page,
+            @Query("limit") int limit,
+            @Query("subcategoryId") String subcategoryId
+    );
 }

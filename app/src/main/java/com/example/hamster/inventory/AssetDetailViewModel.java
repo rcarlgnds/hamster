@@ -11,8 +11,10 @@ import com.example.hamster.data.model.Asset;
 import com.example.hamster.data.model.AssetDetailResponse;
 import com.example.hamster.data.model.AssetMediaFile;
 import com.example.hamster.data.model.OptionItem;
+import com.example.hamster.data.model.Unit;
 import com.example.hamster.data.model.UpdateAssetRequest;
 import com.example.hamster.data.model.response.OptionsResponse;
+import com.example.hamster.data.model.response.UnitResponse;
 import com.example.hamster.data.network.ApiClient;
 import com.example.hamster.data.network.ApiService;
 import com.example.hamster.utils.FileUtils;
@@ -22,6 +24,8 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
@@ -58,7 +62,7 @@ public class AssetDetailViewModel extends AndroidViewModel {
     private final MutableLiveData<List<OptionItem>> vendorOptions = new MutableLiveData<>();
     private final MutableLiveData<List<String>> ownershipOptions = new MutableLiveData<>();
     private final MutableLiveData<List<String>> conditionOptions = new MutableLiveData<>();
-    private final MutableLiveData<List<String>> unitOptions = new MutableLiveData<>();
+    private final MutableLiveData<List<OptionItem>> unitOptions = new MutableLiveData<>();
 
 
     public AssetDetailViewModel(@NonNull Application application) {
@@ -86,7 +90,7 @@ public class AssetDetailViewModel extends AndroidViewModel {
     public LiveData<List<OptionItem>> getVendorOptions() { return vendorOptions; }
     public LiveData<List<String>> getOwnershipOptions() { return ownershipOptions; }
     public LiveData<List<String>> getConditionOptions() { return conditionOptions; }
-    public LiveData<List<String>> getUnitOptions() { return unitOptions; }
+    public LiveData<List<OptionItem>> getUnitOptions() { return unitOptions; }
 
     public void clearErrorMessage() {
         errorMessage.setValue(null);
@@ -402,7 +406,6 @@ public class AssetDetailViewModel extends AndroidViewModel {
     private void fetchStaticOptions() {
         ownershipOptions.setValue(Arrays.asList("Owned", "KSO", "Rent"));
         conditionOptions.setValue(Arrays.asList("Good", "Slightly Damaged", "Moderately Damaged", "Heavily Damaged"));
-        unitOptions.setValue(Arrays.asList("pieces", "unit", "set"));
     }
 
     public void fetchSubCategoryOptions(String categoryId) {
@@ -436,12 +439,51 @@ public class AssetDetailViewModel extends AndroidViewModel {
         });
     }
 
+    public void fetchUnitOptions(String subcategoryId) {
+        if (subcategoryId == null) {
+            unitOptions.setValue(new ArrayList<>());
+            return;
+        }
+        apiService.getUnits(1, 100, subcategoryId).enqueue(new Callback<UnitResponse>() {
+            @Override
+            public void onResponse(@NonNull Call<UnitResponse> call, @NonNull Response<UnitResponse> response) {
+                if (response.isSuccessful() && response.body() != null && response.body().getData() != null) {
+                    List<Unit> units = response.body().getData().getUnits();
+                    if (units != null) {
+                        List<OptionItem> options = units.stream()
+                                .map(unit -> new OptionItem(unit.getId(), unit.getName()))
+                                .collect(Collectors.toList());
+                        unitOptions.setValue(options);
+                    } else {
+                        unitOptions.setValue(new ArrayList<>());
+                    }
+                } else {
+                    unitOptions.setValue(new ArrayList<>());
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<UnitResponse> call, @NonNull Throwable t) {
+                errorMessage.setValue("Gagal memuat unit: " + t.getMessage());
+                unitOptions.setValue(new ArrayList<>());
+            }
+        });
+    }
+
     private void handleApiError(Response<?> response) {
-        String errorBody = "Terjadi kesalahan.";
+        String defaultMessage = "Terjadi kesalahan.";
+        String errorBodyString = "";
         try {
-            if (response.errorBody() != null) errorBody = response.errorBody().string();
-        } catch (Exception e) { /* ignore */ }
-        errorMessage.setValue("Gagal: " + response.code() + " - " + errorBody);
+            if (response.errorBody() != null) {
+                errorBodyString = response.errorBody().string();
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "Error parsing error body", e);
+        }
+
+        Log.e(TAG, "API Error " + response.code() + ": " + errorBodyString);
+
+        errorMessage.setValue("Gagal menyimpan: " + response.code() + ". Periksa Logcat untuk detail.");
     }
 
     @FunctionalInterface
