@@ -137,5 +137,6 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="mark_all_as_read">Mark as all read</string>
     <string name="no_notifications_found">You have no notifications</string>
+    <string name="there_is_no_approval_request_at_the_moment">There is no approval request at the moment.</string>
 
 </resources>

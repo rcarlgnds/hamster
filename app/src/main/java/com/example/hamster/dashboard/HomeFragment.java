@@ -1,21 +1,24 @@
 package com.example.hamster.dashboard;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
+
 import com.example.hamster.R;
+import com.example.hamster.activation.ActivationApprovalActivity;
+import com.example.hamster.data.model.Permission;
 import com.example.hamster.data.model.User;
 import com.example.hamster.utils.SessionManager;
-import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 import java.util.ArrayList;
 import java.util.List;
@@ -26,9 +29,10 @@ public class HomeFragment extends Fragment {
     private FeatureAdapter featureAdapter;
     private SessionManager sessionManager;
     private TextInputEditText etSearch;
-    private MaterialButton btnLogout;
     private TextView tvWelcomeUser;
     private TextView tvUserRole;
+
+    private static final String PERMISSION_ACTIVATION_APPROVAL = "ASSET_ACTIVATION.APPROVE_STEP1_ROOM";
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -67,8 +71,41 @@ public class HomeFragment extends Fragment {
         features.add(new FeatureAdapter.Feature("Inventory", R.drawable.ic_inventory));
         features.add(new FeatureAdapter.Feature("Activation", R.drawable.ic_activation));
 
+        if (userHasPermission(PERMISSION_ACTIVATION_APPROVAL)) {
+            features.add(new FeatureAdapter.Feature("Approval", R.drawable.ic_approval));
+        }
+
         featureAdapter = new FeatureAdapter(requireContext(), features);
         rvFeatures.setAdapter(featureAdapter);
+    }
+
+    private boolean userHasPermission(String requiredPermissionKey) {
+        User currentUser = sessionManager.getUser();
+
+        if (currentUser == null) {
+            Log.d("PermissionCheck", "Current user is null.");
+            return false;
+        }
+        if (currentUser.getPermissions() == null) {
+            Log.d("PermissionCheck", "Permissions list is null for user: " + currentUser.getEmail());
+            return false;
+        }
+
+        Log.d("PermissionCheck", "--- Checking Permissions for user: " + currentUser.getEmail() + " ---");
+        Log.d("PermissionCheck", "Looking for permission: '" + requiredPermissionKey + "'");
+
+        for (Permission permission : currentUser.getPermissions()) {
+            Log.d("PermissionCheck", "Found permission key: '" + permission.getKey() + "'");
+            if (requiredPermissionKey.equals(permission.getKey())) {
+                Log.d("PermissionCheck", "MATCH FOUND! Returning true.");
+                return true;
+            }
+        }
+
+        Log.d("PermissionCheck", "NO MATCH FOUND. Returning false.");
+
+
+        return false;
     }
 
     private void setupSearch() {
@@ -87,5 +124,4 @@ public class HomeFragment extends Fragment {
             public void afterTextChanged(Editable s) {}
         });
     }
-
 }
