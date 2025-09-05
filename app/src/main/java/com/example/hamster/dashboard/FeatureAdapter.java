@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.hamster.R;
 import com.example.hamster.activation.ActivationActivity;
 import com.example.hamster.activation.ActivationApprovalActivity;
+import com.example.hamster.activation.ConfirmationApprovalActivity;
 import com.example.hamster.inventory.InventoryActivity;
 import java.util.ArrayList;
 import java.util.List;
@@ -91,6 +92,9 @@ public class FeatureAdapter extends RecyclerView.Adapter<FeatureAdapter.FeatureV
                 }
                 else if ("Activation".equalsIgnoreCase(feature.name)) {
                     context.startActivity(new Intent(context, ActivationActivity.class));
+                }
+                else if ("Confirmation".equalsIgnoreCase(feature.name)) {
+                    context.startActivity(new Intent(context, ConfirmationApprovalActivity.class));
                 }
                 else if ("Approval".equalsIgnoreCase(feature.name)) {
                     context.startActivity(new Intent(context, ActivationApprovalActivity.class));

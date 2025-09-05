@@ -1,5 +1,7 @@
 package com.example.hamster.activation;
 
+import static android.view.View.GONE;
+
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -73,7 +75,8 @@ public class ApprovalAdapter extends RecyclerView.Adapter<ApprovalAdapter.Approv
             tvAssetCode.setText(item.getAssetCode());
             tvAssetName.setText(item.getAssetName());
             tvRoom.setText(item.getRoom());
-            tvRole.setText("Inventory Confirmation");
+//            tvRole.setText("Inventory Confirmation");
+            tvRole.setVisibility(View.GONE);
 
             btnConfirmation.setOnClickListener(v -> listener.onConfirmClick(item));
         }

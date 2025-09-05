@@ -80,8 +80,11 @@ public class ActivationViewModel extends AndroidViewModel {
 
     private void fetchActivationStatusById(String assetId) {
         apiService.getAssetActivationStatus(assetId).enqueue(new Callback<AssetActivationStatusResponse>() {
+
             @Override
             public void onResponse(@NonNull Call<AssetActivationStatusResponse> call, @NonNull Response<AssetActivationStatusResponse> response) {
+                Log.d("status ac", response.body().getData().toString() );
+                Log.d("status ac2", String.valueOf(response.body().getData().getCurrentStep()));
                 if (response.isSuccessful() && response.body() != null && response.body().getData() != null && response.body().getData().getCurrentStep() == 0) {
                     assetStatusData.setValue(response.body().getData());
                     statusCheckState.setValue(StatusCheckState.FOUND_READY_TO_ACTIVATE);

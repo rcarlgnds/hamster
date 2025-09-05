@@ -2,9 +2,6 @@ package com.example.hamster.activation;
 
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -33,8 +30,6 @@ import com.example.hamster.data.model.ActivationDetailData;
 import com.example.hamster.data.model.ApprovalItem;
 import com.example.hamster.data.network.ApiClient;
 import com.google.android.material.appbar.MaterialToolbar;
-import com.google.android.material.button.MaterialButton;
-import com.google.android.material.textfield.TextInputEditText;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -43,9 +38,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-public class ActivationApprovalActivity extends AppCompatActivity {
+public class ConfirmationApprovalActivity extends AppCompatActivity {
 
-    private ActivationApprovalViewModel viewModel;
+    private ConfirmationApprovalViewModel viewModel;
     private RecyclerView recyclerView;
     private ApprovalAdapter adapter;
     private ProgressBar progressBar;
@@ -55,7 +50,7 @@ public class ActivationApprovalActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_activation_approval);
+        setContentView(R.layout.activity_confirmation_approval);
 
         setupToolbar();
         setupViews();
@@ -82,7 +77,7 @@ public class ActivationApprovalActivity extends AppCompatActivity {
     }
 
     private void setupViewModel() {
-        viewModel = new ViewModelProvider(this).get(ActivationApprovalViewModel.class);
+        viewModel = new ViewModelProvider(this).get(ConfirmationApprovalViewModel.class);
     }
 
     private void setupRecyclerView() {

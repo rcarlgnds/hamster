@@ -14,10 +14,10 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class ApiClient {
     // Untuk panggilan API
-    public static final String BASE_URL = "http://195.35.20.102:9180/api/";
+    public static final String BASE_URL = "https://hamster-be.spira.id/api/";
 
     // Untuk mengakses file media
-    public static final String BASE_MEDIA_URL = "http://195.35.20.102:9180";
+    public static final String BASE_MEDIA_URL = "https://hamster-be.spira.id";
 
     /**
      * Membuat instance Retrofit utama yang digunakan di seluruh aplikasi.

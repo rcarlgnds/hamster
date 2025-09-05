@@ -57,6 +57,10 @@
             android:theme="@style/Theme.Material3.DayNight.NoActionBar" />
 
         <activity
+            android:name=".activation.ConfirmationApprovalActivity"
+            android:exported="false" />
+
+        <activity
             android:name=".activation.ActivationApprovalActivity"
             android:exported="false" />
 

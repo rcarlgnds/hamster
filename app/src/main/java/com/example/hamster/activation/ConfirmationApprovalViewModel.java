@@ -17,11 +17,12 @@ import com.example.hamster.data.network.ApiClient;
 import com.example.hamster.data.network.ApiService;
 
 import java.util.List;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class ActivationApprovalViewModel extends AndroidViewModel {
+public class ConfirmationApprovalViewModel extends AndroidViewModel {
 
     private final ApiService apiService;
     private final MutableLiveData<List<ApprovalItem>> approvalList = new MutableLiveData<>();
@@ -30,7 +31,7 @@ public class ActivationApprovalViewModel extends AndroidViewModel {
     private final MutableLiveData<String> errorMessage = new MutableLiveData<>();
     private final MutableLiveData<Boolean> approvalResult = new MutableLiveData<>();
 
-    public ActivationApprovalViewModel(@NonNull Application application) {
+    public ConfirmationApprovalViewModel(@NonNull Application application) {
         super(application);
         apiService = ApiClient.getClient(application).create(ApiService.class);
     }
@@ -43,7 +44,7 @@ public class ActivationApprovalViewModel extends AndroidViewModel {
 
     public void fetchPendingApprovals() {
         isLoading.setValue(true);
-        apiService.getPendingApprovals(1,100, 2).enqueue(new Callback<PendingApprovalsResponse>() {
+        apiService.getPendingApprovals(1,100, 1).enqueue(new Callback<PendingApprovalsResponse>() {
             @Override
             public void onResponse(@NonNull Call<PendingApprovalsResponse> call, @NonNull Response<PendingApprovalsResponse> response) {
                 isLoading.setValue(false);
@@ -104,7 +105,6 @@ public class ActivationApprovalViewModel extends AndroidViewModel {
             public void onFailure(@NonNull Call<Void> call, @NonNull Throwable t) {
                 isLoading.setValue(false);
                 approvalResult.setValue(false);
-                Log.d("error", t.getMessage());
                 errorMessage.setValue("Network request failed: " + t.getMessage());
             }
         });

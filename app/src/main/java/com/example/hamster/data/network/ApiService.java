@@ -604,7 +604,7 @@ public interface ApiService {
     Call<AssetActivationSetting> createApprovalSetting(@Body CreateAssetActivationSettingRequest request);
 
     @GET("asset-activation/pending-approvals")
-    Call<PendingApprovalsResponse> getPendingApprovals(@Query("page") int page, @Query("limit") int limit);
+    Call<PendingApprovalsResponse> getPendingApprovals(@Query("page") int page, @Query("limit") int limit, @Query("step") int step);
 
     @Multipart
     @POST("asset-activation/start")

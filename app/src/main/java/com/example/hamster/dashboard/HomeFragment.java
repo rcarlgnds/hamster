@@ -37,9 +37,12 @@ public class HomeFragment extends Fragment {
 
     private static final String PERMISSION_INVENTORY_VIEW = "ASSETS.VIEW_ALL_LIST";
     private static final String PERMISSION_ACTIVATION_VIEW = "ASSET_ACTIVATION.VIEW_ALL_LIST";
+    private static final String PERMISSION_START_ACTIVATION = "ASSET_ACTIVATION.START_ALL";
 
     private static final String CONTROL_APPROVAL_STEP_1 = "asset_activation_step_1";
     private static final String CONTROL_APPROVAL_STEP_2 = "asset_activation_step_2";
+    private static final String CONTROL_APPROVAL_STEP_3 = "asset_activation_step_3";
+    private static final String CONTROL_APPROVAL_STEP_4 = "asset_activation_step_4";
 
 
     @Override
@@ -80,10 +83,13 @@ public class HomeFragment extends Fragment {
         if (userHasPermission(PERMISSION_INVENTORY_VIEW)) {
             features.add(new FeatureAdapter.Feature("Inventory", R.drawable.ic_inventory));
         }
-        if (userHasPermission(PERMISSION_ACTIVATION_VIEW)) {
+        if (userHasPermission(PERMISSION_START_ACTIVATION)) {
             features.add(new FeatureAdapter.Feature("Activation", R.drawable.ic_activation));
         }
-        if (userHasAnyOfControls(CONTROL_APPROVAL_STEP_1, CONTROL_APPROVAL_STEP_2)) {
+        if (userHasAnyOfControls(CONTROL_APPROVAL_STEP_1)) {
+            features.add(new FeatureAdapter.Feature("Confirmation", R.drawable.ic_approval));
+        }
+        if (userHasAnyOfControls(CONTROL_APPROVAL_STEP_2)) {
             features.add(new FeatureAdapter.Feature("Approval", R.drawable.ic_approval));
         }
 
