@@ -48,6 +48,9 @@ public class UpdateAssetRequest {
     private List<String> keepPoDocuments;
     private List<String> keepInvoiceDocuments;
     private List<String> keepWarrantyDocuments;
+    private List<String> keepLicenseDocuments;
+    private List<String> keepUserManualDocuments;
+    private List<String> keepCustomDocuments;
 
 
     public Uri getPoDocumentUri() {
@@ -76,9 +79,6 @@ public class UpdateAssetRequest {
 
     private List<String> keepSerialNumberPhotos;
     private List<String> keepAssetPhotos;
-    private List<String> keepLicenseDocuments;
-    private List<String> keepUserManualDocuments;
-    private List<String> keepCustomDocuments;
 
     // --- Constructor ---
     public UpdateAssetRequest() {
@@ -419,4 +419,5 @@ public class UpdateAssetRequest {
     public void setKeepCustomDocuments(List<String> keepCustomDocuments) {
         this.keepCustomDocuments = keepCustomDocuments;
     }
+
 }

@@ -47,6 +47,12 @@ public class AssetDetailViewModel extends AndroidViewModel {
     private final List<Uri> newSerialNumberPhotoUris = new ArrayList<>();
     private final List<Uri> newAssetPhotoUris = new ArrayList<>();
 
+    private final List<Uri> newLicenseDocUris = new ArrayList<>();
+    private final List<Uri> newUserManualDocUris = new ArrayList<>();
+    private final List<Uri> newCustomDocUris = new ArrayList<>();
+    private final List<String> newCustomDocNames = new ArrayList<>();
+
+
     private final MutableLiveData<List<OptionItem>> categoryOptions = new MutableLiveData<>();
     private final MutableLiveData<List<OptionItem>> subCategoryOptions = new MutableLiveData<>();
     private final MutableLiveData<List<OptionItem>> brandOptions = new MutableLiveData<>();
@@ -99,6 +105,7 @@ public class AssetDetailViewModel extends AndroidViewModel {
     public void updateField(UpdateAction action) {
         action.update(pendingUpdateRequest);
     }
+
 
     public void updateMaintenanceData(UpdateAssetRequest data) {
         pendingUpdateRequest.setVendorId(data.getVendorId());
@@ -199,6 +206,9 @@ public class AssetDetailViewModel extends AndroidViewModel {
             List<String> assetPhotoIds = new ArrayList<>();
             List<String> poDocumentIds = new ArrayList<>();
             List<String> invoiceDocumentIds = new ArrayList<>();
+            List<String> licenseDocumentIds = new ArrayList<>();
+            List<String> userManualDocumentIds = new ArrayList<>();
+            List<String> customDocumentIds = new ArrayList<>();
             List<String> otherDocumentIds = new ArrayList<>();
 
             for (AssetMediaFile media : asset.getMediaFiles()) {
@@ -217,6 +227,15 @@ public class AssetDetailViewModel extends AndroidViewModel {
                     case "INVOICE_DOCUMENT":
                         invoiceDocumentIds.add(media.getId());
                         break;
+                    case "LICENSE_DOCUMENT":
+                        licenseDocumentIds.add(media.getId());
+                        break;
+                    case "USER_MANUAL_DOCUMENT":
+                        userManualDocumentIds.add(media.getId());
+                        break;
+                    case "CUSTOM_DOCUMENT":
+                        customDocumentIds.add(media.getId());
+                        break;
                     case "OTHER_DOCUMENT":
                         otherDocumentIds.add(media.getId());
                         break;
@@ -227,6 +246,9 @@ public class AssetDetailViewModel extends AndroidViewModel {
             pendingUpdateRequest.setKeepAssetPhotos(assetPhotoIds);
             pendingUpdateRequest.setKeepPoDocuments(poDocumentIds);
             pendingUpdateRequest.setKeepInvoiceDocuments(invoiceDocumentIds);
+            pendingUpdateRequest.setKeepLicenseDocuments(licenseDocumentIds);
+            pendingUpdateRequest.setKeepUserManualDocuments(userManualDocumentIds);
+            pendingUpdateRequest.setKeepCustomDocuments(customDocumentIds);
 //            pendingUpdateRequest.setKeepOtherDocuments(otherDocumentIds);
         }
     }
@@ -293,6 +315,7 @@ public class AssetDetailViewModel extends AndroidViewModel {
         addPart(fields, "responsibleWorkingUnitId", request.getResponsibleWorkingUnitId());
         addPart(fields, "responsibleUserId", request.getResponsibleUserId());
 
+
         // --- Asset Maintenance Fragment ---
         addPart(fields, "vendorId", request.getVendorId());
         if (request.getProcurementDate() != null) {
@@ -325,6 +348,11 @@ public class AssetDetailViewModel extends AndroidViewModel {
         // --- Asset Documents Fragment (Keep Existing Photos) ---
         addMultipleTextPart(fields, "keepSerialNumberPhotos", request.getKeepSerialNumberPhotos());
         addMultipleTextPart(fields, "keepAssetPhotos", request.getKeepAssetPhotos());
+        addMultipleTextPart(fields, "keepLicenseDocuments[]", request.getKeepLicenseDocuments());
+        addMultipleTextPart(fields, "keepUserManualDocuments[]", request.getKeepUserManualDocuments());
+        addMultipleTextPart(fields, "keepCustomDocuments[]", request.getKeepCustomDocuments());
+
+        addMultipleTextPart(fields, "customDocumentNames[]", this.newCustomDocNames);
 
         return fields;
     }
@@ -340,6 +368,10 @@ public class AssetDetailViewModel extends AndroidViewModel {
         // Foto dari tab Documents
         addFilesToParts(fileParts, "serialNumberPhoto", newSerialNumberPhotoUris);
         addFilesToParts(fileParts, "assetPhotos", newAssetPhotoUris);
+        addFilesToParts(fileParts, "licenseDocuments[]", newLicenseDocUris);
+        addFilesToParts(fileParts, "userManualDocuments[]", newUserManualDocUris);
+        addFilesToParts(fileParts, "customDocuments[]", newCustomDocUris);
+
 
         // File dari tab Maintenance
         if (pendingUpdateRequest.getPoDocumentUri() != null) {
@@ -484,6 +516,45 @@ public class AssetDetailViewModel extends AndroidViewModel {
         Log.e(TAG, "API Error " + response.code() + ": " + errorBodyString);
 
         errorMessage.setValue("Gagal menyimpan: " + response.code() + ". Periksa Logcat untuk detail.");
+    }
+
+    public void updateReviewDocuments(List<DocumentItem> licenseDocs, List<DocumentItem> userManualDocs, List<DocumentItem> customDocs) {
+        newLicenseDocUris.clear();
+        newUserManualDocUris.clear();
+        newCustomDocUris.clear();
+        newCustomDocNames.clear();
+
+        List<String> keepLicenseIds = new ArrayList<>();
+        List<String> keepUserManualIds = new ArrayList<>();
+        List<String> keepCustomIds = new ArrayList<>();
+
+        for (DocumentItem item : licenseDocs) {
+            if (item.isExisting()) {
+                keepLicenseIds.add(item.existingId);
+            } else {
+                newLicenseDocUris.add(item.localUri);
+            }
+        }
+        pendingUpdateRequest.setKeepLicenseDocuments(keepLicenseIds);
+
+        for (DocumentItem item : userManualDocs) {
+            if (item.isExisting()) {
+                keepUserManualIds.add(item.existingId);
+            } else {
+                newUserManualDocUris.add(item.localUri);
+            }
+        }
+        pendingUpdateRequest.setKeepUserManualDocuments(keepUserManualIds);
+
+        for (DocumentItem item : customDocs) {
+            if (item.isExisting()) {
+                keepCustomIds.add(item.existingId);
+            } else {
+                newCustomDocUris.add(item.localUri);
+                newCustomDocNames.add(item.name);
+            }
+        }
+        pendingUpdateRequest.setKeepCustomDocuments(keepCustomIds);
     }
 
     @FunctionalInterface
