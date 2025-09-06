@@ -4,10 +4,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="200dp"
+    android:layout_height="220dp"
     style="@style/Widget.Material3.CardView.Outlined"
-    android:layout_margin="6dp"
-    app:cardCornerRadius="16dp">
+    android:layout_margin="8dp"
+    app:cardCornerRadius="18dp"
+    app:cardElevation="6dp">
 
     <FrameLayout
         android:layout_width="match_parent"
@@ -18,40 +19,45 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:scaleType="centerCrop"
-            tools:srcCompat="@tools:sample/backgrounds/scenic"
-            android:contentDescription="Foto Aset"/>
+            android:contentDescription="Foto Aset"
+            tools:srcCompat="@tools:sample/backgrounds/scenic" />
 
         <View
             android:layout_width="match_parent"
-            android:layout_height="64dp"
-            android:background="@drawable/bg_gradient_bottom_dark"
-            android:layout_gravity="top"/>
+            android:layout_height="48dp"
+            android:layout_gravity="top"
+            android:background="@drawable/bg_gradient_bottom_dark" />
 
         <View
             android:layout_width="match_parent"
-            android:layout_height="64dp"
-            android:background="@drawable/bg_gradient_bottom_dark"
-            android:layout_gravity="bottom"/>
+            android:layout_height="56dp"
+            android:layout_gravity="bottom"
+            android:background="@drawable/bg_gradient_bottom_dark" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/buttonView"
-            style="@style/Widget.Material3.Button.TextButton.Icon"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            style="@style/Widget.Material3.Button.IconButton"
+            android:layout_width="44dp"
+            android:layout_height="44dp"
             android:layout_gravity="top|start"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="14dp"
             app:icon="@android:drawable/ic_menu_zoom"
-            app:iconSize="30dp"
-            app:iconTint="@android:color/white" />
+            app:iconTint="@android:color/white"
+            app:backgroundTint="#66000000"
+            app:cornerRadius="14dp" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/buttonDelete"
-            style="@style/Widget.Material3.Button.TextButton.Icon"
-            android:layout_width="66dp"
-            android:layout_height="wrap_content"
+            style="@style/Widget.Material3.Button.IconButton"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
             android:layout_gravity="bottom|end"
+            android:layout_margin="12dp"
             app:icon="@android:drawable/ic_menu_delete"
-            app:iconSize="40dp"
-            app:iconTint="@android:color/holo_red_light" />
+            app:iconTint="@android:color/holo_red_light"
+            app:backgroundTint="#CCFFFFFF"
+            app:cornerRadius="16dp" />
 
     </FrameLayout>
 </com.google.android.material.card.MaterialCardView>

@@ -21,6 +21,7 @@ import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -121,7 +122,7 @@ public class AssetDocumentsFragment extends Fragment implements FragmentDataColl
                 Toast.makeText(getContext(), "Foto dihapus", Toast.LENGTH_SHORT).show();
             }
         });
-        recyclerViewAssetPhotos.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
+        recyclerViewAssetPhotos.setLayoutManager(new GridLayoutManager(getContext(), 2));
         recyclerViewAssetPhotos.setAdapter(photosAdapter);
     }
 
