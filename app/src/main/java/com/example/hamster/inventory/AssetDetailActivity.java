@@ -43,7 +43,7 @@ public class AssetDetailActivity extends AppCompatActivity {
 
         pagerAdapter = new AssetDetailPagerAdapter(this);
         binding.viewPager.setAdapter(pagerAdapter);
-        binding.viewPager.setOffscreenPageLimit(4);
+        binding.viewPager.setOffscreenPageLimit(5);
 
 
         new TabLayoutMediator(binding.tabLayout, binding.viewPager, (tab, position) -> {
@@ -52,6 +52,7 @@ public class AssetDetailActivity extends AppCompatActivity {
                 case 1: tab.setText("Location"); break;
                 case 2: tab.setText("Maintenance"); break;
                 case 3: tab.setText("Documents"); break;
+                case 4: tab.setText("Review"); break;
             }
         }).attach();
 
@@ -112,11 +113,12 @@ public class AssetDetailActivity extends AppCompatActivity {
                 case 1: return new AssetLocationFragment();
                 case 2: return new AssetMaintenanceFragment();
                 case 3: return new AssetDocumentsFragment();
+                case 4: return new AssetReviewFragment();
                 default: throw new IllegalStateException("Posisi fragment tidak valid: " + position);
             }
         }
 
         @Override
-        public int getItemCount() { return 4; }
+        public int getItemCount() { return 5; }
     }
 }
