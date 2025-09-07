@@ -24,6 +24,7 @@ public class AssetDetailActivity extends AppCompatActivity {
     private String assetId;
     private AssetDetailPagerAdapter pagerAdapter;
     private ProgressBar loadingIndicator;
+    private View loadingScrim;
 
 
     @Override
@@ -33,6 +34,7 @@ public class AssetDetailActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
 
         loadingIndicator = findViewById(R.id.loading_indicator);
+        loadingScrim = findViewById(R.id.loading_scrim);
 
         setSupportActionBar(binding.toolbar);
         if (getSupportActionBar() != null) {
@@ -72,8 +74,10 @@ public class AssetDetailActivity extends AppCompatActivity {
         viewModel.getIsLoading().observe(this, isLoading -> {
             if (isLoading != null && isLoading) {
                 loadingIndicator.setVisibility(View.VISIBLE);
+                loadingScrim.setVisibility(View.VISIBLE);
             } else {
                 loadingIndicator.setVisibility(View.GONE);
+                loadingScrim.setVisibility(View.GONE);
             }
         });
 
