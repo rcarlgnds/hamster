@@ -207,6 +207,6 @@ public class AssetReviewFragment extends Fragment implements FragmentDataCollect
 
     @Override
     public void collectDataForSave() {
-//        viewModel.setReviewDocuments(licenseDocs, userManualDocs, customDocs);
+        viewModel.updateReviewDocuments(licenseDocs, userManualDocs, customDocs);
     }
 }

@@ -346,13 +346,13 @@ public class AssetDetailViewModel extends AndroidViewModel {
         }
 
         // --- Asset Documents Fragment (Keep Existing Photos) ---
-        addMultipleTextPart(fields, "keepSerialNumberPhotos", request.getKeepSerialNumberPhotos());
-        addMultipleTextPart(fields, "keepAssetPhotos", request.getKeepAssetPhotos());
-        addMultipleTextPart(fields, "keepLicenseDocuments[]", request.getKeepLicenseDocuments());
-        addMultipleTextPart(fields, "keepUserManualDocuments[]", request.getKeepUserManualDocuments());
-        addMultipleTextPart(fields, "keepCustomDocuments[]", request.getKeepCustomDocuments());
+        addStringArrayToMap(fields, "keepSerialNumberPhotos", request.getKeepSerialNumberPhotos());
+        addStringArrayToMap(fields, "keepAssetPhotos", request.getKeepAssetPhotos());
+        addStringArrayToMap(fields, "keepLicenseDocuments", request.getKeepLicenseDocuments());
+        addStringArrayToMap(fields, "keepUserManualDocuments", request.getKeepUserManualDocuments());
+        addStringArrayToMap(fields, "keepCustomDocuments", request.getKeepCustomDocuments());
+        addStringArrayToMap(fields, "customDocumentNames", this.newCustomDocNames);
 
-        addMultipleTextPart(fields, "customDocumentNames[]", this.newCustomDocNames);
 
         return fields;
     }
@@ -368,9 +368,9 @@ public class AssetDetailViewModel extends AndroidViewModel {
         // Foto dari tab Documents
         addFilesToParts(fileParts, "serialNumberPhoto", newSerialNumberPhotoUris);
         addFilesToParts(fileParts, "assetPhotos", newAssetPhotoUris);
-        addFilesToParts(fileParts, "licenseDocuments[]", newLicenseDocUris);
-        addFilesToParts(fileParts, "userManualDocuments[]", newUserManualDocUris);
-        addFilesToParts(fileParts, "customDocuments[]", newCustomDocUris);
+        addFilesToParts(fileParts, "licenseDocuments", newLicenseDocUris);
+        addFilesToParts(fileParts, "userManualDocuments", newUserManualDocUris);
+        addFilesToParts(fileParts, "customDocuments", newCustomDocUris);
 
 
         // File dari tab Maintenance
@@ -401,15 +401,16 @@ public class AssetDetailViewModel extends AndroidViewModel {
         }
     }
 
-    private void addMultipleTextPart(Map<String, RequestBody> map, String key, List<String> values) {
-        if (values == null) return;
-        for (String value : values) {
+    private void addStringArrayToMap(Map<String, RequestBody> map, String key, List<String> values) {
+        if (values == null || values.isEmpty()) return;
+        for (int i = 0; i < values.size(); i++) {
+            String currentKey = String.format("%s[%d]", key, i);
+            String value = values.get(i);
             if (value != null && !value.isEmpty()) {
-                map.put(key, RequestBody.create(MediaType.parse("text/plain"), value));
+                map.put(currentKey, RequestBody.create(MediaType.parse("text/plain"), value));
             }
         }
     }
-
     private MultipartBody.Part createFilePart(String partName, Uri fileUri) {
         try {
             File file = FileUtils.getFile(getApplication(), fileUri);
