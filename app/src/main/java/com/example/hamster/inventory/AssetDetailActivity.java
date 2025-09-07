@@ -2,7 +2,9 @@ package com.example.hamster.inventory;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -21,12 +23,16 @@ public class AssetDetailActivity extends AppCompatActivity {
     private ActivityAssetDetailBinding binding;
     private String assetId;
     private AssetDetailPagerAdapter pagerAdapter;
+    private ProgressBar loadingIndicator;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = ActivityAssetDetailBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+
+        loadingIndicator = findViewById(R.id.loading_indicator);
 
         setSupportActionBar(binding.toolbar);
         if (getSupportActionBar() != null) {
@@ -63,6 +69,14 @@ public class AssetDetailActivity extends AppCompatActivity {
     }
 
     private void setupObservers() {
+        viewModel.getIsLoading().observe(this, isLoading -> {
+            if (isLoading != null && isLoading) {
+                loadingIndicator.setVisibility(View.VISIBLE);
+            } else {
+                loadingIndicator.setVisibility(View.GONE);
+            }
+        });
+
         viewModel.getIsSaveSuccess().observe(this, isSuccess -> {
             if (isSuccess) {
                 Toast.makeText(this, "Data berhasil disimpan!", Toast.LENGTH_SHORT).show();

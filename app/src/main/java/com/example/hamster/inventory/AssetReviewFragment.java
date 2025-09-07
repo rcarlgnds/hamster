@@ -189,9 +189,14 @@ public class AssetReviewFragment extends Fragment implements FragmentDataCollect
                 int position = list.indexOf(item);
                 if (position != -1) {
                     list.remove(position);
-                    if (list == licenseDocs) licenseAdapter.notifyItemRemoved(position);
-                    else if (list == userManualDocs) userManualAdapter.notifyItemRemoved(position);
-                    else if (list == customDocs) customAdapter.notifyItemRemoved(position);
+
+                    if (list == licenseDocs) {
+                        licenseAdapter.notifyItemRemoved(position);
+                    } else if (list == userManualDocs) {
+                        userManualAdapter.notifyItemRemoved(position);
+                    } else if (list == customDocs) {
+                        customAdapter.notifyItemRemoved(position);
+                    }
                 }
             }
 

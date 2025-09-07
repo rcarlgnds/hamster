@@ -1,4 +1,3 @@
-// File: AssetDocumentsFragment.java
 package com.example.hamster.inventory;
 
 import android.Manifest;
@@ -39,7 +38,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.stream.Collectors;
 
-public class AssetDocumentsFragment extends Fragment implements FragmentDataCollector {
+public class AssetDocumentsFragment extends Fragment implements FragmentDataCollector, AssetPhotosAdapter.OnPhotoActionListener {
 
     private AssetDetailViewModel viewModel;
 
@@ -113,15 +112,7 @@ public class AssetDocumentsFragment extends Fragment implements FragmentDataColl
     }
 
     private void setupRecyclerView() {
-        photosAdapter = new AssetPhotosAdapter(requireContext(), assetPhotoItems, item -> {
-            // Logika saat tombol delete di klik
-            int position = assetPhotoItems.indexOf(item);
-            if (position != -1) {
-                assetPhotoItems.remove(position);
-                photosAdapter.notifyItemRemoved(position);
-                Toast.makeText(getContext(), "Foto dihapus", Toast.LENGTH_SHORT).show();
-            }
-        });
+        photosAdapter = new AssetPhotosAdapter(requireContext(), assetPhotoItems, this);
         recyclerViewAssetPhotos.setLayoutManager(new GridLayoutManager(getContext(), 2));
         recyclerViewAssetPhotos.setAdapter(photosAdapter);
     }
@@ -233,5 +224,19 @@ public class AssetDocumentsFragment extends Fragment implements FragmentDataColl
         File imageFile = new File(imageDir, fileName);
         currentImageUri = FileProvider.getUriForFile(requireContext(), requireContext().getPackageName() + ".provider", imageFile);
         takePictureLauncher.launch(currentImageUri);
+    }
+
+    @Override
+    public void onDeleteClick(int position) {
+        if (position >= 0 && position < assetPhotoItems.size()) {
+            assetPhotoItems.remove(position);
+            photosAdapter.notifyItemRemoved(position);
+            Toast.makeText(getContext(), "Foto dihapus", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    public void onViewClick(AssetPhotosAdapter.PhotoItem item) {
+
     }
 }
