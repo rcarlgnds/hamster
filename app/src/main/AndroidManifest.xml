@@ -5,7 +5,9 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.CAMERA" />
 
-    <uses-feature android:name="android.hardware.camera" android:required="false" />
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="false" />
 
     <application
         android:allowBackup="true"
@@ -16,54 +18,53 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Hamster"
-        tools:targetApi="31"
         android:usesCleartextTraffic="true"
-        >
-
+        tools:targetApi="31">
         <activity
             android:name=".SplashActivity"
             android:exported="true"
-            android:theme="@style/Theme.AppCompat.NoActionBar"> <intent-filter>
-            <action android:name="android.intent.action.MAIN" />
-            <category android:name="android.intent.category.LAUNCHER" />
-        </intent-filter>
+            android:theme="@style/Theme.AppCompat.NoActionBar">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
 
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
-
         <activity
             android:name=".login.LoginActivity"
-            android:exported="false">
-        </activity>
-
-        <activity android:name=".dashboard.DashboardActivity" />
-        <activity android:name=".inventory.InventoryActivity" />
-
+            android:exported="false" />
+        <activity
+            android:name=".dashboard.DashboardActivity"
+            android:exported="false" />
+        <activity
+            android:name=".dashboard.ProfileActivity"
+            android:exported="false" />
+        <activity
+            android:name=".dashboard.NotificationActivity"
+            android:exported="false" />
+        <activity
+            android:name=".inventory.InventoryActivity"
+            android:exported="false" />
         <activity
             android:name=".inventory.AssetDetailActivity"
             android:exported="false" />
-
         <activity
             android:name=".activation.ActivationActivity"
             android:exported="false" />
-
         <activity
             android:name=".activation.ScannerActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Design.NoActionBar" />
-
         <activity
             android:name=".inventory.ImagePreviewActivity"
             android:exported="false"
             android:theme="@style/Theme.Material3.DayNight.NoActionBar" />
-
         <activity
             android:name=".activation.ConfirmationApprovalActivity"
             android:exported="false" />
-
         <activity
             android:name=".activation.ActivationApprovalActivity"
             android:exported="false" />
-
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="${applicationId}.provider"
@@ -73,7 +74,6 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_paths" />
         </provider>
-
     </application>
 
 </manifest>

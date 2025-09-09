@@ -1,77 +1,178 @@
 package com.example.hamster.dashboard;
 
+import static android.content.ContentValues.TAG;
+
+import android.content.Intent;
+import android.graphics.Paint;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.util.Log;
+import android.widget.TextView;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.example.hamster.R;
+import com.example.hamster.data.constant.Controls;
+import com.example.hamster.data.constant.Permissions;
+import com.example.hamster.data.model.Control;
+import com.example.hamster.data.model.Permission;
+import com.example.hamster.data.model.User;
+import com.example.hamster.databinding.ActivityDashboardBinding;
+import com.example.hamster.databinding.ActivityLoginBinding;
+import com.example.hamster.inventory.InventoryActivity;
+import com.example.hamster.utils.SessionManager;
+import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.badge.BadgeDrawable;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.imageview.ShapeableImageView;
+import com.google.android.material.textfield.TextInputEditText;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class DashboardActivity extends AppCompatActivity {
 
-    private NotificationViewModel notificationViewModel;
-    private BottomNavigationView navView;
+    private RecyclerView rvFeatures;
+    private FeatureAdapter featureAdapter;
+    private SessionManager sessionManager;
+    private TextInputEditText etSearch;
+    private TextView tvWelcomeUser;
+    private TextView tvUserRole;
+    private TextView tvGoToProfile;
+    private ShapeableImageView ivTheme;
+    private ShapeableImageView ivNotification;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dashboard);
+        sessionManager = new SessionManager(this);
 
-        navView = findViewById(R.id.bottom_navigation);
+        setupViews();
+        setupUserProfile();
+        setupFeatures();
+        setupSearch();
+    }
 
-        notificationViewModel = new ViewModelProvider(this).get(NotificationViewModel.class);
-        setupBadgeObserver();
+    private void setupViews() {
+        rvFeatures = findViewById(R.id.rv_features);
+        etSearch = findViewById(R.id.et_search);
+        tvWelcomeUser = findViewById(R.id.tv_welcome_user);
+        tvUserRole = findViewById(R.id.tv_user_role);
 
-        navView.setOnItemSelectedListener(item -> {
-            Fragment selectedFragment = null;
-            int itemId = item.getItemId();
+        tvGoToProfile = findViewById(R.id.tv_go_to_profile);
+        tvGoToProfile.setPaintFlags(tvGoToProfile.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
 
-            if (itemId == R.id.nav_home) {
-                selectedFragment = new HomeFragment();
-            } else if (itemId == R.id.nav_notifications) {
-                selectedFragment = new NotificationsFragment();
-            } else if (itemId == R.id.nav_profile) {
-                selectedFragment = new ProfileFragment();
-            }
+        ivNotification = findViewById(R.id.iv_user_notification);
+    }
 
-            if (selectedFragment != null) {
-                loadFragment(selectedFragment);
-            }
+    private void setupUserProfile() {
+        User currentUser = sessionManager.getUser();
+        if (currentUser != null) {
+            String welcomeMessage = "Welcome, " + currentUser.getFirstName();
+            tvWelcomeUser.setText(welcomeMessage);
+            tvUserRole.setText(currentUser.getEmail());
+        }
 
-            return true;
+        tvGoToProfile.setOnClickListener(v -> {
+            startActivity(new Intent(this, ProfileActivity.class));
         });
 
-        if (savedInstanceState == null) {
-            navView.setSelectedItemId(R.id.nav_home);
+        ivNotification.setOnClickListener(v -> {
+            startActivity(new Intent(this, NotificationActivity.class));
+        });
+    }
+
+    private void setupFeatures() {
+        List<FeatureAdapter.Feature> features = new ArrayList<>();
+
+        if (userHasPermission(Permissions.PERMISSION_INVENTORY_VIEW_ALL_LIST) || userHasPermission(Permissions.PERMISSION_INVENTORY_VIEW_HOSPITAL_LIST)) {
+            features.add(new FeatureAdapter.Feature("Inventory", R.drawable.ic_inventory));
         }
+        if (userHasPermission(Controls.CONTROL_APPROVAL_STEP_0)) {
+            features.add(new FeatureAdapter.Feature("Activation", R.drawable.ic_activation));
+        }
+        if (userHasAnyOfControls(Controls.CONTROL_APPROVAL_STEP_1)) {
+            features.add(new FeatureAdapter.Feature("Confirmation", R.drawable.ic_approval));
+        }
+        if (userHasAnyOfControls(Controls.CONTROL_APPROVAL_STEP_2)) {
+            features.add(new FeatureAdapter.Feature("Approval", R.drawable.ic_approval));
+        }
+
+        featureAdapter = new FeatureAdapter(this, features);
+        rvFeatures.setAdapter(featureAdapter);
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        notificationViewModel.fetchUnreadCount();
-    }
+    private boolean userHasAnyOfControls(String... requiredKeys) {
+        User currentUser = sessionManager.getUser();
+        if (currentUser == null || currentUser.getControls() == null || requiredKeys.length == 0) {
+            return false;
+        }
 
-    private void loadFragment(Fragment fragment) {
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.replace(R.id.fragment_container, fragment);
-        fragmentTransaction.commit();
-    }
+        Log.d(TAG, "--- Memeriksa Kumpulan Control untuk user: " + currentUser.getEmail() + " ---");
 
-    private void setupBadgeObserver() {
-        notificationViewModel.getUnreadCount().observe(this, count -> {
-            BadgeDrawable badge = navView.getOrCreateBadge(R.id.nav_notifications);
-            if (count != null && count > 0) {
-                badge.setVisible(true);
-                badge.setNumber(count);
-            } else {
-                badge.setVisible(false);
-                badge.clearNumber();
+        for (Control userControl : currentUser.getControls()) {
+            if (userControl != null && userControl.getKey() != null) {
+                for (String requiredKey : requiredKeys) {
+                    if (requiredKey.equals(userControl.getKey())) {
+                        Log.i(TAG, "COCOK! Ditemukan control key yang valid: '" + requiredKey + "'. Akses diberikan.");
+                        return true;
+                    }
+                }
             }
+        }
+
+        Log.w(TAG, "TIDAK COCOK. Tidak ada satupun control key yang valid ditemukan.");
+        return false;
+    }
+
+    private boolean userHasPermission(String requiredPermissionKey) {
+        User currentUser = sessionManager.getUser();
+
+        if (currentUser == null) {
+            Log.d("PermissionCheck", "Current user is null.");
+            return false;
+        }
+        if (currentUser.getPermissions() == null) {
+            Log.d("PermissionCheck", "Permissions list is null for user: " + currentUser.getEmail());
+            return false;
+        }
+
+        Log.d("PermissionCheck", "--- Checking Permissions for user: " + currentUser.getEmail() + " ---");
+        Log.d("PermissionCheck", "Looking for permission: '" + requiredPermissionKey + "'");
+
+        for (Permission permission : currentUser.getPermissions()) {
+            Log.d("PermissionCheck", "Found permission key: '" + permission.getKey() + "'");
+            if (requiredPermissionKey.equals(permission.getKey())) {
+                Log.d("PermissionCheck", "MATCH FOUND! Returning true.");
+                return true;
+            }
+        }
+
+        Log.d("PermissionCheck", "NO MATCH FOUND. Returning false.");
+        return false;
+    }
+
+    private void setupSearch() {
+        etSearch.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (featureAdapter != null) {
+                    featureAdapter.filter(s.toString());
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {}
         });
     }
 }

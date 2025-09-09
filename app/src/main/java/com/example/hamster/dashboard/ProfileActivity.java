@@ -1,20 +1,22 @@
 package com.example.hamster.dashboard;
 
+import android.app.AlertDialog;
 import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 import android.widget.TextView;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
-import androidx.fragment.app.Fragment;
+
+import androidx.activity.EdgeToEdge;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
+
 import com.example.hamster.R;
 import com.example.hamster.data.model.User;
 import com.example.hamster.utils.SessionManager;
+import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.button.MaterialButton;
 
-public class ProfileFragment extends Fragment {
+public class ProfileActivity extends AppCompatActivity {
 
     private SessionManager sessionManager;
     private TextView tvProfileName;
@@ -22,24 +24,31 @@ public class ProfileFragment extends Fragment {
     private MaterialButton btnLogout;
 
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        sessionManager = new SessionManager(requireContext());
+        setContentView(R.layout.activity_profile);
+        sessionManager = new SessionManager(this);
+
+        setupToolbar();
+        setupViews();
     }
 
-    @Nullable
-    @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_profile, container, false);
+    private void setupToolbar() {
+        MaterialToolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
+        toolbar.setNavigationOnClickListener(v -> finish());
+    }
 
-        tvProfileName = view.findViewById(R.id.tv_profile_name);
-        tvProfileEmail = view.findViewById(R.id.tv_profile_email);
-        btnLogout = view.findViewById(R.id.btn_logout_profile);
+    private void setupViews() {
+        tvProfileName = findViewById(R.id.tv_profile_name);
+        tvProfileEmail = findViewById(R.id.tv_profile_email);
+        btnLogout = findViewById(R.id.btn_logout_profile);
 
         setupUserProfile();
         setupLogoutButton();
-
-        return view;
     }
 
     private void setupUserProfile() {
@@ -52,7 +61,7 @@ public class ProfileFragment extends Fragment {
 
     private void setupLogoutButton() {
         btnLogout.setOnClickListener(v -> {
-            new AlertDialog.Builder(requireContext())
+            new AlertDialog.Builder(this)
                     .setTitle("Logout")
                     .setMessage("Are you sure you want to logout?")
                     .setPositiveButton("Yes", (dialog, which) -> sessionManager.logout())

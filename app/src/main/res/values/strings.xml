@@ -9,6 +9,13 @@
     <string name="login_in_progress">Logging in...</string>
     <string name="login_failed">Login failed, please check your email and password.</string>
 
+    <string name="profile">Profile</string>
+    <string name="notification">Notification</string>
+
+    <string name="go_to_profile">Go To Profile Page -></string>
+    <string name="search_features">Search Features</string>
+    <string name="features">Features</string>
+
     <string name="nav_header_title">User Name</string>
     <string name="nav_header_subtitle">user@example.com</string>
     <string name="menu_inventory">Inventory</string>
