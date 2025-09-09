@@ -1,5 +1,6 @@
 package com.example.hamster.dashboard;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -18,6 +19,11 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.hamster.R;
+import com.example.hamster.activation.ActivationApprovalActivity;
+import com.example.hamster.activation.ConfirmationApprovalActivity;
+import com.example.hamster.data.constant.Notifications;
+import com.example.hamster.data.model.Notification;
+import com.example.hamster.inventory.InventoryActivity;
 import com.example.hamster.utils.SessionManager;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
@@ -73,10 +79,9 @@ public class NotificationActivity extends AppCompatActivity {
             if (!notification.isRead()) {
                 notificationViewModel.markNotificationAsRead(notification.getId(), position);
             }
-            // TODO: Tambahkan navigasi ke detail, contoh:
-            // Intent intent = new Intent(getContext(), DetailActivity.class);
-            // intent.putExtra("some_id", notification.getData().getRelatedId());
-            // startActivity(intent);
+
+            String link = notification.getLink();
+            setupLinkToActivity(link);
         });
         recyclerView.setAdapter(notificationAdapter);
 
@@ -93,6 +98,25 @@ public class NotificationActivity extends AppCompatActivity {
         markAllReadButton.setOnClickListener(v -> {
             showConfirmationDialog();
         });
+    }
+
+    private void setupLinkToActivity(String link) {
+        Intent intent = null;
+
+        if(link.equals(Notifications.INVENTORY)) {
+            intent = new Intent(this, InventoryActivity.class);
+        }
+        else if(link.equals(Notifications.INVENTORY_CONFIRMATION)) {
+            intent = new Intent(this, ConfirmationApprovalActivity.class);
+        }
+        else if(link.equals(Notifications.INVENTORY_ACTIVATION)) {
+            intent = new Intent(this, ActivationApprovalActivity.class);
+        }
+        else if(link.equals(Notifications.INVENTORY_REJECTED)) {
+            intent = new Intent(this, InventoryActivity.class);
+        }
+
+        startActivity(intent);
     }
 
     private void showConfirmationDialog() {

@@ -95,7 +95,7 @@ public class DashboardActivity extends AppCompatActivity {
         if (userHasPermission(Permissions.PERMISSION_INVENTORY_VIEW_ALL_LIST) || userHasPermission(Permissions.PERMISSION_INVENTORY_VIEW_HOSPITAL_LIST)) {
             features.add(new FeatureAdapter.Feature("Inventory", R.drawable.ic_inventory));
         }
-        if (userHasPermission(Controls.CONTROL_APPROVAL_STEP_0)) {
+        if (userHasAnyOfControls(Controls.CONTROL_APPROVAL_STEP_0)) {
             features.add(new FeatureAdapter.Feature("Activation", R.drawable.ic_activation));
         }
         if (userHasAnyOfControls(Controls.CONTROL_APPROVAL_STEP_1)) {

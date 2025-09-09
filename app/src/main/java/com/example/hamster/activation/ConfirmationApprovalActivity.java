@@ -167,8 +167,9 @@ public class ConfirmationApprovalActivity extends AppCompatActivity {
 
         SimpleDateFormat sdf = new SimpleDateFormat("dd MMM yyyy, HH:mm", Locale.getDefault());
         long timestampInMillis = details.getStartedAt() * 1000L;
+        String scannedUser = details.getStartedBy().getFirstName();
         String formattedDate = sdf.format(new Date(timestampInMillis));
-        String scannedByText = "Request at " + formattedDate;
+        String scannedByText = "Scanned by " + scannedUser + " at " + formattedDate;
         tvScannedBy.setText(scannedByText);
 
         final AlertDialog dialog = builder.create();
