@@ -68,6 +68,7 @@ import com.example.hamster.data.model.response.AssetActivationStatusResponse;
 import com.example.hamster.data.model.response.AssetApprovalStatusResponse;
 import com.example.hamster.data.model.response.AssetByCodeResponse;
 import com.example.hamster.data.model.response.AssetCategoryResponse;
+import com.example.hamster.data.model.response.AssetRejectedResponse;
 import com.example.hamster.data.model.response.AssetSubCategoryResponse;
 import com.example.hamster.data.model.response.BrandResponse;
 import com.example.hamster.data.model.response.BuildingResponse;
@@ -667,4 +668,41 @@ public interface ApiService {
             @Query("limit") int limit,
             @Query("subcategoryId") String subcategoryId
     );
+
+
+    // --- Asset Rejection ---
+    @GET("assets/rejected")
+    Call<AssetRejectedResponse> getRejectedAssets (@Query("page") int page, @Query("limit") int limit, @Query("search") String search, @Query("status") String status);
+
+//    @POST("asset-activation/settings")
+//    Call<AssetActivationSetting> createApprovalSetting(@Body CreateAssetActivationSettingRequest request);
+//
+//    @GET("asset-activation/pending-approvals")
+//    Call<PendingApprovalsResponse> getPendingApprovals(@Query("page") int page, @Query("limit") int limit, @Query("step") int step);
+//
+//    @Multipart
+//    @POST("asset-activation/start")
+//    Call<Void> startAssetActivation(
+//            @Part("assetCode") RequestBody assetCode,
+//            @Part MultipartBody.Part photo
+//    );
+//
+//    @POST("asset-activation/approve")
+//    Call<Void> approveAssetActivation(@Body ApproveActivationRequest request);
+//
+//    @GET("asset-activation/status/{assetId}")
+//    Call<AssetActivationStatusResponse> getAssetActivationStatus(@Path("assetId") String assetId);
+//
+//    @PUT("asset-activation/settings/{id}")
+//    Call<AssetActivationSetting> updateApprovalSetting(@Path("id") String settingId, @Body UpdateAssetActivationSettingRequest request);
+//
+//    @DELETE("asset-activation/settings/{id}")
+//    Call<Void> deleteApprovalSetting(@Path("id") String settingId);
+//
+//    @GET("asset-activation/settings/{id}")
+//    Call<AssetActivationSetting> getApprovalSettingById(@Path("id") String settingId);
+//
+//    @GET("asset-activation/{id}")
+//    Call<ActivationDetailResponse> getAssetActivationById(@Path("id") String transactionId);
+
 }

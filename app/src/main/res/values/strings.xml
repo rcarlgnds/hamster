@@ -154,4 +154,8 @@
     <string name="there_is_no_approval_request_at_the_moment">There is no approval request at the moment.</string>
     <string name="file_upload_constraints">(JPG, JPEG, PNG, PDF only, max 10MB each)</string>
 
+    <string name="rejected_inventory">Rejected Inventory</string>
+    <string name="there_is_no_rejected_inventory_at_the_moment">There is no rejected inventory at the moment.</string>
+    <string name="action">Action</string>
+    <string name="acknowledge">Acknowledge</string>
 </resources>

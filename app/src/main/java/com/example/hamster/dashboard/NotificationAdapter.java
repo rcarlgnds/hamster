@@ -117,5 +117,13 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
                 return "Invalid date";
             }
         }
+
+//        iconCopy.setOnClickListener(v -> {
+//            Context context = itemView.getContext();
+//            ClipboardManager clipboard = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
+//            ClipData clip = ClipData.newPlainText("Asset Code", asset.getCode());
+//            clipboard.setPrimaryClip(clip);
+//            Toast.makeText(context, "Code copied to clipboard", Toast.LENGTH_SHORT).show();
+//        });
     }
 }

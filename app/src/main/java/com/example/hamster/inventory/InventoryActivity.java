@@ -33,8 +33,6 @@ public class InventoryActivity extends AppCompatActivity {
     private ProgressBar progressBar;
     private InventoryAdapter adapter;
     private LinearLayout layoutEmpty;
-
-
     private FloatingActionButton fabSearch;
 
     @Override

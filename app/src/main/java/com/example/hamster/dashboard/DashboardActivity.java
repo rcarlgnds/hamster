@@ -99,10 +99,16 @@ public class DashboardActivity extends AppCompatActivity {
             features.add(new FeatureAdapter.Feature("Activation", R.drawable.ic_activation));
         }
         if (userHasAnyOfControls(Controls.CONTROL_APPROVAL_STEP_1)) {
-            features.add(new FeatureAdapter.Feature("Confirmation", R.drawable.ic_approval));
+            features.add(new FeatureAdapter.Feature("Confirmation", R.drawable.ic_check_circle));
         }
         if (userHasAnyOfControls(Controls.CONTROL_APPROVAL_STEP_2)) {
             features.add(new FeatureAdapter.Feature("Approval", R.drawable.ic_approval));
+        }
+        if(userHasAnyOfControls(Controls.CONTROL_APPROVAL_STEP_0) ||
+           userHasAnyOfControls(Controls.CONTROL_APPROVAL_STEP_2) ||
+           userHasAnyOfControls(Controls.CONTROL_APPROVAL_STEP_3) ||
+           userHasAnyOfControls(Controls.CONTROL_APPROVAL_STEP_4)) {
+            features.add(new FeatureAdapter.Feature("Rejected", R.drawable.ic_cancel));
         }
 
         featureAdapter = new FeatureAdapter(this, features);

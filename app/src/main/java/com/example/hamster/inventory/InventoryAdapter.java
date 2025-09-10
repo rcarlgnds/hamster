@@ -17,6 +17,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.hamster.R;
+import com.example.hamster.data.constant.AssetStatus;
 import com.example.hamster.data.model.Asset;
 import com.google.android.material.card.MaterialCardView;
 
@@ -82,32 +83,29 @@ public class InventoryAdapter extends RecyclerView.Adapter<InventoryAdapter.View
             textViewItemName.setText(asset.getName());
             textViewItemCode.setText(asset.getCode());
 
-            if ("ACTIVE".equalsIgnoreCase(asset.getStatus())) {
+            if (AssetStatus.ACTIVE.equalsIgnoreCase(asset.getStatus())) {
                 textViewStatusBadge.setText(R.string.status_active);
                 textViewStatusBadge.setBackgroundResource(R.drawable.bg_badge_activate_background);
-            } else if("INACTIVE".equalsIgnoreCase(asset.getStatus())) {
+            } else if(AssetStatus.INACTIVE.equalsIgnoreCase(asset.getStatus())) {
                 textViewStatusBadge.setText(R.string.status_inactive);
                 textViewStatusBadge.setBackgroundResource(R.drawable.bg_badge_inactivate_background);
-            } else if("REJECTED".equalsIgnoreCase(asset.getStatus())) {
+            } else if(AssetStatus.REJECTED.equalsIgnoreCase(asset.getStatus())) {
                 textViewStatusBadge.setText(R.string.status_rejected);
                 textViewStatusBadge.setBackgroundResource(R.drawable.bg_badge_inactivate_background);
-            } else if("PENDING_CONFIRMATION_BY_HEAD_OF_ROOM".equalsIgnoreCase(asset.getStatus())) {
+            } else if(AssetStatus.PENDING_CONFIRMATION_BY_HEAD_OF_ROOM.equalsIgnoreCase(asset.getStatus())) {
                 textViewStatusBadge.setText(R.string.status_pending_confirmation_by_head_of_room);
                 textViewStatusBadge.setBackgroundResource(R.drawable.bg_badge_inactivate_background);
-            } else if("PENDING_CONFIRMATION_BY_HEAD_OF_FMS".equalsIgnoreCase(asset.getStatus())) {
+            } else if(AssetStatus.PENDING_ACTIVATION_BY_HEAD_OF_FMS.equalsIgnoreCase(asset.getStatus())) {
                 textViewStatusBadge.setText(R.string.status_pending_confirmation_by_head_of_fms);
                 textViewStatusBadge.setBackgroundResource(R.drawable.bg_badge_inactivate_background);
-            } else if("REJECTED_DOES_NOT_MEET_REQUEST".equalsIgnoreCase(asset.getStatus())) {
+            } else if(AssetStatus.REJECTED_DOES_NOT_MEET_REQUEST.equalsIgnoreCase(asset.getStatus())) {
                 textViewStatusBadge.setText(R.string.status_rejected_does_not_meet_request);
                 textViewStatusBadge.setBackgroundResource(R.drawable.bg_badge_inactivate_background);
-            } else if("REJECTED_WRONG_LOCATION".equalsIgnoreCase(asset.getStatus())) {
+            } else if(AssetStatus.REJECTED_WRONG_LOCATION.equalsIgnoreCase(asset.getStatus())) {
                 textViewStatusBadge.setText(R.string.status_rejected_wrong_location);
                 textViewStatusBadge.setBackgroundResource(R.drawable.bg_badge_inactivate_background);
-            } else if("REJECTED_IN_LOGISTIC".equalsIgnoreCase(asset.getStatus())) {
+            } else if(AssetStatus.REJECTED_IN_LOGISTIC.equalsIgnoreCase(asset.getStatus())) {
                 textViewStatusBadge.setText(R.string.status_rejected_in_logistic);
-                textViewStatusBadge.setBackgroundResource(R.drawable.bg_badge_inactivate_background);
-            } else if("REJECTED_IN_FINANCE".equalsIgnoreCase(asset.getStatus())) {
-                textViewStatusBadge.setText(R.string.status_rejected_in_finance);
                 textViewStatusBadge.setBackgroundResource(R.drawable.bg_badge_inactivate_background);
             }
 

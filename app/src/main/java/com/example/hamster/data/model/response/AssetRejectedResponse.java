@@ -1,9 +1,13 @@
 package com.example.hamster.data.model.response;
 
 import com.example.hamster.data.model.ApprovalDataPayload;
+import com.example.hamster.data.model.AssetRejected;
+import com.example.hamster.data.model.RejectedDataPayload;
 import com.google.gson.annotations.SerializedName;
 
-public class PendingApprovalsResponse {
+import java.util.List;
+
+public class AssetRejectedResponse {
 
     @SerializedName("success")
     private boolean success;
@@ -12,17 +16,17 @@ public class PendingApprovalsResponse {
     private String message;
 
     @SerializedName("data")
-    private ApprovalDataPayload data;
-
+    private RejectedDataPayload data;
 
     public boolean isSuccess() {
         return success;
     }
+
     public String getMessage() {
         return message;
     }
 
-    public ApprovalDataPayload getData() {
+    public RejectedDataPayload getData() {
         return data;
     }
 }

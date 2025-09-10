@@ -13,6 +13,8 @@ import com.example.hamster.R;
 import com.example.hamster.activation.ActivationActivity;
 import com.example.hamster.activation.ActivationApprovalActivity;
 import com.example.hamster.activation.ConfirmationApprovalActivity;
+import com.example.hamster.activation.RejectedAssetActivity;
+import com.example.hamster.data.constant.Routes;
 import com.example.hamster.inventory.InventoryActivity;
 import java.util.ArrayList;
 import java.util.List;
@@ -87,17 +89,20 @@ public class FeatureAdapter extends RecyclerView.Adapter<FeatureAdapter.FeatureV
             icon.setImageResource(feature.iconResId);
 
             itemView.setOnClickListener(v -> {
-                if ("Inventory".equalsIgnoreCase(feature.name)) {
+                if (Routes.INVENTORY.equalsIgnoreCase(feature.name)) {
                     context.startActivity(new Intent(context, InventoryActivity.class));
                 }
-                else if ("Activation".equalsIgnoreCase(feature.name)) {
+                else if (Routes.ACTIVATION.equalsIgnoreCase(feature.name)) {
                     context.startActivity(new Intent(context, ActivationActivity.class));
                 }
-                else if ("Confirmation".equalsIgnoreCase(feature.name)) {
+                else if (Routes.CONFIRMATION.equalsIgnoreCase(feature.name)) {
                     context.startActivity(new Intent(context, ConfirmationApprovalActivity.class));
                 }
-                else if ("Approval".equalsIgnoreCase(feature.name)) {
+                else if (Routes.APPROVAL.equalsIgnoreCase(feature.name)) {
                     context.startActivity(new Intent(context, ActivationApprovalActivity.class));
+                }
+                else if (Routes.REJECTED.equalsIgnoreCase(feature.name)) {
+                    context.startActivity(new Intent(context, RejectedAssetActivity.class));
                 }
             });
         }
