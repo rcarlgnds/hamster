@@ -73,7 +73,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/email"
-                        android:textAppearance="?attr/textAppearanceTitleSmall"
+                        android:textAppearance="?attr/textAppearanceLabelSmall"
                         android:textColor="?attr/colorOnPrimary"/>
                 </LinearLayout>
 
@@ -92,22 +92,10 @@
 
             <LinearLayout
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:paddingVertical="24dp"
                 android:gravity="right"
                 android:layout_weight="1">
-
-                <com.google.android.material.imageview.ShapeableImageView
-                    android:id="@+id/iv_user_theme"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:src="@drawable/ic_default_avatar"
-                    android:scaleType="centerCrop"
-                    android:layout_marginRight="5dp"
-                    app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.Corner.Full"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent"/>
 
                 <com.google.android.material.imageview.ShapeableImageView
                     android:id="@+id/iv_user_notification"
@@ -115,6 +103,20 @@
                     android:layout_height="30dp"
                     android:src="@drawable/ic_notifications"
                     android:scaleType="centerCrop"
+                    android:layout_gravity="center"
+                    app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.Corner.Full"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"/>
+
+                <com.google.android.material.imageview.ShapeableImageView
+                    android:id="@+id/iv_settings"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:src="@drawable/ic_settings"
+                    android:scaleType="centerCrop"
+                    android:layout_marginRight="5dp"
+                    android:layout_gravity="center"
                     app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.Corner.Full"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"

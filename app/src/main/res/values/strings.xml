@@ -37,6 +37,11 @@
     <string name="menu_approval">Approval</string>
     <string name="menu_rejection">Rejected</string>
 
+    <string name="settings">Settings</string>
+    <string name="languages">ID/ EN</string>
+    <string name="themes">Light/ Dark</string>
+    <string name="button_save">Save</string>
+
     <string name="label_name">Name</string>
     <string name="label_hospital">Hospital</string>
     <string name="label_building">Building</string>

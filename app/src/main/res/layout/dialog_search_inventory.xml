@@ -25,6 +25,7 @@
         app:boxCornerRadiusTopEnd="12dp"
         app:boxCornerRadiusBottomStart="12dp"
         app:boxCornerRadiusBottomEnd="12dp">
+
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/editTextInventoryCode"
             android:layout_width="match_parent"

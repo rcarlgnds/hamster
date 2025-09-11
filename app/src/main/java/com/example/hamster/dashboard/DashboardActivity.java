@@ -8,8 +8,12 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -45,8 +49,8 @@ public class DashboardActivity extends AppCompatActivity {
     private TextView tvWelcomeUser;
     private TextView tvWelcomeEmail;
     private TextView tvGoToProfile;
-    private ShapeableImageView ivTheme;
     private ShapeableImageView ivNotification;
+    private ShapeableImageView ivSettings;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,6 +74,7 @@ public class DashboardActivity extends AppCompatActivity {
         tvGoToProfile.setPaintFlags(tvGoToProfile.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
 
         ivNotification = findViewById(R.id.iv_user_notification);
+        ivSettings = findViewById(R.id.iv_settings);
     }
 
     private void setupUserProfile() {
@@ -87,28 +92,30 @@ public class DashboardActivity extends AppCompatActivity {
         ivNotification.setOnClickListener(v -> {
             startActivity(new Intent(this, NotificationActivity.class));
         });
+
+        ivSettings.setOnClickListener(v -> showSettingDialog());
     }
 
     private void setupFeatures() {
         List<FeatureAdapter.Feature> features = new ArrayList<>();
 
         if (userHasPermission(Permissions.PERMISSION_INVENTORY_VIEW_ALL_LIST) || userHasPermission(Permissions.PERMISSION_INVENTORY_VIEW_HOSPITAL_LIST)) {
-            features.add(new FeatureAdapter.Feature(String.valueOf(R.string.menu_inventory), R.drawable.ic_inventory));
+            features.add(new FeatureAdapter.Feature(getString(R.string.menu_inventory), R.drawable.ic_inventory));
         }
         if (userHasAnyOfControls(Controls.CONTROL_APPROVAL_STEP_0)) {
-            features.add(new FeatureAdapter.Feature(String.valueOf(R.string.menu_activation), R.drawable.ic_activation));
+            features.add(new FeatureAdapter.Feature(getString(R.string.menu_activation), R.drawable.ic_activation));
         }
         if (userHasAnyOfControls(Controls.CONTROL_APPROVAL_STEP_1)) {
-            features.add(new FeatureAdapter.Feature(String.valueOf(R.string.menu_confirmation), R.drawable.ic_check_circle));
+            features.add(new FeatureAdapter.Feature(getString(R.string.menu_confirmation), R.drawable.ic_check_circle));
         }
         if (userHasAnyOfControls(Controls.CONTROL_APPROVAL_STEP_2)) {
-            features.add(new FeatureAdapter.Feature(String.valueOf(R.string.menu_activation), R.drawable.ic_approval));
+            features.add(new FeatureAdapter.Feature(getString(R.string.menu_activation), R.drawable.ic_approval));
         }
         if(userHasAnyOfControls(Controls.CONTROL_APPROVAL_STEP_0) ||
            userHasAnyOfControls(Controls.CONTROL_APPROVAL_STEP_2) ||
            userHasAnyOfControls(Controls.CONTROL_APPROVAL_STEP_3) ||
            userHasAnyOfControls(Controls.CONTROL_APPROVAL_STEP_4)) {
-            features.add(new FeatureAdapter.Feature(String.valueOf(R.string.menu_rejection), R.drawable.ic_cancel));
+            features.add(new FeatureAdapter.Feature(getString(R.string.menu_rejection), R.drawable.ic_cancel));
         }
 
         featureAdapter = new FeatureAdapter(this, features);
@@ -180,5 +187,22 @@ public class DashboardActivity extends AppCompatActivity {
             @Override
             public void afterTextChanged(Editable s) {}
         });
+    }
+
+    private void showSettingDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        LayoutInflater inflater = this.getLayoutInflater();
+        View dialogView = inflater.inflate(R.layout.dialog_application_settings, null);
+        builder.setView(dialogView);
+
+        final AlertDialog dialog = builder.create();
+
+        Button btnCancel = dialogView.findViewById(R.id.buttonCancel);
+        btnCancel.setOnClickListener(v -> dialog.dismiss());
+
+        Button btnSave = dialogView.findViewById(R.id.buttonSave);
+        btnSave.setOnClickListener(v -> {});
+
+        dialog.show();
     }
 }
