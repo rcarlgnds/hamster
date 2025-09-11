@@ -55,5 +55,4 @@
             android:layout_marginStart="8dp"
             android:text="@string/dialog_next"/>
     </LinearLayout>
-
 </LinearLayout>

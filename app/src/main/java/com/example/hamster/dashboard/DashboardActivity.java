@@ -43,7 +43,7 @@ public class DashboardActivity extends AppCompatActivity {
     private SessionManager sessionManager;
     private TextInputEditText etSearch;
     private TextView tvWelcomeUser;
-    private TextView tvUserRole;
+    private TextView tvWelcomeEmail;
     private TextView tvGoToProfile;
     private ShapeableImageView ivTheme;
     private ShapeableImageView ivNotification;
@@ -64,7 +64,7 @@ public class DashboardActivity extends AppCompatActivity {
         rvFeatures = findViewById(R.id.rv_features);
         etSearch = findViewById(R.id.et_search);
         tvWelcomeUser = findViewById(R.id.tv_welcome_user);
-        tvUserRole = findViewById(R.id.tv_user_role);
+        tvWelcomeEmail = findViewById(R.id.tv_welcome_email);
 
         tvGoToProfile = findViewById(R.id.tv_go_to_profile);
         tvGoToProfile.setPaintFlags(tvGoToProfile.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
@@ -75,9 +75,9 @@ public class DashboardActivity extends AppCompatActivity {
     private void setupUserProfile() {
         User currentUser = sessionManager.getUser();
         if (currentUser != null) {
-            String welcomeMessage = "Welcome, " + currentUser.getFirstName();
-            tvWelcomeUser.setText(welcomeMessage);
-            tvUserRole.setText(currentUser.getEmail());
+            String welcomeUser = currentUser.getFirstName();
+            tvWelcomeUser.setText(welcomeUser);
+            tvWelcomeEmail.setText(currentUser.getEmail());
         }
 
         tvGoToProfile.setOnClickListener(v -> {
@@ -93,22 +93,22 @@ public class DashboardActivity extends AppCompatActivity {
         List<FeatureAdapter.Feature> features = new ArrayList<>();
 
         if (userHasPermission(Permissions.PERMISSION_INVENTORY_VIEW_ALL_LIST) || userHasPermission(Permissions.PERMISSION_INVENTORY_VIEW_HOSPITAL_LIST)) {
-            features.add(new FeatureAdapter.Feature("Inventory", R.drawable.ic_inventory));
+            features.add(new FeatureAdapter.Feature(String.valueOf(R.string.menu_inventory), R.drawable.ic_inventory));
         }
         if (userHasAnyOfControls(Controls.CONTROL_APPROVAL_STEP_0)) {
-            features.add(new FeatureAdapter.Feature("Activation", R.drawable.ic_activation));
+            features.add(new FeatureAdapter.Feature(String.valueOf(R.string.menu_activation), R.drawable.ic_activation));
         }
         if (userHasAnyOfControls(Controls.CONTROL_APPROVAL_STEP_1)) {
-            features.add(new FeatureAdapter.Feature("Confirmation", R.drawable.ic_check_circle));
+            features.add(new FeatureAdapter.Feature(String.valueOf(R.string.menu_confirmation), R.drawable.ic_check_circle));
         }
         if (userHasAnyOfControls(Controls.CONTROL_APPROVAL_STEP_2)) {
-            features.add(new FeatureAdapter.Feature("Approval", R.drawable.ic_approval));
+            features.add(new FeatureAdapter.Feature(String.valueOf(R.string.menu_activation), R.drawable.ic_approval));
         }
         if(userHasAnyOfControls(Controls.CONTROL_APPROVAL_STEP_0) ||
            userHasAnyOfControls(Controls.CONTROL_APPROVAL_STEP_2) ||
            userHasAnyOfControls(Controls.CONTROL_APPROVAL_STEP_3) ||
            userHasAnyOfControls(Controls.CONTROL_APPROVAL_STEP_4)) {
-            features.add(new FeatureAdapter.Feature("Rejected", R.drawable.ic_cancel));
+            features.add(new FeatureAdapter.Feature(String.valueOf(R.string.menu_rejection), R.drawable.ic_cancel));
         }
 
         featureAdapter = new FeatureAdapter(this, features);

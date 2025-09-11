@@ -29,7 +29,6 @@
                 app:layout_collapseMode="pin"
                 app:menu="@menu/inventory_menu"
                 app:titleTextColor="@color/md_theme_on_surface" />
-
         </com.google.android.material.appbar.CollapsingToolbarLayout>
     </com.google.android.material.appbar.AppBarLayout>
 
@@ -87,7 +86,6 @@
                 android:text="@string/try_other_keywords"
                 android:textAppearance="?attr/textAppearanceBodyMedium"
                 android:textColor="?attr/colorOnSurfaceVariant" />
-
         </LinearLayout>
 
     </FrameLayout>
@@ -102,5 +100,4 @@
         app:tint="@color/md_theme_on_primary_container"
         app:backgroundTint="@color/md_theme_primary_container"
         android:contentDescription="@string/search_dialog_title"/>
-
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

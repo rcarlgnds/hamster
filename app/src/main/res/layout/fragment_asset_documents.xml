@@ -17,7 +17,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/serial_number_photo"
+            android:text="@string/label_serial_number_photo"
             android:textAppearance="?attr/textAppearanceTitleMedium"
             android:layout_marginBottom="8dp"/>
 
@@ -82,7 +82,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="@string/asset_photos_gallery"
+                android:text="@string/label_asset_photos_gallery"
                 android:textAppearance="?attr/textAppearanceTitleMedium"/>
 
             <com.google.android.material.button.MaterialButton
@@ -103,6 +103,5 @@
             app:spanCount="2"
             tools:listitem="@layout/list_item_asset_photo"
             tools:itemCount="4"/>
-
     </LinearLayout>
 </androidx.core.widget.NestedScrollView>

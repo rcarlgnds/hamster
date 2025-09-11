@@ -137,6 +137,7 @@ public class ConfirmationApprovalActivity extends AppCompatActivity {
         ImageView ivAssetPhoto = dialogView.findViewById(R.id.ivAssetPhoto);
         ProgressBar imageProgressBar = dialogView.findViewById(R.id.imageProgressBar);
         TextView tvScannedBy = dialogView.findViewById(R.id.tvScannedBy);
+        TextView tvScannedWhen = dialogView.findViewById(R.id.tvScannedWhen);
         Button btnReject = dialogView.findViewById(R.id.btnReject);
         Button btnApprove = dialogView.findViewById(R.id.btnApprove);
 
@@ -169,8 +170,10 @@ public class ConfirmationApprovalActivity extends AppCompatActivity {
         long timestampInMillis = details.getStartedAt() * 1000L;
         String scannedUser = details.getStartedBy().getFirstName();
         String formattedDate = sdf.format(new Date(timestampInMillis));
-        String scannedByText = "Scanned by " + scannedUser + " at " + formattedDate;
+        String scannedByText = " " + scannedUser + " ";
+        String scannedWhenText = " " + formattedDate;
         tvScannedBy.setText(scannedByText);
+        tvScannedWhen.setText(scannedWhenText);
 
         final AlertDialog dialog = builder.create();
         dialog.show();

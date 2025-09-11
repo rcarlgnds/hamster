@@ -26,7 +26,6 @@ public class AssetDetailActivity extends AppCompatActivity {
     private ProgressBar loadingIndicator;
     private View loadingScrim;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,11 +55,11 @@ public class AssetDetailActivity extends AppCompatActivity {
 
         new TabLayoutMediator(binding.tabLayout, binding.viewPager, (tab, position) -> {
             switch (position) {
-                case 0: tab.setText("Asset Info"); break;
-                case 1: tab.setText("Location"); break;
-                case 2: tab.setText("Maintenance"); break;
-                case 3: tab.setText("Documents"); break;
-                case 4: tab.setText("Review"); break;
+                case 0: tab.setText(R.string.tab_info); break;
+                case 1: tab.setText(R.string.tab_location); break;
+                case 2: tab.setText(R.string.tab_finance); break;
+                case 3: tab.setText(R.string.tab_documents); break;
+                case 4: tab.setText(R.string.tab_review); break;
             }
         }).attach();
 

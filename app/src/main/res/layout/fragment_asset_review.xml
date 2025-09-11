@@ -27,7 +27,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="License Documents"
+                    android:text="@string/label_license_documents"
                     android:textAppearance="?attr/textAppearanceTitleMedium" />
 
                 <TextView
@@ -42,7 +42,7 @@
                 style="@style/Widget.Material3.Button.OutlinedButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Choose File" />
+                android:text="@string/button_choose_file" />
         </LinearLayout>
 
         <androidx.recyclerview.widget.RecyclerView
@@ -74,7 +74,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="User Manual Documents"
+                    android:text="@string/label_user_manual_documents"
                     android:textAppearance="?attr/textAppearanceTitleMedium" />
 
                 <TextView
@@ -89,7 +89,7 @@
                 style="@style/Widget.Material3.Button.OutlinedButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Choose File" />
+                android:text="@string/button_choose_file" />
         </LinearLayout>
 
         <androidx.recyclerview.widget.RecyclerView
@@ -109,7 +109,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Custom Documents"
+            android:text="@string/label_custom_documents"
             android:textAppearance="?attr/textAppearanceTitleMedium" />
 
         <TextView
@@ -132,7 +132,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="8dp"
                 android:layout_weight="1"
-                android:hint="Document Name">
+                android:hint="@string/hint_document_name">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/etCustomDocName"
@@ -145,14 +145,14 @@
                 style="@style/Widget.Material3.Button.OutlinedButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="File" />
+                android:text="@string/button_file" />
 
             <Button
                 android:id="@+id/btnAddCustomDoc"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
-                android:text="Add" />
+                android:text="@string/button_add" />
         </LinearLayout>
 
         <androidx.recyclerview.widget.RecyclerView
@@ -163,6 +163,5 @@
             android:nestedScrollingEnabled="false"
             tools:itemCount="2"
             tools:listitem="@layout/list_item_document" />
-
     </LinearLayout>
 </ScrollView>

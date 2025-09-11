@@ -33,7 +33,7 @@ public class AssetMaintenanceFragment extends Fragment implements FragmentDataCo
     private AssetDetailViewModel viewModel;
 
     // View Components
-    private TextInputEditText etProcurementDate, etWarrantyDate, etDepreciationStart, etEffectiveUsageDate;
+    private TextInputEditText etProcurementDate, etWarrantyDate, etDepreciationStart, etEffectiveActivationDate, etFunctionalTestingDate;
     private TextView textPODocumentStatus, textInvoiceDocumentStatus, textWarrantyDocumentStatus;
     private ImageView iconPODocument, iconInvoiceDocument, iconWarrantyDocument;
     private Button buttonChoosePODocument, buttonChooseInvoiceDocument, buttonChooseWarrantyDocument;
@@ -67,7 +67,8 @@ public class AssetMaintenanceFragment extends Fragment implements FragmentDataCo
         etProcurementDate = view.findViewById(R.id.etProcurementDate);
         etWarrantyDate = view.findViewById(R.id.editTextWarrantyDate);
         etDepreciationStart = view.findViewById(R.id.editTextDepreciationStart);
-        etEffectiveUsageDate = view.findViewById(R.id.editTextEffectiveUsageDate);
+        etEffectiveActivationDate = view.findViewById(R.id.editTextEffectiveActivationDate);
+        etFunctionalTestingDate = view.findViewById(R.id.editTextFunctionalTestingDate);
 
         textPODocumentStatus = view.findViewById(R.id.textPODocumentStatus);
         textInvoiceDocumentStatus = view.findViewById(R.id.textInvoiceDocumentStatus);
@@ -91,7 +92,6 @@ public class AssetMaintenanceFragment extends Fragment implements FragmentDataCo
     }
 
     private void setupListeners() {
-
         buttonChoosePODocument.setOnClickListener(v -> openFilePicker(uri -> {
             poDocument = new DocumentItem(uri);
             updateDocumentUI(poDocument, textPODocumentStatus, iconPODocument);

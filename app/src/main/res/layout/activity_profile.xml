@@ -60,7 +60,7 @@
                 style="@style/Widget.Material3.Button.TextButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Edit Profile"
+                android:text="@string/edit_profile"
                 android:drawableStart="@drawable/ic_edit"
                 android:drawablePadding="16dp"
                 android:padding="16dp"/>
@@ -69,7 +69,7 @@
                 style="@style/Widget.Material3.Button.TextButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Change Password"
+                android:text="@string/change_password"
                 android:drawableStart="@drawable/ic_lock"
                 android:drawablePadding="16dp"
                 android:padding="16dp"/>
@@ -82,6 +82,5 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
-        android:text="Logout" />
-
+        android:text="@string/logout" />
 </LinearLayout>

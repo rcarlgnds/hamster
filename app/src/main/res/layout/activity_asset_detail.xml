@@ -12,7 +12,7 @@
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        app:title="Edit Inventory Detail"/>
+        app:title="@string/edit_inventory_detail"/>
 
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/tab_layout"
@@ -47,7 +47,6 @@
             android:layout_gravity="center"
             android:visibility="gone"
             tools:visibility="visible" />
-
     </FrameLayout>
 
     <LinearLayout
@@ -65,7 +64,6 @@
             android:id="@+id/buttonEdit"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="SAVE"/>
+            android:text="@string/save"/>
     </LinearLayout>
-
 </LinearLayout>

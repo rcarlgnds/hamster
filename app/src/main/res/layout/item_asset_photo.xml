@@ -26,5 +26,4 @@
         android:clickable="true"
         android:focusable="true"
         app:tint="@color/white" />
-
 </FrameLayout>

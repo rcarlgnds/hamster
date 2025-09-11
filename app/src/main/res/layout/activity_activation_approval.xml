@@ -11,7 +11,7 @@
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        app:title="Inventory Activation"
+        app:title="@string/inventory_activation"
         app:navigationIcon="@drawable/ic_arrow_back" />
 
     <ProgressBar
@@ -37,5 +37,4 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:listitem="@layout/list_item_approval" />
-
 </LinearLayout>

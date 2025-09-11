@@ -31,7 +31,7 @@
             app:layout_constraintBottom_toTopOf="@+id/textViewItemName"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:text="Active" />
+            tools:text="@string/status" />
 
         <TextView
             android:id="@+id/textViewItemName"
@@ -44,7 +44,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textViewStatusBadge"
-            tools:text="PATIENT MONITOR MINDRAY UMEC-10" />
+            tools:text="@string/asset_name" />
 
         <LinearLayout
             android:id="@+id/layoutCode"
@@ -64,7 +64,7 @@
                 android:layout_height="wrap_content"
                 android:textAppearance="?attr/textAppearanceBodyMedium"
                 android:textColor="?attr/colorOnSurfaceVariant"
-                tools:text="04-C10118-000111" />
+                tools:text="@string/asset_code" />
 
             <ImageView
                 android:id="@+id/iconCopy"
@@ -75,17 +75,5 @@
                 android:src="@drawable/ic_copy"
                 app:tint="?attr/colorOnSurfaceVariant" />
         </LinearLayout>
-
-<!--        <ImageView-->
-<!--            android:id="@+id/icon_arrow_details"-->
-<!--            android:layout_width="24dp"-->
-<!--            android:layout_height="24dp"-->
-<!--            android:src="@drawable/info"-->
-<!--            app:layout_constraintBottom_toBottomOf="@+id/layoutCode"-->
-<!--            app:layout_constraintEnd_toEndOf="parent"-->
-<!--            app:layout_constraintTop_toTopOf="@+id/layoutCode"-->
-<!--            app:tint="?attr/colorPrimary"-->
-<!--            android:contentDescription="@string/view_details"/>-->
-
     </androidx.constraintlayout.widget.ConstraintLayout>
 </com.google.android.material.card.MaterialCardView>

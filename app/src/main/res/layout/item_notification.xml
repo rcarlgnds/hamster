@@ -29,7 +29,7 @@
             app:layout_constraintTop_toTopOf="parent"
             tools:src="@drawable/ic_info"
             app:tint="?attr/colorPrimary"
-            android:background="@drawable/bg_circle_background"
+            android:background="@drawable/bg_circle_background_white"
             android:padding="8dp"/>
 
         <View
@@ -76,6 +76,5 @@
             tools:text="17 Aug 2025, 12:30"
             app:layout_constraintStart_toStartOf="@id/notification_message"
             app:layout_constraintTop_toBottomOf="@id/notification_message"/>
-
     </androidx.constraintlayout.widget.ConstraintLayout>
 </com.google.android.material.card.MaterialCardView>

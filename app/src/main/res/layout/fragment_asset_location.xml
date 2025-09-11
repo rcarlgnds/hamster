@@ -124,7 +124,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:hint="@string/hint_division">
+                android:hint="@string/hint_responsible_division">
                 <AutoCompleteTextView
                     android:id="@+id/autoCompleteDivision"
                     android:layout_width="match_parent"
@@ -138,7 +138,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_weight="1"
-                android:hint="@string/hint_unit">
+                android:hint="@string/hint_responsible_unit">
                 <AutoCompleteTextView
                     android:id="@+id/autoCompleteUnit"
                     android:layout_width="match_parent"
@@ -152,13 +152,12 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
-            android:hint="@string/hint_user">
+            android:hint="@string/hint_responsible_user">
             <AutoCompleteTextView
                 android:id="@+id/autoCompleteUser"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="none"/>
         </com.google.android.material.textfield.TextInputLayout>
-
     </LinearLayout>
 </ScrollView>
