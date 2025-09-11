@@ -14,6 +14,7 @@ import com.example.hamster.data.model.response.AssetRejectedResponse;
 import com.example.hamster.data.network.ApiClient;
 import com.example.hamster.data.network.ApiService;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
@@ -28,6 +29,11 @@ public class RejectedAssetViewModel extends AndroidViewModel {
     private final MutableLiveData<Boolean> isLoading = new MutableLiveData<>(false);
     private final MutableLiveData<String> errorMessage = new MutableLiveData<>();
 //    private final MutableLiveData<Boolean> rejectionResult = new MutableLiveData<>();
+
+    private int currentPage = 1;
+    private int totalPages = 1;
+    private boolean isLoadingMore = false;
+    private static final int PAGE_SIZE = 10;
 
     public RejectedAssetViewModel(@NonNull Application application) {
         super(application);
@@ -47,13 +53,28 @@ public class RejectedAssetViewModel extends AndroidViewModel {
     }
 
     public void fetchRejectedAssets() {
+        if (currentPage > totalPages) return;
+
         isLoading.setValue(true);
-        apiService.getRejectedAssets(1, 100, "", "").enqueue(new Callback<AssetRejectedResponse>() {
+        isLoadingMore = true;
+        apiService.getRejectedAssets(currentPage, PAGE_SIZE, "", "").enqueue(new Callback<AssetRejectedResponse>() {
             @Override
             public void onResponse(Call<AssetRejectedResponse> call, Response<AssetRejectedResponse> response) {
                 isLoading.setValue(false);
+                isLoadingMore = false;
                 if(response.isSuccessful() && response.body() != null && response.body().getData() != null) {
-                    rejectedList.setValue(response.body().getData().getData());
+                    totalPages = response.body().getData().getPagination().getTotalPages();
+                    List<AssetRejected> newItems = response.body().getData().getData();
+                    List<AssetRejected> currentList = rejectedList.getValue();
+                    if (currentList == null) {
+                        currentList = new ArrayList<>();
+                    }
+                    if (currentPage == 1) {
+                        currentList.clear();
+                    }
+                    currentList.addAll(newItems);
+                    rejectedList.setValue(currentList);
+                    currentPage++;
                 } else {
                     handleApiError(response, "Failed to load rejected assets.");
                 }
@@ -62,9 +83,23 @@ public class RejectedAssetViewModel extends AndroidViewModel {
             @Override
             public void onFailure(Call<AssetRejectedResponse> call, Throwable t) {
                 isLoading.setValue(false);
+                isLoadingMore = false;
                 errorMessage.setValue("Network request failed: " + t.getMessage());
             }
         });
+    }
+
+    public void loadMoreItems() {
+        if (!isLoadingMore) {
+            fetchRejectedAssets();
+        }
+    }
+
+    public void refresh() {
+        currentPage = 1;
+        totalPages = 1;
+        rejectedList.setValue(new ArrayList<>());
+        fetchRejectedAssets();
     }
 
     private <T> void handleApiError(Response<T> response, String defaultMessage) {

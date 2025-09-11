@@ -48,14 +48,31 @@ public class InventoryActivity extends AppCompatActivity {
         recyclerView = findViewById(R.id.recyclerViewInventory);
         layoutEmpty = findViewById(R.id.layoutEmpty);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                LinearLayoutManager layoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
+                if (layoutManager != null) {
+                    int visibleItemCount = layoutManager.getChildCount();
+                    int totalItemCount = layoutManager.getItemCount();
+                    int firstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition();
+
+                    if ((visibleItemCount + firstVisibleItemPosition) >= totalItemCount && firstVisibleItemPosition >= 0) {
+                        viewModel.loadMoreItems();
+                    }
+                }
+            }
+        });
+
         fabSearch = findViewById(R.id.fab_add_inventory);
-
         viewModel = new ViewModelProvider(this).get(InventoryViewModel.class);
-
         fabSearch.setOnClickListener(v -> showSearchDialog());
 
         setupObservers();
-        viewModel.fetchAssets();
+        viewModel.refreshAssets();
     }
 
     private void setupObservers() {

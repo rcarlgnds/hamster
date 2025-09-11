@@ -16,6 +16,7 @@ import com.example.hamster.data.model.response.PendingApprovalsResponse;
 import com.example.hamster.data.network.ApiClient;
 import com.example.hamster.data.network.ApiService;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
@@ -31,6 +32,11 @@ public class ConfirmationApprovalViewModel extends AndroidViewModel {
     private final MutableLiveData<String> errorMessage = new MutableLiveData<>();
     private final MutableLiveData<Boolean> approvalResult = new MutableLiveData<>();
 
+    private int currentPage = 1;
+    private int totalPages = 1;
+    private boolean isLoadingMore = false;
+    private static final int PAGE_SIZE = 10;
+
     public ConfirmationApprovalViewModel(@NonNull Application application) {
         super(application);
         apiService = ApiClient.getClient(application).create(ApiService.class);
@@ -43,13 +49,28 @@ public class ConfirmationApprovalViewModel extends AndroidViewModel {
     public LiveData<Boolean> getApprovalResult() { return approvalResult; }
 
     public void fetchPendingApprovals() {
+        if (currentPage > totalPages) return;
+
         isLoading.setValue(true);
-        apiService.getPendingApprovals(1,100, 1).enqueue(new Callback<PendingApprovalsResponse>() {
+        isLoadingMore = true;
+        apiService.getPendingApprovals(currentPage, PAGE_SIZE, 1).enqueue(new Callback<PendingApprovalsResponse>() {
             @Override
             public void onResponse(@NonNull Call<PendingApprovalsResponse> call, @NonNull Response<PendingApprovalsResponse> response) {
                 isLoading.setValue(false);
+                isLoadingMore = false;
                 if (response.isSuccessful() && response.body() != null && response.body().getData() != null) {
-                    approvalList.setValue(response.body().getData().getData());
+                    totalPages = response.body().getData().getPagination().getTotalPages();
+                    List<ApprovalItem> newItems = response.body().getData().getData();
+                    List<ApprovalItem> currentList = approvalList.getValue();
+                    if (currentList == null) {
+                        currentList = new ArrayList<>();
+                    }
+                    if (currentPage == 1) {
+                        currentList.clear();
+                    }
+                    currentList.addAll(newItems);
+                    approvalList.setValue(currentList);
+                    currentPage++;
                 } else {
                     handleApiError(response, "Failed to load approvals.");
                 }
@@ -58,9 +79,23 @@ public class ConfirmationApprovalViewModel extends AndroidViewModel {
             @Override
             public void onFailure(@NonNull Call<PendingApprovalsResponse> call, @NonNull Throwable t) {
                 isLoading.setValue(false);
+                isLoadingMore = false;
                 errorMessage.setValue("Network request failed: " + t.getMessage());
             }
         });
+    }
+
+    public void loadMoreItems() {
+        if (!isLoadingMore) {
+            fetchPendingApprovals();
+        }
+    }
+
+    public void refresh() {
+        currentPage = 1;
+        totalPages = 1;
+        approvalList.setValue(new ArrayList<>());
+        fetchPendingApprovals();
     }
 
     public void fetchActivationDetails(String transactionId) {
