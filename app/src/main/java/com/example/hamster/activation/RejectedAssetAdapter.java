@@ -6,24 +6,27 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
 import com.example.hamster.R;
 import com.example.hamster.data.model.AssetRejected;
-import java.util.List;
+
 import java.util.List;
 
 public class RejectedAssetAdapter extends RecyclerView.Adapter<RejectedAssetAdapter.RejectedViewHolder> {
 
-    private List<AssetRejected> rejectedList;
+    private final List<AssetRejected> rejectedList;
     private final OnActionClickListener listener;
     private final Context context;
+
     private static final String STATUS_DOES_NOT_MEET_REQUEST = "Does Not Meet Request";
     private static final String STATUS_WRONG_LOCATION = "Wrong Location";
 
 
     public interface OnActionClickListener {
-        void onActionClick(AssetRejected item);
+        void onActionClicked(AssetRejected item);
     }
 
     public RejectedAssetAdapter(Context context, List<AssetRejected> rejectedList, OnActionClickListener listener) {
@@ -43,23 +46,28 @@ public class RejectedAssetAdapter extends RecyclerView.Adapter<RejectedAssetAdap
     public void onBindViewHolder(@NonNull RejectedViewHolder holder, int position) {
         AssetRejected item = rejectedList.get(position);
 
-        // Set data ke TextViews
-        holder.tvAssetName.setText(item.getName());
-        holder.tvAssetCode.setText(item.getCode());
+        holder.tvAssetName.setText(item.getAssetName());
+        holder.tvAssetCode.setText(item.getAssetCode());
         holder.tvStatus.setText(item.getStatus());
-        holder.tvRejectedBy.setText(String.format("Rejected by: %s", item.getRejectedBy()));
-        holder.tvRejectedAt.setText(String.format("Rejected at: %s", item.getRejectedAt()));
+
+        holder.tvRejectedBy.setText(String.format("Rejected by: %s", item.getRejectedByPosition()));
+
+        if (holder.tvRejectedAt != null) {
+            holder.tvRejectedAt.setVisibility(View.GONE);
+        }
+
 
         String status = item.getStatus();
 
+        // Logika tombol ini tetap sama
         if (STATUS_DOES_NOT_MEET_REQUEST.equalsIgnoreCase(status)) {
             holder.btnAction.setText("Continue");
             holder.btnAction.setVisibility(View.VISIBLE);
-            holder.btnAction.setOnClickListener(v -> listener.onActionClick(item));
+            holder.btnAction.setOnClickListener(v -> listener.onActionClicked(item));
         } else if (STATUS_WRONG_LOCATION.equalsIgnoreCase(status)) {
             holder.btnAction.setText("Confirm Location");
             holder.btnAction.setVisibility(View.VISIBLE);
-            holder.btnAction.setOnClickListener(v -> listener.onActionClick(item));
+            holder.btnAction.setOnClickListener(v -> listener.onActionClicked(item));
         } else {
             holder.btnAction.setVisibility(View.GONE);
         }
@@ -70,7 +78,6 @@ public class RejectedAssetAdapter extends RecyclerView.Adapter<RejectedAssetAdap
         return rejectedList != null ? rejectedList.size() : 0;
     }
 
-    // Method untuk mengupdate data di adapter
     public void updateData(List<AssetRejected> newRejectedList) {
         this.rejectedList.clear();
         if (newRejectedList != null) {
@@ -79,14 +86,12 @@ public class RejectedAssetAdapter extends RecyclerView.Adapter<RejectedAssetAdap
         notifyDataSetChanged();
     }
 
-    // ViewHolder class yang sesuai dengan layout list_item_rejected.xml
     static class RejectedViewHolder extends RecyclerView.ViewHolder {
         TextView tvAssetCode, tvAssetName, tvStatus, tvRejectedBy, tvRejectedAt;
         Button btnAction;
 
         public RejectedViewHolder(@NonNull View itemView) {
             super(itemView);
-            // Inisialisasi view dengan ID yang benar dari XML
             tvAssetCode = itemView.findViewById(R.id.tvAssetCode);
             tvAssetName = itemView.findViewById(R.id.tvAssetName);
             tvStatus = itemView.findViewById(R.id.tvStatus);
