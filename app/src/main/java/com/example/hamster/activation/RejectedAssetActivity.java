@@ -90,10 +90,18 @@ public class RejectedAssetActivity extends AppCompatActivity {
 
     private void onActionClicked(AssetRejected item) {
         String status = item.getStatus();
+        // Cek null untuk transactionId sebelum digunakan
+        if (item.getTransactionId() == null) {
+            Toast.makeText(this, "Error: Transaction ID is missing", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         if (STATUS_DOES_NOT_MEET_REQUEST.equalsIgnoreCase(status)) {
-            viewModel.continueRejection(item.getId());
+            // GANTI DI SINI
+            viewModel.continueRejection(item.getTransactionId());
         } else if (STATUS_WRONG_LOCATION.equalsIgnoreCase(status)) {
-            viewModel.confirmLocation(item.getId());
+            // DAN GANTI DI SINI
+            viewModel.confirmLocation(item.getTransactionId());
         }
     }
 

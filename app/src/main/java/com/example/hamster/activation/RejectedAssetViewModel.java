@@ -42,9 +42,9 @@ public class RejectedAssetViewModel extends AndroidViewModel {
         return actionResult;
     }
 
-    public void continueRejection(int id) {
+    public void continueRejection(String transactionId) {
         isLoading.setValue(true);
-        apiService.continueRejection(id).enqueue(new Callback<RejectionResponse>() {
+        apiService.continueRejection(transactionId).enqueue(new Callback<RejectionResponse>() {
             @Override
             public void onResponse(Call<RejectionResponse> call, Response<RejectionResponse> response) {
                 isLoading.setValue(false);
@@ -64,9 +64,9 @@ public class RejectedAssetViewModel extends AndroidViewModel {
             }
         });
     }
-    public void confirmLocation(int id) {
+    public void confirmLocation(String transactionId) {
         isLoading.setValue(true);
-        apiService.confirmLocation(id).enqueue(new Callback<RejectionResponse>() {
+        apiService.confirmLocation(transactionId).enqueue(new Callback<RejectionResponse>() {
             @Override
             public void onResponse(Call<RejectionResponse> call, Response<RejectionResponse> response) {
                 isLoading.setValue(false);

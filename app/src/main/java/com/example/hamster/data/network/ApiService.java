@@ -676,10 +676,10 @@ public interface ApiService {
     Call<AssetRejectedResponse> getRejectedAssets (@Query("page") int page, @Query("limit") int limit, @Query("search") String search, @Query("status") String status);
 
     @POST("api/asset-rejection/{id}/continue")
-    Call<RejectionResponse> continueRejection(@Path("id") int id);
+    Call<RejectionResponse> continueRejection(@Path("id") String transactionId);
 
     @POST("api/asset-rejection/{id}/confirm-location")
-    Call<RejectionResponse> confirmLocation(@Path("id") int id);
+    Call<RejectionResponse> confirmLocation(@Path("id") String transactionId);
 
 
 //    @POST("asset-activation/settings")
