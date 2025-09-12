@@ -1,17 +1,22 @@
 package com.example.hamster.data.model;
 
+import com.google.gson.annotations.SerializedName;
+
 import java.io.Serializable;
 
 public class AssetRejected implements Serializable {
-    private String transactionId;
+    @SerializedName("id")
+    private String id;
     private String assetCode;
     private String assetName;
     private String rejectedByPosition;
     private String status;
 
-    public String getTransactionId() {
-        return transactionId;
+
+    public String getId() {
+        return id;
     }
+
     public String getAssetCode() {
         return assetCode;
     }

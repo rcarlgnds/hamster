@@ -21,8 +21,9 @@ public class RejectedAssetAdapter extends RecyclerView.Adapter<RejectedAssetAdap
     private final OnActionClickListener listener;
     private final Context context;
 
-    private static final String STATUS_DOES_NOT_MEET_REQUEST = "Does Not Meet Request";
-    private static final String STATUS_WRONG_LOCATION = "Wrong Location";
+    private static final String STATUS_DOES_NOT_MEET_REQUEST = "REJECTED_DOES_NOT_MEET_REQUEST";
+    private static final String STATUS_WRONG_LOCATION = "REJECTED_WRONG_LOCATION";
+
 
 
     public interface OnActionClickListener {

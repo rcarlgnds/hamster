@@ -29,8 +29,9 @@ public class RejectedAssetActivity extends AppCompatActivity {
     private ProgressBar progressBar;
     private TextView tvEmptyMessage;
     private AssetRejected currentItem;
-    private static final String STATUS_DOES_NOT_MEET_REQUEST = "Does Not Meet Request";
-    private static final String STATUS_WRONG_LOCATION = "Wrong Location";
+    private static final String STATUS_DOES_NOT_MEET_REQUEST = "REJECTED_DOES_NOT_MEET_REQUEST";
+    private static final String STATUS_WRONG_LOCATION = "REJECTED_WRONG_LOCATION";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,18 +91,10 @@ public class RejectedAssetActivity extends AppCompatActivity {
 
     private void onActionClicked(AssetRejected item) {
         String status = item.getStatus();
-        // Cek null untuk transactionId sebelum digunakan
-        if (item.getTransactionId() == null) {
-            Toast.makeText(this, "Error: Transaction ID is missing", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
         if (STATUS_DOES_NOT_MEET_REQUEST.equalsIgnoreCase(status)) {
-            // GANTI DI SINI
-            viewModel.continueRejection(item.getTransactionId());
+            viewModel.continueRejection(item.getId());
         } else if (STATUS_WRONG_LOCATION.equalsIgnoreCase(status)) {
-            // DAN GANTI DI SINI
-            viewModel.confirmLocation(item.getTransactionId());
+            viewModel.confirmLocation(item.getId());
         }
     }
 
