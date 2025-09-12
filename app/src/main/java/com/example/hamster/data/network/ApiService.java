@@ -81,6 +81,7 @@ import com.example.hamster.data.model.response.OptionsResponse;
 import com.example.hamster.data.model.response.PendingApprovalsResponse;
 import com.example.hamster.data.model.response.PositionResponse;
 import com.example.hamster.data.model.response.PrinterStatusResponse;
+import com.example.hamster.data.model.response.RejectionResponse;
 import com.example.hamster.data.model.response.RolePermissionResponse;
 import com.example.hamster.data.model.response.RoomResponse;
 import com.example.hamster.data.model.response.SubRoomResponse;
@@ -673,6 +674,13 @@ public interface ApiService {
     // --- Asset Rejection ---
     @GET("assets/rejected")
     Call<AssetRejectedResponse> getRejectedAssets (@Query("page") int page, @Query("limit") int limit, @Query("search") String search, @Query("status") String status);
+
+    @POST("api/asset-rejection/{id}/continue")
+    Call<RejectionResponse> continueRejection(@Path("id") int id);
+
+    @POST("api/asset-rejection/{id}/confirm-location")
+    Call<RejectionResponse> confirmLocation(@Path("id") int id);
+
 
 //    @POST("asset-activation/settings")
 //    Call<AssetActivationSetting> createApprovalSetting(@Body CreateAssetActivationSettingRequest request);

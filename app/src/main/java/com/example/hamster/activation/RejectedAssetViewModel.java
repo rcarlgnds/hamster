@@ -11,6 +11,7 @@ import androidx.lifecycle.MutableLiveData;
 import com.example.hamster.data.model.AssetRejected;
 import com.example.hamster.data.model.RejectedDataPayload;
 import com.example.hamster.data.model.response.AssetRejectedResponse;
+import com.example.hamster.data.model.response.RejectionResponse;
 import com.example.hamster.data.network.ApiClient;
 import com.example.hamster.data.network.ApiService;
 
@@ -34,6 +35,57 @@ public class RejectedAssetViewModel extends AndroidViewModel {
     private int totalPages = 1;
     private boolean isLoadingMore = false;
     private static final int PAGE_SIZE = 10;
+
+    private final MutableLiveData<Boolean> actionResult = new MutableLiveData<>();
+
+    public LiveData<Boolean> getActionResult() {
+        return actionResult;
+    }
+
+    public void continueRejection(int id) {
+        isLoading.setValue(true);
+        apiService.continueRejection(id).enqueue(new Callback<RejectionResponse>() {
+            @Override
+            public void onResponse(Call<RejectionResponse> call, Response<RejectionResponse> response) {
+                isLoading.setValue(false);
+                if (response.isSuccessful()) {
+                    actionResult.setValue(true);
+                } else {
+                    handleApiError(response, "Failed to continue process.");
+                    actionResult.setValue(false);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<RejectionResponse> call, Throwable t) {
+                isLoading.setValue(false);
+                errorMessage.setValue("Network request failed: " + t.getMessage());
+                actionResult.setValue(false);
+            }
+        });
+    }
+    public void confirmLocation(int id) {
+        isLoading.setValue(true);
+        apiService.confirmLocation(id).enqueue(new Callback<RejectionResponse>() {
+            @Override
+            public void onResponse(Call<RejectionResponse> call, Response<RejectionResponse> response) {
+                isLoading.setValue(false);
+                if (response.isSuccessful()) {
+                    actionResult.setValue(true);
+                } else {
+                    handleApiError(response, "Failed to confirm location.");
+                    actionResult.setValue(false);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<RejectionResponse> call, Throwable t) {
+                isLoading.setValue(false);
+                errorMessage.setValue("Network request failed: " + t.getMessage());
+                actionResult.setValue(false);
+            }
+        });
+    }
 
     public RejectedAssetViewModel(@NonNull Application application) {
         super(application);

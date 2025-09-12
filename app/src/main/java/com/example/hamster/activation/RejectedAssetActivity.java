@@ -29,6 +29,8 @@ public class RejectedAssetActivity extends AppCompatActivity {
     private ProgressBar progressBar;
     private TextView tvEmptyMessage;
     private AssetRejected currentItem;
+    private static final String STATUS_DOES_NOT_MEET_REQUEST = "Does Not Meet Request";
+    private static final String STATUS_WRONG_LOCATION = "Wrong Location";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,8 +89,12 @@ public class RejectedAssetActivity extends AppCompatActivity {
     }
 
     private void onActionClicked(AssetRejected item) {
-        this.currentItem = item;
-//      fetch detail
+        String status = item.getStatus();
+        if (STATUS_DOES_NOT_MEET_REQUEST.equalsIgnoreCase(status)) {
+            viewModel.continueRejection(item.getId());
+        } else if (STATUS_WRONG_LOCATION.equalsIgnoreCase(status)) {
+            viewModel.confirmLocation(item.getId());
+        }
     }
 
     private void setupObservers() {
@@ -102,6 +108,13 @@ public class RejectedAssetActivity extends AppCompatActivity {
             recyclerView.setVisibility(isEmpty ? View.GONE : View.VISIBLE);
             if (!isEmpty) {
                 adapter.updateData(items);
+            }
+        });
+
+        viewModel.getActionResult().observe(this, success -> {
+            if (success) {
+                Toast.makeText(this, "Action successfully processed.", Toast.LENGTH_SHORT).show();
+                viewModel.refresh();
             }
         });
 
