@@ -32,6 +32,7 @@ public class Notification {
     @SerializedName("data")
     private NotificationData data;
 
+
     // --- Getters ---
     public String getId() { return id; }
     public String getTitle() { return title; }
@@ -42,7 +43,6 @@ public class Notification {
     public String getCopyString() { return copyString; }
     public String getLink() { return link; }
     public NotificationData getData() { return data; }
-
     public void setRead(boolean read) {
         isRead = read;
     }

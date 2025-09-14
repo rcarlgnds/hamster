@@ -1,19 +1,29 @@
 package com.example.hamster.dashboard;
 
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.graphics.Typeface;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
+import android.os.Handler;
+import android.os.Looper;
+
+
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.hamster.R;
 import com.example.hamster.data.model.Notification;
 import com.google.android.material.card.MaterialCardView;
+import com.google.android.material.button.MaterialButton;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -64,6 +74,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
         private final TextView title, message, timestamp;
         private final ImageView icon;
         private final View unreadIndicator;
+        MaterialButton buttonCopyCode;
 
         public NotificationViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -73,6 +84,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
             timestamp = itemView.findViewById(R.id.notification_timestamp);
             icon = itemView.findViewById(R.id.icon_notification_type);
             unreadIndicator = itemView.findViewById(R.id.unread_indicator);
+            buttonCopyCode = itemView.findViewById(R.id.buttonCopyCode);
         }
 
         public void bind(final Notification notification, final int position, final OnNotificationClickListener listener) {
@@ -105,6 +117,36 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
                 title.setTypeface(null, Typeface.BOLD);
                 message.setTextColor(ContextCompat.getColor(context, R.color.secondary_40));
             }
+
+            final String copyText = notification.getCopyString();
+            if (!TextUtils.isEmpty(copyText)) {
+                buttonCopyCode.setVisibility(View.VISIBLE);
+                buttonCopyCode.setOnClickListener(v -> {
+                    ClipboardManager clipboard = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
+                    ClipData clip = ClipData.newPlainText("Copied Code", copyText);
+                    clipboard.setPrimaryClip(clip);
+
+                    Toast.makeText(context, context.getString(R.string.code_copied), Toast.LENGTH_SHORT).show();
+
+                    final CharSequence originalText = buttonCopyCode.getText();
+                    final ColorStateList originalTextColor = buttonCopyCode.getTextColors();
+                    final android.graphics.drawable.Drawable originalIcon = buttonCopyCode.getIcon();
+
+                    buttonCopyCode.setText(context.getString(R.string.copied));
+                    buttonCopyCode.setIconResource(R.drawable.ic_check_circle);
+                    buttonCopyCode.setTextColor(ContextCompat.getColor(context, R.color.secondary_40));
+                    buttonCopyCode.setEnabled(false);
+
+                    new Handler(Looper.getMainLooper()).postDelayed(() -> {
+                        buttonCopyCode.setText(originalText);
+                        buttonCopyCode.setIcon(originalIcon);
+                        buttonCopyCode.setTextColor(originalTextColor);
+                        buttonCopyCode.setEnabled(true);
+                    }, 1500);
+                });
+            } else {
+                buttonCopyCode.setVisibility(View.GONE);
+            }
         }
 
         private String formatTimestamp(Date date) {
@@ -117,13 +159,5 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
                 return "Invalid date";
             }
         }
-
-//        iconCopy.setOnClickListener(v -> {
-//            Context context = itemView.getContext();
-//            ClipboardManager clipboard = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
-//            ClipData clip = ClipData.newPlainText("Asset Code", asset.getCode());
-//            clipboard.setPrimaryClip(clip);
-//            Toast.makeText(context, "Code copied to clipboard", Toast.LENGTH_SHORT).show();
-//        });
     }
 }

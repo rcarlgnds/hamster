@@ -27,6 +27,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.hamster.R;
 import com.example.hamster.data.constant.Controls;
 import com.example.hamster.data.constant.Permissions;
+import com.example.hamster.data.constant.Routes;
 import com.example.hamster.data.model.Control;
 import com.example.hamster.data.model.Permission;
 import com.example.hamster.data.model.User;
@@ -114,22 +115,22 @@ public class DashboardActivity extends AppCompatActivity {
         List<FeatureAdapter.Feature> features = new ArrayList<>();
 
         if (userHasPermission(Permissions.PERMISSION_INVENTORY_VIEW_ALL_LIST) || userHasPermission(Permissions.PERMISSION_INVENTORY_VIEW_HOSPITAL_LIST)) {
-            features.add(new FeatureAdapter.Feature(getString(R.string.menu_inventory), R.drawable.ic_inventory));
+            features.add(new FeatureAdapter.Feature(getString(R.string.menu_inventory), R.drawable.ic_inventory, Routes.INVENTORY));
         }
         if (userHasAnyOfControls(Controls.CONTROL_APPROVAL_STEP_0)) {
-            features.add(new FeatureAdapter.Feature(getString(R.string.menu_activation), R.drawable.ic_activation));
+            features.add(new FeatureAdapter.Feature(getString(R.string.menu_activation), R.drawable.ic_activation, Routes.ACTIVATION));
         }
         if (userHasAnyOfControls(Controls.CONTROL_APPROVAL_STEP_1)) {
-            features.add(new FeatureAdapter.Feature(getString(R.string.menu_confirmation), R.drawable.ic_check_circle));
+            features.add(new FeatureAdapter.Feature(getString(R.string.menu_confirmation), R.drawable.ic_check_circle, Routes.CONFIRMATION));
         }
         if (userHasAnyOfControls(Controls.CONTROL_APPROVAL_STEP_2)) {
-            features.add(new FeatureAdapter.Feature(getString(R.string.menu_activation), R.drawable.ic_approval));
+            features.add(new FeatureAdapter.Feature(getString(R.string.menu_approval), R.drawable.ic_approval, Routes.APPROVAL));
         }
         if(userHasAnyOfControls(Controls.CONTROL_APPROVAL_STEP_0) ||
-           userHasAnyOfControls(Controls.CONTROL_APPROVAL_STEP_2) ||
-           userHasAnyOfControls(Controls.CONTROL_APPROVAL_STEP_3) ||
-           userHasAnyOfControls(Controls.CONTROL_APPROVAL_STEP_4)) {
-            features.add(new FeatureAdapter.Feature(getString(R.string.menu_rejection), R.drawable.ic_cancel));
+                userHasAnyOfControls(Controls.CONTROL_APPROVAL_STEP_2) ||
+                userHasAnyOfControls(Controls.CONTROL_APPROVAL_STEP_3) ||
+                userHasAnyOfControls(Controls.CONTROL_APPROVAL_STEP_4)) {
+            features.add(new FeatureAdapter.Feature(getString(R.string.menu_rejection), R.drawable.ic_cancel, Routes.REJECTED));
         }
 
         featureAdapter = new FeatureAdapter(this, features);
@@ -273,7 +274,6 @@ public class DashboardActivity extends AppCompatActivity {
 
             dialog.dismiss();
         });
-
 
         dialog.show();
     }

@@ -197,4 +197,8 @@
     <string name="button_action">Aksi</string>
     <string name="acknowledge">Setuju</string>
 
+    <string name="copy_code">Salin Kode</string>
+    <string name="code_copied">Kode disalin ke clipboard!</string>
+    <string name="copied">Disalin</string>
+
 </resources>

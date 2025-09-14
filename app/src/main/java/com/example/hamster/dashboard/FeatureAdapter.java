@@ -20,14 +20,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class FeatureAdapter extends RecyclerView.Adapter<FeatureAdapter.FeatureViewHolder> {
-
     public static class Feature {
         public final String name;
         public final int iconResId;
+        public final String routeKey;
 
-        public Feature(String name, int iconResId) {
+        public Feature(String name, int iconResId, String routeKey) {
             this.name = name;
             this.iconResId = iconResId;
+            this.routeKey = routeKey;
         }
     }
 
@@ -89,19 +90,19 @@ public class FeatureAdapter extends RecyclerView.Adapter<FeatureAdapter.FeatureV
             icon.setImageResource(feature.iconResId);
 
             itemView.setOnClickListener(v -> {
-                if (Routes.INVENTORY.equalsIgnoreCase(feature.name)) {
+                if (Routes.INVENTORY.equalsIgnoreCase(feature.routeKey)) {
                     context.startActivity(new Intent(context, InventoryActivity.class));
                 }
-                else if (Routes.ACTIVATION.equalsIgnoreCase(feature.name)) {
+                else if (Routes.ACTIVATION.equalsIgnoreCase(feature.routeKey)) {
                     context.startActivity(new Intent(context, ActivationActivity.class));
                 }
-                else if (Routes.CONFIRMATION.equalsIgnoreCase(feature.name)) {
+                else if (Routes.CONFIRMATION.equalsIgnoreCase(feature.routeKey)) {
                     context.startActivity(new Intent(context, ConfirmationApprovalActivity.class));
                 }
-                else if (Routes.APPROVAL.equalsIgnoreCase(feature.name)) {
+                else if (Routes.APPROVAL.equalsIgnoreCase(feature.routeKey)) {
                     context.startActivity(new Intent(context, ActivationApprovalActivity.class));
                 }
-                else if (Routes.REJECTED.equalsIgnoreCase(feature.name)) {
+                else if (Routes.REJECTED.equalsIgnoreCase(feature.routeKey)) {
                     context.startActivity(new Intent(context, RejectedAssetActivity.class));
                 }
             });

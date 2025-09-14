@@ -196,4 +196,8 @@
     <string name="there_is_no_rejected_inventory_at_the_moment">There is no rejected inventory at the moment.</string>
     <string name="button_action">Action</string>
     <string name="acknowledge">Acknowledge</string>
+
+    <string name="copy_code">Copy Code</string>
+    <string name="code_copied">Code copied to clipboard!</string>
+    <string name="copied">Copied</string>
 </resources>
