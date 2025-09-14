@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 
+import androidx.appcompat.app.AppCompatDelegate;
+
 import com.example.hamster.data.model.User;
 import com.example.hamster.login.LoginActivity;
 import com.google.gson.Gson;
@@ -14,6 +16,7 @@ public class SessionManager {
     private static final String KEY_REFRESH_TOKEN = "refresh_token";
     private static final String KEY_USER_DATA = "userDataJson";
     private static final String KEY_LANGUAGE = "app_language";
+    private static final String KEY_THEME_MODE = "theme_mode";
 
 
     private final SharedPreferences pref;
@@ -68,6 +71,15 @@ public class SessionManager {
 
     public String getLanguage() {
         return pref.getString(KEY_LANGUAGE, "en");
+    }
+
+    public void saveThemeMode(int themeMode) {
+        editor.putInt(KEY_THEME_MODE, themeMode);
+        editor.apply();
+    }
+
+    public int getThemeMode() {
+        return pref.getInt(KEY_THEME_MODE, AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
     }
 
     public void createLoginSession(String accessToken, String refreshToken, User user) {

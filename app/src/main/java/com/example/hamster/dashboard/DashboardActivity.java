@@ -11,6 +11,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AlertDialog;
@@ -32,10 +34,12 @@ import com.example.hamster.databinding.ActivityDashboardBinding;
 import com.example.hamster.databinding.ActivityLoginBinding;
 import com.example.hamster.inventory.InventoryActivity;
 import com.example.hamster.utils.SessionManager;
+import com.example.hamster.utils.ThemeSetup;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.badge.BadgeDrawable;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.imageview.ShapeableImageView;
+import com.google.android.material.radiobutton.MaterialRadioButton;
 import com.google.android.material.textfield.TextInputEditText;
 
 import java.util.ArrayList;
@@ -46,6 +50,8 @@ public class DashboardActivity extends AppCompatActivity {
     private RecyclerView rvFeatures;
     private FeatureAdapter featureAdapter;
     private SessionManager sessionManager;
+    private ActivityDashboardBinding binding;
+
     private TextInputEditText etSearch;
     private TextView tvWelcomeUser;
     private TextView tvWelcomeEmail;
@@ -57,10 +63,11 @@ public class DashboardActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
-
-        setContentView(R.layout.activity_dashboard);
         sessionManager = new SessionManager(this);
+        ThemeSetup.applyTheme(sessionManager.getThemeMode());
+
+        binding = ActivityDashboardBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
 
         setupViews();
         setupUserProfile();
@@ -80,6 +87,7 @@ public class DashboardActivity extends AppCompatActivity {
         ivNotification = findViewById(R.id.iv_user_notification);
         ivSettings = findViewById(R.id.iv_settings);
     }
+
 
     private void setupUserProfile() {
         User currentUser = sessionManager.getUser();
@@ -195,17 +203,47 @@ public class DashboardActivity extends AppCompatActivity {
 
     private void showSettingDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        LayoutInflater inflater = this.getLayoutInflater();
+        LayoutInflater inflater = getLayoutInflater();
         View dialogView = inflater.inflate(R.layout.dialog_application_settings, null);
         builder.setView(dialogView);
 
+        RadioGroup rgTheme = dialogView.findViewById(R.id.radioGroupTheme);
+        RadioButton rbLight = dialogView.findViewById(R.id.radioLight);
+        RadioButton rbDark = dialogView.findViewById(R.id.radioDark);
+        RadioButton rbSystem = dialogView.findViewById(R.id.radioSystem);
+        Button btnCancel = dialogView.findViewById(R.id.buttonCancel);
+        Button btnSave = dialogView.findViewById(R.id.buttonSave);
+
         final AlertDialog dialog = builder.create();
 
-        Button btnCancel = dialogView.findViewById(R.id.buttonCancel);
+        int currentTheme = sessionManager.getThemeMode();
+        if (currentTheme == AppCompatDelegate.MODE_NIGHT_NO) {
+            rbLight.setChecked(true);
+        } else if (currentTheme == AppCompatDelegate.MODE_NIGHT_YES) {
+            rbDark.setChecked(true);
+        } else {
+            rbSystem.setChecked(true);
+        }
+
+        final int[] selectedTheme = {currentTheme};
+
+        rgTheme.setOnCheckedChangeListener((group, checkedId) -> {
+            if (checkedId == R.id.radioLight) {
+                selectedTheme[0] = AppCompatDelegate.MODE_NIGHT_NO;
+            } else if (checkedId == R.id.radioDark) {
+                selectedTheme[0] = AppCompatDelegate.MODE_NIGHT_YES;
+            } else if (checkedId == R.id.radioSystem) {
+                selectedTheme[0] = AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM;
+            }
+        });
+
         btnCancel.setOnClickListener(v -> dialog.dismiss());
 
-        Button btnSave = dialogView.findViewById(R.id.buttonSave);
-        btnSave.setOnClickListener(v -> {});
+        btnSave.setOnClickListener(v -> {
+            sessionManager.saveThemeMode(selectedTheme[0]);
+            ThemeSetup.applyTheme(selectedTheme[0]);
+            dialog.dismiss();
+        });
 
         dialog.show();
     }
