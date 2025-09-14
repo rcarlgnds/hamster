@@ -65,6 +65,8 @@ public class DashboardActivity extends AppCompatActivity {
 
         sessionManager = new SessionManager(this);
         ThemeSetup.applyTheme(sessionManager.getThemeMode());
+        ThemeSetup.setLocale(sessionManager.getLanguage());
+
 
         binding = ActivityDashboardBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
@@ -211,8 +213,21 @@ public class DashboardActivity extends AppCompatActivity {
         RadioButton rbLight = dialogView.findViewById(R.id.radioLight);
         RadioButton rbDark = dialogView.findViewById(R.id.radioDark);
         RadioButton rbSystem = dialogView.findViewById(R.id.radioSystem);
+
+        RadioGroup rgLanguage = dialogView.findViewById(R.id.radioGroupLanguage);
+        RadioButton rbLangEn = dialogView.findViewById(R.id.radioLangEn);
+        RadioButton rbLangId = dialogView.findViewById(R.id.radioLangId);
+
         Button btnCancel = dialogView.findViewById(R.id.buttonCancel);
         Button btnSave = dialogView.findViewById(R.id.buttonSave);
+
+        String currentLang = sessionManager.getLanguage();
+        if ("in".equals(currentLang)) {
+            rbLangId.setChecked(true);
+        } else {
+            rbLangEn.setChecked(true);
+        }
+
 
         final AlertDialog dialog = builder.create();
 
@@ -226,6 +241,8 @@ public class DashboardActivity extends AppCompatActivity {
         }
 
         final int[] selectedTheme = {currentTheme};
+        final String[] selectedLang = {sessionManager.getLanguage()};
+
 
         rgTheme.setOnCheckedChangeListener((group, checkedId) -> {
             if (checkedId == R.id.radioLight) {
@@ -237,13 +254,26 @@ public class DashboardActivity extends AppCompatActivity {
             }
         });
 
+        rgLanguage.setOnCheckedChangeListener((group, checkedId) -> {
+            if (checkedId == R.id.radioLangId) {
+                selectedLang[0] = "in";
+            } else {
+                selectedLang[0] = "en";
+            }
+        });
+
         btnCancel.setOnClickListener(v -> dialog.dismiss());
 
         btnSave.setOnClickListener(v -> {
             sessionManager.saveThemeMode(selectedTheme[0]);
             ThemeSetup.applyTheme(selectedTheme[0]);
+
+            sessionManager.setLanguage(selectedLang[0]);
+            ThemeSetup.setLocale(selectedLang[0]);
+
             dialog.dismiss();
         });
+
 
         dialog.show();
     }

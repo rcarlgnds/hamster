@@ -1,0 +1,200 @@
+<resources>
+    <string name="app_name">Hamster</string>
+
+    <string name="login_title">Selamat Datang!</string>
+    <string name="login_subtitle">Masuk untuk melanjutkan</string>
+    <string name="label_email">Email</string>
+    <string name="label_password">Kata Sandi</string>
+    <string name="login_button">Masuk</string>
+    <string name="login_in_progress">Proses masuk...</string>
+    <string name="login_failed">Gagal masuk, mohon periksa kembali email dan kata sandi Anda.</string>
+
+    <string name="dashboard">Dashboard</string>
+    <string name="profile">Profil</string>
+    <string name="notification">Notifikasi</string>
+
+    <string name="welcome">Selamat datang,</string>
+    <string name="email">Email</string>
+    <string name="go_to_profile">Pergi ke Halaman Profil -></string>
+    <string name="search_features">Cari Fitur-fitur</string>
+    <string name="features">Fitur</string>
+
+    <string name="nav_header_title">Nama User</string>
+    <string name="nav_header_subtitle">user@example.com</string>
+    <string name="edit_profile">Edit Profil</string>
+    <string name="change_password">Ganti Kata Sandi</string>
+    <string name="logout">Keluar</string>
+
+    <string name="mark_all_as_read">Tandai semua telah dibaca</string>
+    <string name="no_notifications_found">Anda tidak memiliki notifikasi</string>
+    <string name="there_is_no_approval_request_at_the_moment">Tidak ada permintaan persetujuan pada saat ini.</string>
+
+    <string name="menu_logout">Keluar</string>
+    <string name="menu_inventory">Inventaris</string>
+    <string name="menu_activation_setting">Pengaturan Aktivasi</string>
+    <string name="menu_activation">Aktivasi</string>
+    <string name="menu_confirmation">Konfirmasi</string>
+    <string name="menu_approval">Persetujuan</string>
+    <string name="menu_rejection">Inventaris Tertolak</string>
+
+    <string name="settings">Pengaturan</string>
+    <string name="languages">ID/ EN</string>
+    <string name="themes">Terang/ Gelap</string>
+    <string name="button_save">Simpan</string>
+
+    <string name="label_name">Nama</string>
+    <string name="label_hospital">Rumah Sakit</string>
+    <string name="label_building">Bangunan</string>
+    <string name="label_floor">Lantai</string>
+    <string name="label_room">Ruangan</string>
+    <string name="dialog_search">Cari</string>
+
+    <string name="title_inventory">Inventaris</string>
+    <string name="search_hint">Cari berdasarkan Nama atau kode...</string>
+    <string name="filter">Filter</string>
+    <string name="search_dialog_title">Cari Inventaris</string>
+    <string name="search_dialog_message">Masukkan kode asset</string>
+    <string name="dialog_cancel">Batalkan</string>
+    <string name="dialog_next">Selanjutnya</string>
+    <string name="asset_not_found">Asset tidak ditemukan</string>
+    <string name="search_results_for">Menunjukkan hasil untuk: %s</string>
+    <string name="filter_by_status">Filter berdasarkan Status</string>
+
+    <string name="status">Status</string>
+    <string name="copy_item_code">Salin Kode Item</string>
+    <string name="view_details">Lihat Detil</string>
+    <string name="status_all">Semua</string>
+    <string name="status_active">Aktif</string>
+    <string name="status_inactive">Tidak Aktif</string>
+    <string name="status_rejected">Tertolak</string>
+    <string name="status_pending_confirmation_by_head_of_room">Konfirmasi tertunda oleh Kepala Ruangan</string>
+    <string name="status_pending_confirmation_by_head_of_fms">Konfirmasi tertunda oleh Kepala FMS</string>
+    <string name="status_rejected_does_not_meet_request">Tertolak, Tidak sesuai permintaan</string>
+    <string name="status_rejected_wrong_location">Tertolak, Salah lokasi</string>
+    <string name="status_rejected_in_logistic">Tertolak, Di logistik</string>
+    <string name="status_rejected_in_finance">Tertolak, Di keuangan</string>
+    <string name="data_not_found">Data Tidak Ditemukan</string>
+    <string name="try_other_keywords">Coba kata kunci lain atau ubah filter Anda.</string>
+    <string name="failed_to_load_data">Gagal memuat data</string>
+
+    <string name="edit_inventory_detail">Edit Detil Inventaris</string>
+    <string name="tab_info">Informasi</string>
+    <string name="tab_location">Lokasi</string>
+    <string name="tab_finance">Keuangan</string>
+    <string name="tab_documents">Dokumen</string>
+    <string name="tab_review">Review</string>
+    <string name="save">SIMPAN</string>
+
+    <string name="section_code_identification">Kode &amp; Identifikasi</string>
+    <string name="hint_asset_code">Kode</string>
+    <string name="hint_asset_code2">Kode 2</string>
+    <string name="hint_asset_code3">Kode 3</string>
+    <string name="hint_serial_number">Nomor Seri</string>
+
+    <string name="section_main_info">Informasi Utama</string>
+    <string name="hint_asset_name">Nama</string>
+    <string name="hint_alias_name_teramedik">Nama Alias Teramedik</string>
+    <string name="hint_alias_name_hamster">Nama Alias Hamster</string>
+    <string name="hint_inventory_parent">Inventaris Orang Tua</string>
+
+    <string name="section_details_classification">Detil &amp; Klasifikasi</string>
+    <string name="hint_category">Kategori</string>
+    <string name="hint_subcategory">Sub-Kategori</string>
+    <string name="hint_brand">Merek</string>
+    <string name="hint_condition">Kondisi</string>
+    <string name="hint_ownership">Kepemilikam</string>
+    <string name="hint_type">Tipe</string>
+
+    <string name="section_quantity">Kuantitas</string>
+    <string name="hint_total">Jumlah</string>
+    <string name="hint_unit">Unit</string>
+    <string name="hint_description">Deskripsi (Optional)</string>
+
+    <string name="section_placement_location">Lokasi Penempatan</string>
+    <string name="hint_hospital">Rumah Sakit</string>
+    <string name="hint_building">Bangunan</string>
+    <string name="hint_floor">Lantai</string>
+    <string name="hint_room">Ruangan</string>
+    <string name="hint_sub_room">Sub-Ruangan</string>
+
+    <string name="section_person_in_charge">Penanggung Jawab</string>
+    <string name="hint_responsible_division">Divisi Penanggung Jawab</string>
+    <string name="hint_responsible_unit">Unit Penanggung Jawab</string>
+    <string name="hint_responsible_user">User Penanggung Jawab</string>
+
+    <string name="section_purchase_info">Informasi Pembelian</string>
+    <string name="hint_procurement_date">Tanggal Pembelian</string>
+    <string name="hint_purchase_price">Harga Pembelian</string>
+    <string name="hint_vendor">Vendor</string>
+    <string name="hint_po_number">Nomor PO</string>
+    <string name="label_po_document">Dokumen Purchase Order (PO)</string>
+    <string name="status_no_file">Tidak ada file terkait</string>
+    <string name="button_choose_file">Pilih File</string>
+    <string name="file_upload_constraints">(Hanya JPG, JPEG, PNG, PDF, max 10MB per file)</string>
+
+    <string name="section_warranty_invoice">Garansi &amp; Invoice</string>
+    <string name="hint_invoice_number">Nomor Invoice</string>
+    <string name="label_invoice_document">Dokumen Invoice</string>
+    <string name="hint_warranty_end_date">Tanggal Berakhir Garansi</string>
+    <string name="hint_warranty_status">Status Garansi</string>
+    <string name="label_warranty_document">Dokumen Garansi</string>
+
+    <string name="section_depreciation_info">Informasi Depresiasi</string>
+    <string name="hint_depreciation_percent">Depresiasi (%)</string>
+    <string name="hint_depreciation_value">Nilai Depresiasi</string>
+    <string name="hint_depreciation_start_date">Tanggal Mulai Depresiasi</string>
+    <string name="hint_depreciation_duration">Durasi (Bulan)</string>
+    <string name="hint_effective_activation_date">Tanggal Efektif Aktivasi</string>
+    <string name="hint_functional_testing_date">Tanggal Uji Fungsi</string>
+
+    <string name="label_serial_number_photo">Foto Nomor Seri</string>
+    <string name="label_asset_photos_gallery">Galeri Foto Asset</string>
+    <string name="button_add">Tambah</string>
+
+    <string name="label_license_documents">Dokumen Lisensi</string>
+    <string name="label_user_manual_documents">Dokumen User Manual</string>
+    <string name="label_custom_documents">Dokumen Custom</string>
+    <string name="hint_document_name">Nama Document</string>
+    <string name="button_file">File</string>
+
+    <string name="asset_code">Kode Asset</string>
+    <string name="asset_name">Nama Asset</string>
+    <string name="role">Peranan</string>
+    <string name="location">Lokasi</string>
+    <string name="button_confirmation">Konfirmasi</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="title_activation">Mulai Aktivasi Asset</string>
+    <string name="step_1_scan">1. Pindai Asset</string>
+    <string name="button_scan_qr">Pindai Kode QR Asset</string>
+    <string name="asset_code_placeholder">Kode Asset akan muncul di sini</string>
+    <string name="status_pending_approval">Persertujuan Tertunda</string>
+    <string name="step_2_take_photo">2. Ambil Foto Bukti</string>
+    <string name="photo_preview_desc">Preview Foto Asset</string>
+    <string name="button_take_photo">Ambil Photo</string>
+    <string name="notes_optional_hint">Catatan (Optional)</string>
+    <string name="button_start_activation">Mulai Aktivasi</string>
+    <string name="camera_permission_denied">Permission Kamera Ditolak.</string>
+    <string name="failed_to_capture_photo">Gagal mengambil foto.</string>
+    <string name="scan_cancelled">Pindai QR dibatalkan atau gagal.</string>
+    <string name="asset_in_process">Asset telah mempunyai proses aktivasi.</string>
+    <string name="asset_ready_to_activate">Asset in siap diaktivasi.</string>
+    <string name="failed_to_check_status">Gagal mengevek status asset. Mohon coba kembali.</string>
+    <string name="activation_started_successfully">Proses aktivasi berhasil dimulai!</string>
+    <string name="activation_failed">Gagal memulai proses aktivasi.</string>
+
+    <string name="inventory_confirmation">Konfirmasi Inventaris</string>
+    <string name="inventory_activation">Aktivasi Inventaris</string>
+    <string name="scanned_by">Dipindai oleh</string>
+    <string name="at">pada</string>
+    <string name="reject">Tolak</string>
+    <string name="approve">Setujui</string>
+
+    <string name="rejected_inventory">Inventaris Tertolak</string>
+    <string name="there_is_no_rejected_inventory_at_the_moment">Tidak ada inventaris tertolak pada saat ini.</string>
+    <string name="button_action">Aksi</string>
+    <string name="acknowledge">Setuju</string>
+
+</resources>
