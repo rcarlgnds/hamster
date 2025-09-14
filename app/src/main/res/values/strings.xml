@@ -38,8 +38,8 @@
     <string name="menu_rejection">Rejected</string>
 
     <string name="settings">Settings</string>
-    <string name="languages">ID/ EN</string>
-    <string name="themes">Light/ Dark</string>
+    <string name="languages">Language</string>
+    <string name="themes">Theme</string>
     <string name="button_save">Save</string>
 
     <string name="label_name">Name</string>

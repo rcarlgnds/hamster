@@ -13,6 +13,8 @@ public class SessionManager {
     private static final String KEY_ACCESS_TOKEN = "accessToken";
     private static final String KEY_REFRESH_TOKEN = "refresh_token";
     private static final String KEY_USER_DATA = "userDataJson";
+    private static final String KEY_LANGUAGE = "app_language";
+
 
     private final SharedPreferences pref;
     private final SharedPreferences.Editor editor;
@@ -57,6 +59,15 @@ public class SessionManager {
             return null;
         }
         return gson.fromJson(userJson, User.class);
+    }
+
+    public void setLanguage(String languageCode) {
+        editor.putString(KEY_LANGUAGE, languageCode);
+        editor.apply();
+    }
+
+    public String getLanguage() {
+        return pref.getString(KEY_LANGUAGE, "en");
     }
 
     public void createLoginSession(String accessToken, String refreshToken, User user) {
