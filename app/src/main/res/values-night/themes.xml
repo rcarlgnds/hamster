@@ -1,36 +1,35 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <style name="Base.Theme.Hamster" parent="Theme.Material3.DayNight.NoActionBar">
+    <style name="Base.Theme.Hamster" parent="Theme.Material3.Dark.NoActionBar">
 
-        <item name="colorPrimary">@color/purple_200</item>
-        <item name="colorPrimaryVariant">@color/purple_700</item>
-        <item name="colorOnPrimary">@color/black</item>
-
-        <item name="colorSecondary">@color/teal_200</item>
-        <item name="colorSecondaryVariant">@color/teal_200</item>
-        <item name="colorOnSecondary">@color/black</item>
-
-        <item name="android:colorBackground">@color/dark_background</item>
-        <item name="colorSurface">@color/dark_surface</item>
-
-        <item name="colorOnBackground">@color/white</item>
-        <item name="colorOnSurface">@color/white</item>
-
-        <item name="android:statusBarColor" >?attr/colorPrimaryVariant</item>
-
+        <item name="colorPrimary">@color/primary_40</item>
+        <item name="colorOnPrimary">@color/on_primary_100</item>
         <item name="colorPrimaryContainer">@color/primary_90</item>
         <item name="colorOnPrimaryContainer">@color/on_primary_container_10</item>
+
+        <item name="colorSecondary">@color/secondary_40</item>
+        <item name="colorOnSecondary">@color/on_secondary_100</item>
         <item name="colorSecondaryContainer">@color/secondary_90</item>
         <item name="colorOnSecondaryContainer">@color/on_secondary_container_10</item>
+
         <item name="colorTertiary">@color/tertiary_40</item>
         <item name="colorOnTertiary">@color/on_tertiary_100</item>
         <item name="colorTertiaryContainer">@color/tertiary_90</item>
         <item name="colorOnTertiaryContainer">@color/on_tertiary_container_10</item>
 
-        <item name="colorSurfaceVariant">@color/neutral_90</item>
-        <item name="colorOnSurfaceVariant">@color/neutral_10</item>
         <item name="colorError">@color/error_40</item>
-        <item name="colorOnError">@color/on_primary_100</item>
         <item name="colorErrorContainer">@color/error_90</item>
+        <item name="colorOnError">#601410</item>
+        <item name="colorOnErrorContainer">#F9DEDC</item>
+
+        <item name="android:colorBackground">@color/neutral_99</item>
+        <item name="colorSurface">@color/neutral_99</item>
+        <item name="colorSurfaceVariant">@color/neutral_90</item>
+
+        <item name="colorOnBackground">@color/neutral_10</item>
+        <item name="colorOnSurface">@color/neutral_10</item>
+        <item name="colorOnSurfaceVariant">#CAC4D0</item>
+        <item name="android:statusBarColor" >?attr/colorPrimaryContainer</item>
+
     </style>
 
     <style name="Theme.Hamster" parent="Base.Theme.Hamster" />
