@@ -35,6 +35,8 @@ public class RejectedAssetViewModel extends AndroidViewModel {
     private int totalPages = 1;
     private boolean isLoadingMore = false;
     private static final int PAGE_SIZE = 10;
+    private String currentSearchQuery = "";
+    private String currentStatusFilter = "";
 
     private final MutableLiveData<Boolean> actionResult = new MutableLiveData<>();
 
