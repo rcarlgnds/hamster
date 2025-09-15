@@ -3,11 +3,11 @@ plugins {
 }
 
 android {
-    namespace = "com.example.hamster"
+    namespace = "com.aktivo.hamster"
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "com.example.hamster"
+        applicationId = "com.aktivo.hamster"
         minSdk = 30
         targetSdk = 35
         versionCode = 1
