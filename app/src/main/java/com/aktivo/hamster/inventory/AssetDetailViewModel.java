@@ -263,6 +263,16 @@ public class AssetDetailViewModel extends AndroidViewModel {
         Map<String, RequestBody> fields = buildFieldsMap();
         List<MultipartBody.Part> fileParts = buildFileParts();
 
+        Log.d(TAG, "================== Preparing to Save Asset ==================");
+        Log.d(TAG, "Asset ID: " + assetId);
+        Log.d(TAG, "--- Building fields map with values ---");
+
+        Log.d(TAG, "--- Field map built. Total fields: " + fields.size() + " ---");
+        Log.d(TAG, "Total files to upload: " + fileParts.size());
+        Log.d(TAG, "===========================================================");
+
+
+
         apiService.updateAsset(assetId, fields, fileParts).enqueue(new Callback<Asset>() {
             @Override
             public void onResponse(@NonNull Call<Asset> call, @NonNull Response<Asset> response) {
@@ -303,7 +313,7 @@ public class AssetDetailViewModel extends AndroidViewModel {
         if (request.getTotal() != null) {
             addPart(fields, "total", String.valueOf(request.getTotal()));
         }
-        addPart(fields, "unit", request.getUnitId());
+        addPart(fields, "unitId", request.getUnitId());
         addPart(fields, "description", request.getDescription());
         addPart(fields, "brandId", request.getBrandId());
         addPart(fields, "condition", request.getCondition());
@@ -397,6 +407,7 @@ public class AssetDetailViewModel extends AndroidViewModel {
 
     private void addPart(Map<String, RequestBody> map, String key, String value) {
         if (value != null) {
+            Log.d(TAG, "  -> Adding field: key='" + key + "', value='" + value + "'");
             map.put(key, RequestBody.create(MediaType.parse("text/plain"), value));
         }
     }
