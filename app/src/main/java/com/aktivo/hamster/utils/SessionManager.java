@@ -3,12 +3,22 @@ package com.aktivo.hamster.utils;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.util.Log;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatDelegate;
 
 import com.aktivo.hamster.data.model.User;
+import com.aktivo.hamster.data.model.request.UnregisterDeviceRequest;
+import com.aktivo.hamster.data.network.ApiClient;
+import com.aktivo.hamster.data.network.ApiService;
 import com.aktivo.hamster.login.LoginActivity;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.gson.Gson;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class SessionManager {
     private static final String PREF_NAME = "HamsterAppSession";
@@ -90,10 +100,43 @@ public class SessionManager {
         editor.apply();
     }
 
+    private void unregisterDeviceFromServer() {
+        FirebaseMessaging.getInstance().getToken().addOnCompleteListener(task -> {
+            if (!task.isSuccessful() || task.getResult() == null) {
+                Log.w("SessionManager", "Fetching FCM registration token failed for unregister.", task.getException());
+                return;
+            }
+
+            String currentToken = task.getResult();
+            Log.d("SessionManager", "Attempting to unregister token: " + currentToken);
+
+            UnregisterDeviceRequest requestBody = new UnregisterDeviceRequest(currentToken);
+
+            ApiClient.getClient(context).create(ApiService.class)
+                    .unregisterDeviceToken(requestBody)
+                    .enqueue(new Callback<Void>() {
+                        @Override
+                        public void onResponse(@NonNull Call<Void> call, @NonNull Response<Void> response) {
+                            if (response.isSuccessful()) {
+                                Log.i("SessionManager", "Token unregistered successfully from server.");
+                            } else {
+                                Log.w("SessionManager", "Failed to unregister token. Server code: " + response.code());
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(@NonNull Call<Void> call, @NonNull Throwable t) {
+                            Log.e("SessionManager", "Error unregistering token.", t);
+                        }
+                    });
+        });
+    }
 
     public void logout() {
         editor.clear();
         editor.apply();
+
+        unregisterDeviceFromServer();
 
         Intent i = new Intent(context, LoginActivity.class);
 

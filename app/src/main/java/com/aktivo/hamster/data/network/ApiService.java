@@ -42,6 +42,8 @@ import com.aktivo.hamster.data.model.request.ExternalAssetRequest;
 import com.aktivo.hamster.data.model.request.PrintByIdsRequest;
 import com.aktivo.hamster.data.model.request.PrintLabelRequest;
 import com.aktivo.hamster.data.model.request.RefreshTokenRequest;
+import com.aktivo.hamster.data.model.request.RegisterDeviceRequest;
+import com.aktivo.hamster.data.model.request.UnregisterDeviceRequest;
 import com.aktivo.hamster.data.model.request.UpdateAssetActivationSettingRequest;
 import com.aktivo.hamster.data.model.request.UpdateAssetCategoryRequest;
 import com.aktivo.hamster.data.model.request.UpdateAssetSubCategoryRequest;
@@ -675,6 +677,13 @@ public interface ApiService {
     @POST("api/asset-rejection/{id}/confirm-location")
     Call<RejectionResponse> confirmLocation(@Path("id") String id);
 
+
+    // --- Asset Activation ---
+    @POST("/api/device-tokens/register")
+    Call<Void> registerDeviceToken(@Body RegisterDeviceRequest body);
+
+    @DELETE("/api/device-tokens/unregister")
+    Call<Void> unregisterDeviceToken(@Body UnregisterDeviceRequest body);
 
 //    @POST("asset-activation/settings")
 //    Call<AssetActivationSetting> createApprovalSetting(@Body CreateAssetActivationSettingRequest request);
