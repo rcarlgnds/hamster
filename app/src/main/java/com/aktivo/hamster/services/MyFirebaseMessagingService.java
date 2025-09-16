@@ -16,6 +16,7 @@ import com.aktivo.hamster.R;
 import com.aktivo.hamster.dashboard.NotificationActivity;
 import com.aktivo.hamster.data.database.AppDatabase;
 import com.aktivo.hamster.data.database.NotificationEntity;
+import com.aktivo.hamster.data.model.User;
 import com.aktivo.hamster.utils.SessionManager;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
@@ -31,14 +32,24 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     @Override
     public void onNewToken(@NonNull String token) {
         super.onNewToken(token);
-        Log.d(TAG, "==> onNewToken DIPANGGIL! TOKEN BARU DITERIMA: " + token);
         SessionManager sessionManager = new SessionManager(getApplicationContext());
         sessionManager.saveFcmToken(token);
     }
 
     private void saveNotificationToDb(String id, String title, String body, String link, String copyString) {
+        SessionManager sessionManager = new SessionManager(getApplicationContext());
+        User currentUser = sessionManager.getUser();
+
+        if (currentUser == null || currentUser.getId() == null) {
+            Log.e(TAG, "Tidak bisa menyimpan notifikasi, user tidak login.");
+            return;
+        }
+
+        String userId = currentUser.getId();
+
         NotificationEntity notification = new NotificationEntity(
                 id,
+                userId,
                 title,
                 body,
                 System.currentTimeMillis(),
@@ -56,20 +67,11 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     @Override
     public void onMessageReceived(@NonNull RemoteMessage remoteMessage) {
         super.onMessageReceived(remoteMessage);
-
-        Log.d(TAG, "=======================================================");
-        Log.d(TAG, "==> NOTIFIKASI DITERIMA!");
-        Log.d(TAG, "==> Dari: " + remoteMessage.getFrom());
-        Log.d(TAG, "==> Message ID: " + remoteMessage.getMessageId());
-        Log.d(TAG, "==> Waktu Pengiriman: " + remoteMessage.getSentTime());
-
-
         String notificationTitle = null;
         String notificationBody = null;
         String link = null;
         String copyString = null;
 
-        // Log data payload
         if (!remoteMessage.getData().isEmpty()) {
             Map<String, String> data = remoteMessage.getData();
             Log.d(TAG, "==> Data Payload: " + data.toString());
@@ -79,7 +81,6 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             copyString = data.get("copyString");
         }
 
-        // Log notification payload
         if (remoteMessage.getNotification() != null) {
             Log.d(TAG, "==> Notification Body: " + remoteMessage.getNotification().getBody());
             Log.d(TAG, "==> Notification Title: " + remoteMessage.getNotification().getTitle());
@@ -88,22 +89,16 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         }
 
         if (notificationTitle != null && notificationBody != null) {
-            Log.d(TAG, "Notifikasi valid. Memproses untuk ditampilkan...");
             String id = remoteMessage.getMessageId();
             if (id == null) {
                 id = UUID.randomUUID().toString();
-                Log.w(TAG, "Message ID null, membuat ID acak: " + id);
             }
             sendNotification(notificationTitle, notificationBody);
             saveNotificationToDb(id, notificationTitle, notificationBody, link, copyString);
-        } else {
-            Log.w(TAG, "Gagal memproses notifikasi karena title atau body null.");
         }
-        Log.d(TAG, "=======================================================");
     }
 
     private void sendNotification(String title, String messageBody) {
-        Log.d(TAG, "Membuat notifikasi sistem...");
         Intent intent = new Intent(this, NotificationActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent,

@@ -10,11 +10,13 @@ import com.aktivo.hamster.data.database.AppDatabase;
 import com.aktivo.hamster.data.database.NotificationDao;
 import com.aktivo.hamster.data.database.NotificationEntity;
 import com.aktivo.hamster.data.model.Notification;
+import com.aktivo.hamster.data.model.User;
 import com.aktivo.hamster.data.model.request.UpdateNotificationRequest;
 import com.aktivo.hamster.data.model.response.NotificationResponse;
 import com.aktivo.hamster.data.model.response.UnreadCountResponse;
 import com.aktivo.hamster.data.network.ApiClient;
 import com.aktivo.hamster.data.network.ApiService;
+import com.aktivo.hamster.utils.SessionManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,18 +33,27 @@ public class NotificationViewModel extends AndroidViewModel {
     private final MutableLiveData<Boolean> isLoading = new MutableLiveData<>();
     private final MutableLiveData<String> errorMessage = new MutableLiveData<>();
     private final NotificationDao notificationDao;
-    private final LiveData<List<NotificationEntity>> allNotifications;
+    private LiveData<List<NotificationEntity>> userNotifications;
+    private String currentUserId;
 
     public NotificationViewModel(@NonNull Application application) {
         super(application);
         AppDatabase db = AppDatabase.getDatabase(application);
         notificationDao = db.notificationDao();
-        allNotifications = notificationDao.getAllNotifications();
         apiService = ApiClient.getClient(application).create(ApiService.class);
+
+        SessionManager sessionManager = new SessionManager(application);
+        User currentUser = sessionManager.getUser();
+        if (currentUser != null) {
+            this.currentUserId = currentUser.getId();
+            userNotifications = notificationDao.getNotificationsForUser(currentUserId);
+        } else {
+            userNotifications = new MutableLiveData<>();
+        }
     }
 
     public LiveData<List<NotificationEntity>> getNotifications() {
-        return allNotifications;
+        return userNotifications;
     }
 
     public LiveData<Integer> getUnreadCount() { return unreadCount; }
@@ -62,6 +73,7 @@ public class NotificationViewModel extends AndroidViewModel {
                         for (Notification n : apiNotifications) {
                             notificationEntities.add(new NotificationEntity(
                                     n.getId(),
+                                    currentUserId,
                                     n.getTitle(),
                                     n.getMessage(),
                                     n.getCreatedAt().getTime(),
@@ -99,12 +111,13 @@ public class NotificationViewModel extends AndroidViewModel {
     }
 
     public void markNotificationAsRead(String notificationId, int position) {
+        if (currentUserId == null) return;
         apiService.markNotificationAsRead(notificationId, new UpdateNotificationRequest(true)).enqueue(new Callback<Void>() {
             @Override
             public void onResponse(@NonNull Call<Void> call, @NonNull Response<Void> response) {
                 if (response.isSuccessful()) {
                     Executors.newSingleThreadExecutor().execute(() -> {
-                        notificationDao.markAsRead(notificationId);
+                        notificationDao.markAsRead(notificationId, currentUserId);
                     });
                     fetchUnreadCount();
                 }
@@ -115,12 +128,13 @@ public class NotificationViewModel extends AndroidViewModel {
     }
 
     public void markAllNotificationsAsRead() {
+        if (currentUserId == null) return;
         apiService.markAllNotificationsAsRead().enqueue(new Callback<Void>() {
             @Override
             public void onResponse(@NonNull Call<Void> call, @NonNull Response<Void> response) {
                 if (response.isSuccessful()) {
                     Executors.newSingleThreadExecutor().execute(() -> {
-                        notificationDao.markAllAsRead();
+                        notificationDao.markAllAsReadForUser(currentUserId);
                     });
                     fetchUnreadCount();
                 } else {

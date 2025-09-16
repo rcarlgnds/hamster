@@ -8,6 +8,7 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatDelegate;
 
+import com.aktivo.hamster.data.database.AppDatabase;
 import com.aktivo.hamster.data.model.User;
 import com.aktivo.hamster.data.model.request.UnregisterDeviceRequest;
 import com.aktivo.hamster.data.network.ApiClient;
@@ -15,6 +16,8 @@ import com.aktivo.hamster.data.network.ApiService;
 import com.aktivo.hamster.login.LoginActivity;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.gson.Gson;
+
+import java.util.concurrent.Executors;
 
 import retrofit2.Call;
 import retrofit2.Callback;
