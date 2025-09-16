@@ -174,7 +174,7 @@ public class AssetDetailViewModel extends AndroidViewModel {
         pendingUpdateRequest.setSerialNumber(asset.getSerialNumber());
         pendingUpdateRequest.setDescription(asset.getDescription());
         pendingUpdateRequest.setTotal(asset.getTotal());
-        pendingUpdateRequest.setUnit(asset.getUnit());
+        pendingUpdateRequest.setUnitId(asset.getUnit());
 
         if (asset.getCategory() != null) pendingUpdateRequest.setCategoryId(asset.getCategory().getId());
         if (asset.getSubcategory() != null) pendingUpdateRequest.setSubcategoryId(asset.getSubcategory().getId());
@@ -303,7 +303,7 @@ public class AssetDetailViewModel extends AndroidViewModel {
         if (request.getTotal() != null) {
             addPart(fields, "total", String.valueOf(request.getTotal()));
         }
-        addPart(fields, "unit", request.getUnit());
+        addPart(fields, "unit", request.getUnitId());
         addPart(fields, "description", request.getDescription());
         addPart(fields, "brandId", request.getBrandId());
         addPart(fields, "condition", request.getCondition());

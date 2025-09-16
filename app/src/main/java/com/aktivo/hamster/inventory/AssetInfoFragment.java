@@ -115,7 +115,7 @@ public class AssetInfoFragment extends Fragment {
             acSubCategory.setText("", false);
             viewModel.updateField(req -> req.setSubcategoryId(null));
             acUnit.setText("", false);
-            viewModel.updateField(req -> req.setUnit(null));
+            viewModel.updateField(req -> req.setUnitId(null));
             viewModel.fetchUnitOptions(null);
         });
 
@@ -126,12 +126,12 @@ public class AssetInfoFragment extends Fragment {
             viewModel.fetchUnitOptions(selected.getId());
 
             acUnit.setText("", false);
-            viewModel.updateField(req -> req.setUnit(null));
+            viewModel.updateField(req -> req.setUnitId(null));
         });
 
         acUnit.setOnItemClickListener((parent, view, position, id) -> {
             OptionItem selected = unitList.get(position);
-            viewModel.updateField(req -> req.setUnit(selected.getName()));
+            viewModel.updateField(req -> req.setUnitId(selected.getId()));
         });
 
         acBrand.setOnItemClickListener((parent, view, position, id) -> {

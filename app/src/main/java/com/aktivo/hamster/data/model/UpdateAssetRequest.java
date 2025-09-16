@@ -28,7 +28,7 @@ public class UpdateAssetRequest {
     private String parentId;
     private String description;
     private Integer total;
-    private String unit;
+    private String unitId;
     private Long procurementDate;
     private Long warrantyExpirationDate;
     private Double purchasePrice;
@@ -268,12 +268,12 @@ public class UpdateAssetRequest {
         this.total = total;
     }
 
-    public String getUnit() {
-        return unit;
+    public String getUnitId() {
+        return unitId;
     }
 
-    public void setUnit(String unit) {
-        this.unit = unit;
+    public void setUnitId(String unitId) {
+        this.unitId = unitId;
     }
 
     public Long getProcurementDate() {
