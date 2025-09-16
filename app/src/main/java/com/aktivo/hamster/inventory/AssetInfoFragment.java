@@ -3,6 +3,7 @@ package com.aktivo.hamster.inventory;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,7 +28,6 @@ public class AssetInfoFragment extends Fragment {
     private List<OptionItem> subCategoryList = new ArrayList<>();
     private List<OptionItem> brandList = new ArrayList<>();
     private List<OptionItem> unitList = new ArrayList<>();
-
 
     private boolean isProgrammaticChange = false;
 
@@ -131,7 +131,7 @@ public class AssetInfoFragment extends Fragment {
 
         acUnit.setOnItemClickListener((parent, view, position, id) -> {
             OptionItem selected = unitList.get(position);
-            viewModel.updateField(req -> req.setUnit(selected.getName()));
+            viewModel.updateField(req -> req.setUnit(selected.getId()));
         });
 
         acBrand.setOnItemClickListener((parent, view, position, id) -> {

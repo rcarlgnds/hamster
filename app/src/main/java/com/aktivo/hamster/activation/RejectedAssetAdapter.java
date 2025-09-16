@@ -11,6 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.aktivo.hamster.R;
+import com.aktivo.hamster.data.constant.AssetStatus;
 import com.aktivo.hamster.data.model.AssetRejected;
 
 import java.util.List;
@@ -20,9 +21,6 @@ public class RejectedAssetAdapter extends RecyclerView.Adapter<RejectedAssetAdap
     private final List<AssetRejected> rejectedList;
     private final OnActionClickListener listener;
     private final Context context;
-
-    private static final String STATUS_DOES_NOT_MEET_REQUEST = "REJECTED_DOES_NOT_MEET_REQUEST";
-    private static final String STATUS_WRONG_LOCATION = "REJECTED_WRONG_LOCATION";
 
     public interface OnActionClickListener {
         void onActionClicked(AssetRejected item);
@@ -47,7 +45,14 @@ public class RejectedAssetAdapter extends RecyclerView.Adapter<RejectedAssetAdap
 
         holder.tvAssetName.setText(item.getAssetName());
         holder.tvAssetCode.setText(item.getAssetCode());
-        holder.tvStatus.setText(item.getStatus());
+
+        if(item.getStatus().equalsIgnoreCase(AssetStatus.REJECTED_DOES_NOT_MEET_REQUEST)) {
+            holder.tvStatus.setText(R.string.status_rejected_does_not_meet_request);
+        } else if(item.getStatus().equalsIgnoreCase(AssetStatus.REJECTED_WRONG_LOCATION)) {
+            holder.tvStatus.setText(R.string.status_rejected_wrong_location);
+        } else if(item.getStatus().equalsIgnoreCase(AssetStatus.REJECTED_IN_LOGISTIC)) {
+            holder.tvStatus.setText(R.string.status_rejected_in_logistic);
+        }
 
         holder.tvRejectedBy.setText(String.format("Rejected by: %s", item.getRejectedByPosition()));
 
@@ -55,15 +60,13 @@ public class RejectedAssetAdapter extends RecyclerView.Adapter<RejectedAssetAdap
             holder.tvRejectedAt.setVisibility(View.GONE);
         }
 
-
         String status = item.getStatus();
 
-        // Logika tombol ini tetap sama
-        if (STATUS_DOES_NOT_MEET_REQUEST.equalsIgnoreCase(status)) {
+        if (AssetStatus.REJECTED_DOES_NOT_MEET_REQUEST.equalsIgnoreCase(status)) {
             holder.btnAction.setText("Continue");
             holder.btnAction.setVisibility(View.VISIBLE);
             holder.btnAction.setOnClickListener(v -> listener.onActionClicked(item));
-        } else if (STATUS_WRONG_LOCATION.equalsIgnoreCase(status)) {
+        } else if (AssetStatus.REJECTED_WRONG_LOCATION.equalsIgnoreCase(status)) {
             holder.btnAction.setText("Confirm Location");
             holder.btnAction.setVisibility(View.VISIBLE);
             holder.btnAction.setOnClickListener(v -> listener.onActionClicked(item));

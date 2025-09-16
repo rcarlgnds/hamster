@@ -189,8 +189,8 @@ public class ConfirmationApprovalActivity extends AppCompatActivity {
         long timestampInMillis = details.getStartedAt() * 1000L;
         String scannedUser = details.getStartedBy().getFirstName();
         String formattedDate = sdf.format(new Date(timestampInMillis));
-        String scannedByText = " " + scannedUser + " ";
-        String scannedWhenText = " " + formattedDate;
+        String scannedByText = "Scanned by " + scannedUser;
+        String scannedWhenText = " at " + formattedDate;
         tvScannedBy.setText(scannedByText);
         tvScannedWhen.setText(scannedWhenText);
 

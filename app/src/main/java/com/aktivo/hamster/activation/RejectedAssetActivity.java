@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.aktivo.hamster.R;
+import com.aktivo.hamster.data.constant.AssetStatus;
 import com.aktivo.hamster.data.model.AssetRejected;
 import com.google.android.material.appbar.MaterialToolbar;
 
@@ -25,9 +26,6 @@ public class RejectedAssetActivity extends AppCompatActivity {
     private ProgressBar progressBar;
     private TextView tvEmptyMessage;
     private AssetRejected currentItem;
-    private static final String STATUS_DOES_NOT_MEET_REQUEST = "REJECTED_DOES_NOT_MEET_REQUEST";
-    private static final String STATUS_WRONG_LOCATION = "REJECTED_WRONG_LOCATION";
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,9 +85,9 @@ public class RejectedAssetActivity extends AppCompatActivity {
 
     private void onActionClicked(AssetRejected item) {
         String status = item.getStatus();
-        if (STATUS_DOES_NOT_MEET_REQUEST.equalsIgnoreCase(status)) {
+        if (AssetStatus.REJECTED_DOES_NOT_MEET_REQUEST.equalsIgnoreCase(status)) {
             viewModel.continueRejection(item.getId());
-        } else if (STATUS_WRONG_LOCATION.equalsIgnoreCase(status)) {
+        } else if (AssetStatus.REJECTED_WRONG_LOCATION.equalsIgnoreCase(status)) {
             viewModel.confirmLocation(item.getId());
         }
     }
