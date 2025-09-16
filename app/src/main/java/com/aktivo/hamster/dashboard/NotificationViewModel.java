@@ -5,6 +5,10 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
+
+import com.aktivo.hamster.data.database.AppDatabase;
+import com.aktivo.hamster.data.database.NotificationDao;
+import com.aktivo.hamster.data.database.NotificationEntity;
 import com.aktivo.hamster.data.model.Notification;
 import com.aktivo.hamster.data.model.request.UpdateNotificationRequest;
 import com.aktivo.hamster.data.model.response.NotificationResponse;
@@ -23,11 +27,25 @@ public class NotificationViewModel extends AndroidViewModel {
     private final MutableLiveData<Integer> unreadCount = new MutableLiveData<>();
     private final MutableLiveData<Boolean> isLoading = new MutableLiveData<>();
     private final MutableLiveData<String> errorMessage = new MutableLiveData<>();
+    private final NotificationDao notificationDao;
+    private final LiveData<List<NotificationEntity>> allNotifications;
 
     public NotificationViewModel(@NonNull Application application) {
         super(application);
+        AppDatabase db = AppDatabase.getDatabase(application);
+        notificationDao = db.notificationDao();
+        allNotifications = notificationDao.getAllNotifications();
         apiService = ApiClient.getClient(application).create(ApiService.class);
+
     }
+
+    LiveData<List<NotificationEntity>> getAllNotifications() {
+        return allNotifications;
+    }
+//    public NotificationViewModel(@NonNull Application application) {
+//        super(application);
+//        apiService = ApiClient.getClient(application).create(ApiService.class);
+//    }
 
     public LiveData<List<Notification>> getNotifications() { return notifications; }
     public LiveData<Integer> getUnreadCount() { return unreadCount; }

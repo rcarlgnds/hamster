@@ -13,23 +13,41 @@ import androidx.annotation.NonNull;
 import androidx.core.app.NotificationCompat;
 
 import com.aktivo.hamster.R;
-import com.aktivo.hamster.dashboard.DashboardActivity;
 import com.aktivo.hamster.dashboard.NotificationActivity;
-import com.aktivo.hamster.data.model.request.RegisterDeviceRequest;
-import com.aktivo.hamster.data.model.request.UnregisterDeviceRequest;
-import com.aktivo.hamster.data.network.ApiClient;
-import com.aktivo.hamster.data.network.ApiService;
+import com.aktivo.hamster.data.database.AppDatabase;
+import com.aktivo.hamster.data.database.NotificationEntity;
 import com.aktivo.hamster.utils.SessionManager;
-import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
+import java.util.Map;
+import java.util.concurrent.Executors;
 
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
-    private static final String TAG = "MyFirebaseMsgService";
+
+    private static final String TAG = "FIREBASE_DEBUG";
+
+    @Override
+    public void onNewToken(@NonNull String token) {
+        super.onNewToken(token);
+        Log.d(TAG, "==> onNewToken DIPANGGIL! TOKEN BARU DITERIMA: " + token);
+        SessionManager sessionManager = new SessionManager(getApplicationContext());
+        sessionManager.saveFcmToken(token);
+    }
+
+    private void saveNotificationToDb(String title, String body) {
+        NotificationEntity notification = new NotificationEntity(
+                title,
+                body,
+                System.currentTimeMillis(),
+                false
+        );
+
+        Executors.newSingleThreadExecutor().execute(() -> {
+            AppDatabase.getDatabase(getApplicationContext()).notificationDao().insert(notification);
+            Log.d(TAG, "Notifikasi berhasil disimpan ke database.");
+        });
+    }
 
     @Override
     public void onMessageReceived(@NonNull RemoteMessage remoteMessage) {
@@ -43,63 +61,21 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         String notificationBody = null;
 
         if (remoteMessage.getData().size() > 0) {
-            Log.d(TAG, "==> Tipe: Pesan DATA");
-            Log.d(TAG, "==> Payload Data: " + remoteMessage.getData());
-            notificationTitle = remoteMessage.getData().get("title");
-            notificationBody = remoteMessage.getData().get("body");
+            Map<String, String> data = remoteMessage.getData();
+
+            notificationTitle = data.get("title");
+            notificationBody = data.get("body");
         }
 
         if (remoteMessage.getNotification() != null) {
-            Log.d(TAG, "==> Tipe: Pesan NOTIFICATION");
-            Log.d(TAG, "==> Judul: " + remoteMessage.getNotification().getTitle());
-            Log.d(TAG, "==> Body: " + remoteMessage.getNotification().getBody());
             notificationTitle = remoteMessage.getNotification().getTitle();
             notificationBody = remoteMessage.getNotification().getBody();
         }
 
         if (notificationTitle != null && notificationBody != null) {
             sendNotification(notificationTitle, notificationBody);
-        } else {
-            Log.w(TAG, "Gagal menampilkan notifikasi karena judul atau body kosong.");
+            saveNotificationToDb(notificationTitle, notificationBody);
         }
-        Log.d(TAG, "=======================================");
-    }
-
-
-    @Override
-    public void onNewToken(@NonNull String token) {
-        super.onNewToken(token);
-        Log.d(TAG, "New FCM token received: " + token);
-
-        SessionManager sessionManager = new SessionManager(getApplicationContext());
-        sessionManager.saveFcmToken(token);
-    }
-
-    private void sendRegistrationToServer(String token) {
-        if (token == null || token.isEmpty()) {
-            Log.e(TAG, "FCM Token is null or empty. Cannot register.");
-            return;
-        }
-
-        RegisterDeviceRequest requestBody = new RegisterDeviceRequest(token, "ANDROID");
-
-        ApiService apiService = ApiClient.getClient(getApplicationContext()).create(ApiService.class);
-
-        apiService.registerDeviceToken(requestBody).enqueue(new Callback<Void>() {
-            @Override
-            public void onResponse(@NonNull Call<Void> call, @NonNull Response<Void> response) {
-                if (response.isSuccessful()) {
-                    Log.i(TAG, "Device token registered successfully to server.");
-                } else {
-                    Log.w(TAG, "Failed to register token. Server responded with code: " + response.code());
-                }
-            }
-
-            @Override
-            public void onFailure(@NonNull Call<Void> call, @NonNull Throwable t) {
-                Log.e(TAG, "Failed to register token due to network error or exception.", t);
-            }
-        });
     }
 
     private void sendNotification(String title, String messageBody) {
@@ -124,13 +100,12 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationChannel channel = new NotificationChannel(channelId,
-                    "Channel human readable title",
+                    "General Notifications",
                     NotificationManager.IMPORTANCE_DEFAULT);
             notificationManager.createNotificationChannel(channel);
         }
 
         notificationManager.notify(0, notificationBuilder.build());
+        Log.i(TAG, "Notifikasi sistem berhasil ditampilkan.");
     }
-
-
 }
