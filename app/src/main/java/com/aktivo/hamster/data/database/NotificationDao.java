@@ -25,4 +25,7 @@ public interface NotificationDao {
 
     @Query("UPDATE notifications SET isRead = 1")
     void markAllAsRead();
+
+    @Query("DELETE FROM notifications")
+    void deleteAll();
 }
