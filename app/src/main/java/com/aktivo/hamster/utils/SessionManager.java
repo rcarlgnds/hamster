@@ -147,11 +147,6 @@ public class SessionManager {
     }
 
     public void logout() {
-        AppDatabase database = AppDatabase.getDatabase(context);
-        Executors.newSingleThreadExecutor().execute(() -> {
-            database.notificationDao().deleteAll();
-        });
-
         editor.clear();
         editor.apply();
 

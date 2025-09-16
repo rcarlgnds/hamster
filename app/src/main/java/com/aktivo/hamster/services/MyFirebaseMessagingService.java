@@ -16,6 +16,7 @@ import com.aktivo.hamster.R;
 import com.aktivo.hamster.dashboard.NotificationActivity;
 import com.aktivo.hamster.data.database.AppDatabase;
 import com.aktivo.hamster.data.database.NotificationEntity;
+import com.aktivo.hamster.data.model.User;
 import com.aktivo.hamster.utils.SessionManager;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
@@ -36,8 +37,19 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     }
 
     private void saveNotificationToDb(String id, String title, String body, String link, String copyString) {
+        SessionManager sessionManager = new SessionManager(getApplicationContext());
+        User currentUser = sessionManager.getUser();
+
+        if (currentUser == null || currentUser.getId() == null) {
+            Log.e(TAG, "Tidak bisa menyimpan notifikasi, user tidak login.");
+            return;
+        }
+
+        String userId = currentUser.getId();
+
         NotificationEntity notification = new NotificationEntity(
                 id,
+                userId,
                 title,
                 body,
                 System.currentTimeMillis(),

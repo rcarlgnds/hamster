@@ -2,14 +2,16 @@ package com.aktivo.hamster.data.database;
 
 import androidx.annotation.NonNull;
 import androidx.room.Entity;
-import androidx.room.PrimaryKey;
 
-@Entity(tableName = "notifications")
+@Entity(tableName = "notifications", primaryKeys = {"id", "userId"})
 public class NotificationEntity {
 
-    @PrimaryKey
     @NonNull
     public String id;
+
+    @NonNull
+    public String userId;
+
     public String title;
     public String body;
     public long receivedAt;
@@ -17,9 +19,9 @@ public class NotificationEntity {
     public String link;
     public String copyString;
 
-
-    public NotificationEntity(@NonNull String id, String title, String body, long receivedAt, boolean isRead, String link, String copyString) {
+    public NotificationEntity(@NonNull String id, @NonNull String userId, String title, String body, long receivedAt, boolean isRead, String link, String copyString) {
         this.id = id;
+        this.userId = userId;
         this.title = title;
         this.body = body;
         this.receivedAt = receivedAt;
