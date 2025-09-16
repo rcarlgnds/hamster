@@ -21,6 +21,7 @@ import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
 import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.Executors;
 
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
@@ -35,12 +36,15 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         sessionManager.saveFcmToken(token);
     }
 
-    private void saveNotificationToDb(String title, String body) {
+    private void saveNotificationToDb(String id, String title, String body, String link, String copyString) {
         NotificationEntity notification = new NotificationEntity(
+                id,
                 title,
                 body,
                 System.currentTimeMillis(),
-                false
+                false,
+                link,
+                copyString
         );
 
         Executors.newSingleThreadExecutor().execute(() -> {
@@ -53,32 +57,53 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     public void onMessageReceived(@NonNull RemoteMessage remoteMessage) {
         super.onMessageReceived(remoteMessage);
 
-        Log.d(TAG, "=======================================");
+        Log.d(TAG, "=======================================================");
         Log.d(TAG, "==> NOTIFIKASI DITERIMA!");
         Log.d(TAG, "==> Dari: " + remoteMessage.getFrom());
+        Log.d(TAG, "==> Message ID: " + remoteMessage.getMessageId());
+        Log.d(TAG, "==> Waktu Pengiriman: " + remoteMessage.getSentTime());
+
 
         String notificationTitle = null;
         String notificationBody = null;
+        String link = null;
+        String copyString = null;
 
-        if (remoteMessage.getData().size() > 0) {
+        // Log data payload
+        if (!remoteMessage.getData().isEmpty()) {
             Map<String, String> data = remoteMessage.getData();
-
+            Log.d(TAG, "==> Data Payload: " + data.toString());
             notificationTitle = data.get("title");
             notificationBody = data.get("body");
+            link = data.get("link");
+            copyString = data.get("copyString");
         }
 
+        // Log notification payload
         if (remoteMessage.getNotification() != null) {
+            Log.d(TAG, "==> Notification Body: " + remoteMessage.getNotification().getBody());
+            Log.d(TAG, "==> Notification Title: " + remoteMessage.getNotification().getTitle());
             notificationTitle = remoteMessage.getNotification().getTitle();
             notificationBody = remoteMessage.getNotification().getBody();
         }
 
         if (notificationTitle != null && notificationBody != null) {
+            Log.d(TAG, "Notifikasi valid. Memproses untuk ditampilkan...");
+            String id = remoteMessage.getMessageId();
+            if (id == null) {
+                id = UUID.randomUUID().toString();
+                Log.w(TAG, "Message ID null, membuat ID acak: " + id);
+            }
             sendNotification(notificationTitle, notificationBody);
-            saveNotificationToDb(notificationTitle, notificationBody);
+            saveNotificationToDb(id, notificationTitle, notificationBody, link, copyString);
+        } else {
+            Log.w(TAG, "Gagal memproses notifikasi karena title atau body null.");
         }
+        Log.d(TAG, "=======================================================");
     }
 
     private void sendNotification(String title, String messageBody) {
+        Log.d(TAG, "Membuat notifikasi sistem...");
         Intent intent = new Intent(this, NotificationActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent,
@@ -93,7 +118,8 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                         .setContentText(messageBody)
                         .setAutoCancel(true)
                         .setSound(defaultSoundUri)
-                        .setContentIntent(pendingIntent);
+                        .setContentIntent(pendingIntent)
+                        .setPriority(NotificationCompat.PRIORITY_HIGH);
 
         NotificationManager notificationManager =
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
@@ -101,7 +127,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationChannel channel = new NotificationChannel(channelId,
                     "General Notifications",
-                    NotificationManager.IMPORTANCE_DEFAULT);
+                    NotificationManager.IMPORTANCE_HIGH);
             notificationManager.createNotificationChannel(channel);
         }
 

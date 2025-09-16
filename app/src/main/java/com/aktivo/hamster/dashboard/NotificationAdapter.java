@@ -15,12 +15,11 @@ import android.widget.Toast;
 import android.os.Handler;
 import android.os.Looper;
 
-
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 import com.aktivo.hamster.R;
-import com.aktivo.hamster.data.model.Notification;
+import com.aktivo.hamster.data.database.NotificationEntity;
 import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.button.MaterialButton;
 import java.text.SimpleDateFormat;
@@ -31,15 +30,15 @@ import java.util.TimeZone;
 
 public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapter.NotificationViewHolder> {
 
-    private List<Notification> notificationList;
+    private List<NotificationEntity> notificationList;
     private final OnNotificationClickListener listener;
     private final Context context;
 
     public interface OnNotificationClickListener {
-        void onNotificationClick(Notification notification, int position);
+        void onNotificationClick(NotificationEntity notification, int position);
     }
 
-    public NotificationAdapter(Context context, List<Notification> notificationList, OnNotificationClickListener listener) {
+    public NotificationAdapter(Context context, List<NotificationEntity> notificationList, OnNotificationClickListener listener) {
         this.context = context;
         this.notificationList = notificationList;
         this.listener = listener;
@@ -54,7 +53,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
 
     @Override
     public void onBindViewHolder(@NonNull NotificationViewHolder holder, int position) {
-        Notification notification = notificationList.get(position);
+        NotificationEntity notification = notificationList.get(position);
         holder.bind(notification, position, listener);
     }
 
@@ -63,7 +62,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
         return notificationList.size();
     }
 
-    public void updateData(List<Notification> newNotifications) {
+    public void updateData(List<NotificationEntity> newNotifications) {
         this.notificationList = newNotifications;
         notifyDataSetChanged();
     }
@@ -86,16 +85,16 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
             buttonCopyCode = itemView.findViewById(R.id.buttonCopyCode);
         }
 
-        public void bind(final Notification notification, final int position, final OnNotificationClickListener listener) {
-            title.setText(notification.getTitle());
-            message.setText(notification.getMessage());
-            timestamp.setText(formatTimestamp(notification.getCreatedAt()));
+        public void bind(final NotificationEntity notification, final int position, final OnNotificationClickListener listener) {
+            title.setText(notification.title);
+            message.setText(notification.body);
+            timestamp.setText(formatTimestamp(new Date(notification.receivedAt)));
 
             itemView.setOnClickListener(v -> listener.onNotificationClick(notification, position));
 
             icon.setImageResource(R.drawable.ic_info);
 
-            if (notification.isRead()) {
+            if (notification.isRead) {
                 unreadIndicator.setVisibility(View.GONE);
                 cardView.setCardBackgroundColor(ContextCompat.getColor(context, R.color.read_notification_bg));
                 cardView.setStrokeWidth(0);
@@ -117,7 +116,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
                 message.setTextColor(ContextCompat.getColor(context, R.color.secondary_40));
             }
 
-            final String copyText = notification.getCopyString();
+            final String copyText = notification.copyString;
             if (!TextUtils.isEmpty(copyText)) {
                 buttonCopyCode.setVisibility(View.VISIBLE);
                 buttonCopyCode.setOnClickListener(v -> {

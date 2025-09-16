@@ -15,7 +15,11 @@ import com.aktivo.hamster.data.model.response.NotificationResponse;
 import com.aktivo.hamster.data.model.response.UnreadCountResponse;
 import com.aktivo.hamster.data.network.ApiClient;
 import com.aktivo.hamster.data.network.ApiService;
+
+import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Executors;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -23,7 +27,6 @@ import retrofit2.Response;
 public class NotificationViewModel extends AndroidViewModel {
 
     private final ApiService apiService;
-    private final MutableLiveData<List<Notification>> notifications = new MutableLiveData<>();
     private final MutableLiveData<Integer> unreadCount = new MutableLiveData<>();
     private final MutableLiveData<Boolean> isLoading = new MutableLiveData<>();
     private final MutableLiveData<String> errorMessage = new MutableLiveData<>();
@@ -36,18 +39,12 @@ public class NotificationViewModel extends AndroidViewModel {
         notificationDao = db.notificationDao();
         allNotifications = notificationDao.getAllNotifications();
         apiService = ApiClient.getClient(application).create(ApiService.class);
-
     }
 
-    LiveData<List<NotificationEntity>> getAllNotifications() {
+    public LiveData<List<NotificationEntity>> getNotifications() {
         return allNotifications;
     }
-//    public NotificationViewModel(@NonNull Application application) {
-//        super(application);
-//        apiService = ApiClient.getClient(application).create(ApiService.class);
-//    }
 
-    public LiveData<List<Notification>> getNotifications() { return notifications; }
     public LiveData<Integer> getUnreadCount() { return unreadCount; }
     public LiveData<Boolean> getIsLoading() { return isLoading; }
     public LiveData<String> getErrorMessage() { return errorMessage; }
@@ -59,7 +56,22 @@ public class NotificationViewModel extends AndroidViewModel {
             public void onResponse(@NonNull Call<NotificationResponse> call, @NonNull Response<NotificationResponse> response) {
                 isLoading.setValue(false);
                 if (response.isSuccessful() && response.body() != null && response.body().getData() != null) {
-                    notifications.setValue(response.body().getData().getNotifications());
+                    Executors.newSingleThreadExecutor().execute(() -> {
+                        List<Notification> apiNotifications = response.body().getData().getNotifications();
+                        List<NotificationEntity> notificationEntities = new ArrayList<>();
+                        for (Notification n : apiNotifications) {
+                            notificationEntities.add(new NotificationEntity(
+                                    n.getId(),
+                                    n.getTitle(),
+                                    n.getMessage(),
+                                    n.getCreatedAt().getTime(),
+                                    n.isRead(),
+                                    n.getLink(),
+                                    n.getCopyString()
+                            ));
+                        }
+                        notificationDao.insertAll(notificationEntities);
+                    });
                 } else {
                     errorMessage.setValue("Gagal memuat notifikasi");
                 }
@@ -91,12 +103,10 @@ public class NotificationViewModel extends AndroidViewModel {
             @Override
             public void onResponse(@NonNull Call<Void> call, @NonNull Response<Void> response) {
                 if (response.isSuccessful()) {
-                    List<Notification> currentList = notifications.getValue();
-                    if (currentList != null && !currentList.get(position).isRead()) {
-                        currentList.get(position).setRead(true);
-                        notifications.postValue(currentList);
-                        fetchUnreadCount();
-                    }
+                    Executors.newSingleThreadExecutor().execute(() -> {
+                        notificationDao.markAsRead(notificationId);
+                    });
+                    fetchUnreadCount();
                 }
             }
             @Override
@@ -109,7 +119,9 @@ public class NotificationViewModel extends AndroidViewModel {
             @Override
             public void onResponse(@NonNull Call<Void> call, @NonNull Response<Void> response) {
                 if (response.isSuccessful()) {
-                    fetchNotifications();
+                    Executors.newSingleThreadExecutor().execute(() -> {
+                        notificationDao.markAllAsRead();
+                    });
                     fetchUnreadCount();
                 } else {
                     errorMessage.setValue("Gagal menandai semua notifikasi");

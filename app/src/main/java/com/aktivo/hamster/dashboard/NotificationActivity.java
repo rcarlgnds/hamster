@@ -18,6 +18,7 @@ import com.aktivo.hamster.R;
 import com.aktivo.hamster.activation.ActivationApprovalActivity;
 import com.aktivo.hamster.activation.ConfirmationApprovalActivity;
 import com.aktivo.hamster.data.constant.Notifications;
+import com.aktivo.hamster.data.database.NotificationEntity;
 import com.aktivo.hamster.inventory.InventoryActivity;
 import com.aktivo.hamster.utils.SessionManager;
 import com.google.android.material.appbar.MaterialToolbar;
@@ -50,8 +51,6 @@ public class NotificationActivity extends AppCompatActivity {
     @Override
     public void onResume() {
         super.onResume();
-
-        // Always refresh
         notificationViewModel.fetchNotifications();
         notificationViewModel.fetchUnreadCount();
     }
@@ -70,13 +69,10 @@ public class NotificationActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         notificationAdapter = new NotificationAdapter(this, new ArrayList<>(), (notification, position) -> {
-            // Click notification, mark as read
-            if (!notification.isRead()) {
-                notificationViewModel.markNotificationAsRead(notification.getId(), position);
+            if (!notification.isRead) {
+                notificationViewModel.markNotificationAsRead(notification.id, position);
             }
-
-            String link = notification.getLink();
-            setupLinkToActivity(link);
+            setupLinkToActivity(notification.link);
         });
         recyclerView.setAdapter(notificationAdapter);
 
@@ -90,12 +86,11 @@ public class NotificationActivity extends AppCompatActivity {
         emptyState = findViewById(R.id.text_empty_state);
         markAllReadButton = findViewById(R.id.button_mark_all_read);
 
-        markAllReadButton.setOnClickListener(v -> {
-            showConfirmationDialog();
-        });
+        markAllReadButton.setOnClickListener(v -> showConfirmationDialog());
     }
 
     private void setupLinkToActivity(String link) {
+        if (link == null) return;
         Intent intent = null;
 
         if(link.equals(Notifications.INVENTORY)) {
@@ -110,8 +105,9 @@ public class NotificationActivity extends AppCompatActivity {
         else if(link.equals(Notifications.INVENTORY_REJECTED)) {
             intent = new Intent(this, InventoryActivity.class);
         }
-
-        startActivity(intent);
+        if (intent != null) {
+            startActivity(intent);
+        }
     }
 
     private void showConfirmationDialog() {
@@ -145,7 +141,7 @@ public class NotificationActivity extends AppCompatActivity {
 
         notificationViewModel.getNotifications().observe(this, notifications -> {
             swipeRefreshLayout.setRefreshing(false);
-            progressBar.setVisibility(View.GONE); // Dismiss progress bar
+            progressBar.setVisibility(View.GONE);
 
             if (notifications != null && !notifications.isEmpty()) {
                 notificationAdapter.updateData(notifications);
