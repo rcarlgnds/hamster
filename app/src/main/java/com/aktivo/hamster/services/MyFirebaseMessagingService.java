@@ -14,6 +14,7 @@ import androidx.core.app.NotificationCompat;
 
 import com.aktivo.hamster.R;
 import com.aktivo.hamster.dashboard.DashboardActivity;
+import com.aktivo.hamster.dashboard.NotificationActivity;
 import com.aktivo.hamster.data.model.request.RegisterDeviceRequest;
 import com.aktivo.hamster.data.model.request.UnregisterDeviceRequest;
 import com.aktivo.hamster.data.network.ApiClient;
@@ -34,15 +35,36 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     public void onMessageReceived(@NonNull RemoteMessage remoteMessage) {
         super.onMessageReceived(remoteMessage);
 
-        Log.d(TAG, "From: " + remoteMessage.getFrom());
-        if (remoteMessage.getData().size() > 0) {
-            Log.d(TAG, "Message data payload: " + remoteMessage.getData());
+        Log.d(TAG, "=======================================");
+        Log.d(TAG, "==> NOTIFIKASI DITERIMA!");
+        Log.d(TAG, "==> Dari: " + remoteMessage.getFrom());
 
-            String title = remoteMessage.getData().get("title");
-            String message = remoteMessage.getData().get("body");
-            sendNotification(title, message);
+        String notificationTitle = null;
+        String notificationBody = null;
+
+        if (remoteMessage.getData().size() > 0) {
+            Log.d(TAG, "==> Tipe: Pesan DATA");
+            Log.d(TAG, "==> Payload Data: " + remoteMessage.getData());
+            notificationTitle = remoteMessage.getData().get("title");
+            notificationBody = remoteMessage.getData().get("body");
         }
+
+        if (remoteMessage.getNotification() != null) {
+            Log.d(TAG, "==> Tipe: Pesan NOTIFICATION");
+            Log.d(TAG, "==> Judul: " + remoteMessage.getNotification().getTitle());
+            Log.d(TAG, "==> Body: " + remoteMessage.getNotification().getBody());
+            notificationTitle = remoteMessage.getNotification().getTitle();
+            notificationBody = remoteMessage.getNotification().getBody();
+        }
+
+        if (notificationTitle != null && notificationBody != null) {
+            sendNotification(notificationTitle, notificationBody);
+        } else {
+            Log.w(TAG, "Gagal menampilkan notifikasi karena judul atau body kosong.");
+        }
+        Log.d(TAG, "=======================================");
     }
+
 
     @Override
     public void onNewToken(@NonNull String token) {
@@ -81,7 +103,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     }
 
     private void sendNotification(String title, String messageBody) {
-        Intent intent = new Intent(this, DashboardActivity.class);
+        Intent intent = new Intent(this, NotificationActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent,
                 PendingIntent.FLAG_ONE_SHOT | PendingIntent.FLAG_IMMUTABLE);
