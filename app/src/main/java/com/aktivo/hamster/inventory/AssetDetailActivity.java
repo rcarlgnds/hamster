@@ -63,8 +63,11 @@ public class AssetDetailActivity extends AppCompatActivity {
             }
         }).attach();
 
-        Button buttonSave = findViewById(R.id.buttonEdit);
-        buttonSave.setOnClickListener(v -> saveAllChanges());
+        Button buttonSave = findViewById(R.id.buttonSave);
+        Button buttonSaveDraft = findViewById(R.id.buttonSaveDraft);
+
+        buttonSave.setOnClickListener(v -> saveAllChanges(true));
+        buttonSaveDraft.setOnClickListener(v -> saveAllChanges(false));
 
         setupObservers();
     }
@@ -101,10 +104,11 @@ public class AssetDetailActivity extends AppCompatActivity {
         return true;
     }
 
-    private void saveAllChanges() {
+    private void saveAllChanges(boolean isConfirmed) {
         if (assetId == null) return;
 
-        Log.d(TAG, "Tombol simpan ditekan. Memulai proses pengumpulan data.");
+        String action = isConfirmed ? "Save" : "Save Draft";
+        Log.d(TAG, "Tombol " + action + " ditekan. Memulai proses pengumpulan data.");
 
         for (int i = 0; i < pagerAdapter.getItemCount(); i++) {
             Fragment fragment = getSupportFragmentManager().findFragmentByTag("f" + i);
@@ -114,8 +118,8 @@ public class AssetDetailActivity extends AppCompatActivity {
             }
         }
 
-        Log.d(TAG, "Semua data terkumpul. Memanggil saveChanges di ViewModel.");
-        viewModel.saveChanges(assetId);
+        Log.d(TAG, "Semua data terkumpul. Memanggil saveChanges di ViewModel dengan isConfirmed = " + isConfirmed);
+        viewModel.saveChanges(assetId, isConfirmed);
     }
 
     private static class AssetDetailPagerAdapter extends FragmentStateAdapter {

@@ -253,11 +253,13 @@ public class AssetDetailViewModel extends AndroidViewModel {
         }
     }
 
-    public void saveChanges(String assetId) {
+    public void saveChanges(String assetId, boolean isConfirmed) {
         if (pendingUpdateRequest.getName() == null || pendingUpdateRequest.getName().trim().isEmpty()) {
             errorMessage.setValue("Nama Aset tidak boleh kosong.");
             return;
         }
+
+        pendingUpdateRequest.setConfirmed(isConfirmed);
 
         isLoading.setValue(true);
         Map<String, RequestBody> fields = buildFieldsMap();
@@ -353,6 +355,9 @@ public class AssetDetailViewModel extends AndroidViewModel {
         }
         if (request.getDepreciationDurationMonth() != null) {
             addPart(fields, "depreciationDurationMonth", String.valueOf(request.getDepreciationDurationMonth()));
+        }
+        if (request.isConfirmed() != null) {
+            addPart(fields, "isConfirmed", String.valueOf(request.isConfirmed()));
         }
 
         // --- Asset Documents Fragment (Keep Existing Photos) ---

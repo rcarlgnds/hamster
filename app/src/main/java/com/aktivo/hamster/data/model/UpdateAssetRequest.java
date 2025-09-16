@@ -51,7 +51,15 @@ public class UpdateAssetRequest {
     private List<String> keepLicenseDocuments;
     private List<String> keepUserManualDocuments;
     private List<String> keepCustomDocuments;
+    private Boolean isConfirmed;
 
+    public Boolean isConfirmed() {
+        return isConfirmed;
+    }
+
+    public void setConfirmed(Boolean confirmed) {
+        isConfirmed = confirmed;
+    }
 
     public Uri getPoDocumentUri() {
         return poDocumentUri;
