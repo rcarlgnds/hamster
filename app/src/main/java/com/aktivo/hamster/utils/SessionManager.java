@@ -27,6 +27,8 @@ public class SessionManager {
     private static final String KEY_USER_DATA = "userDataJson";
     private static final String KEY_LANGUAGE = "app_language";
     private static final String KEY_THEME_MODE = "theme_mode";
+    private static final String KEY_FCM_TOKEN = "fcmToken";
+
 
 
     private final SharedPreferences pref;
@@ -90,6 +92,15 @@ public class SessionManager {
 
     public int getThemeMode() {
         return pref.getInt(KEY_THEME_MODE, AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
+    }
+
+    public void saveFcmToken(String token) {
+        editor.putString(KEY_FCM_TOKEN, token);
+        editor.apply();
+    }
+
+    public String getFcmToken() {
+        return pref.getString(KEY_FCM_TOKEN, null);
     }
 
     public void createLoginSession(String accessToken, String refreshToken, User user) {

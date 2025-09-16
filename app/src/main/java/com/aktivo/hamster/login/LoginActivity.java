@@ -2,13 +2,25 @@ package com.aktivo.hamster.login;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
+
 import com.aktivo.hamster.R;
 import com.aktivo.hamster.dashboard.DashboardActivity;
+import com.aktivo.hamster.data.model.request.RegisterDeviceRequest;
+import com.aktivo.hamster.data.network.ApiClient;
+import com.aktivo.hamster.data.network.ApiService;
 import com.aktivo.hamster.databinding.ActivityLoginBinding;
+import com.aktivo.hamster.utils.SessionManager;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -26,7 +38,6 @@ public class LoginActivity extends AppCompatActivity {
         binding.buttonLogin.setOnClickListener(v -> {
             String email = binding.editTextEmail.getText().toString().trim();
             String password = binding.editTextPassword.getText().toString().trim();
-            // You can add validation here if you want
             if (!email.isEmpty() && !password.isEmpty()) {
                 loginViewModel.login(email, password);
             } else {
@@ -37,10 +48,6 @@ public class LoginActivity extends AppCompatActivity {
         setupObservers();
     }
 
-    /**
-     * Manages the UI state of the login button and progress bar.
-     * @param isLoading true to show the loading indicator, false to show the button text.
-     */
     private void showLoading(boolean isLoading) {
         if (isLoading) {
             binding.progressBar.setVisibility(View.VISIBLE);
@@ -49,7 +56,7 @@ public class LoginActivity extends AppCompatActivity {
         } else {
             binding.progressBar.setVisibility(View.GONE);
             binding.buttonLogin.setText(getString(R.string.login_button));
-            binding.buttonLogin.setEnabled(true); 
+            binding.buttonLogin.setEnabled(true);
         }
     }
 
@@ -76,6 +83,8 @@ public class LoginActivity extends AppCompatActivity {
 
         loginViewModel.getUser().observe(this, user -> {
             if (user != null) {
+                sendFcmTokenToServer();
+
                 Intent intent = new Intent(LoginActivity.this, DashboardActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(intent);
@@ -84,5 +93,36 @@ public class LoginActivity extends AppCompatActivity {
                 finish();
             }
         });
+    }
+
+    private void sendFcmTokenToServer() {
+        SessionManager sessionManager = new SessionManager(this);
+        String fcmToken = sessionManager.getFcmToken();
+
+        if (fcmToken != null && !fcmToken.isEmpty()) {
+            Log.d("LoginActivity", "Found saved FCM token, sending to server: " + fcmToken);
+
+            RegisterDeviceRequest requestBody = new RegisterDeviceRequest(fcmToken, "ANDROID");
+            ApiService apiService = ApiClient.getClient(this).create(ApiService.class);
+
+            apiService.registerDeviceToken(requestBody).enqueue(new Callback<Void>() {
+                @Override
+                public void onResponse(@NonNull Call<Void> call, @NonNull Response<Void> response) {
+                    if (response.isSuccessful()) {
+                        Log.i("LoginActivity", "FCM token registered successfully.");
+                        sessionManager.saveFcmToken(null);
+                    } else {
+                        Log.w("LoginActivity", "Failed to register FCM token. Code: " + response.code());
+                    }
+                }
+
+                @Override
+                public void onFailure(@NonNull Call<Void> call, @NonNull Throwable t) {
+                    Log.e("LoginActivity", "Error registering FCM token.", t);
+                }
+            });
+        } else {
+            Log.d("LoginActivity", "No saved FCM token to send.");
+        }
     }
 }

@@ -18,6 +18,7 @@ import com.aktivo.hamster.data.model.request.RegisterDeviceRequest;
 import com.aktivo.hamster.data.model.request.UnregisterDeviceRequest;
 import com.aktivo.hamster.data.network.ApiClient;
 import com.aktivo.hamster.data.network.ApiService;
+import com.aktivo.hamster.utils.SessionManager;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
@@ -46,9 +47,10 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     @Override
     public void onNewToken(@NonNull String token) {
         super.onNewToken(token);
-        Log.d(TAG, "Refreshed token: " + token);
+        Log.d(TAG, "New FCM token received: " + token);
 
-        sendRegistrationToServer(token);
+        SessionManager sessionManager = new SessionManager(getApplicationContext());
+        sessionManager.saveFcmToken(token);
     }
 
     private void sendRegistrationToServer(String token) {
