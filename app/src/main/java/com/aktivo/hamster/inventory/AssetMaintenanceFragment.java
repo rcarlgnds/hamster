@@ -7,6 +7,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -22,9 +24,12 @@ import androidx.lifecycle.ViewModelProvider;
 import com.aktivo.hamster.R;
 import com.aktivo.hamster.data.model.Asset;
 import com.aktivo.hamster.data.model.AssetMediaFile;
+import com.aktivo.hamster.data.model.OptionItem;
 import com.aktivo.hamster.data.network.ApiClient;
 import com.google.android.material.textfield.TextInputEditText;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Consumer;
 
 public class AssetMaintenanceFragment extends Fragment implements FragmentDataCollector {
@@ -34,6 +39,7 @@ public class AssetMaintenanceFragment extends Fragment implements FragmentDataCo
     // View Components
     private TextInputEditText etProcurementDate, etWarrantyDate, etDepreciationStart, etEffectiveActivationDate, etFunctionalTestingDate;
     private TextView textPODocumentStatus, textInvoiceDocumentStatus, textWarrantyDocumentStatus;
+    private AutoCompleteTextView acVendor;
     private ImageView iconPODocument, iconInvoiceDocument, iconWarrantyDocument;
     private Button buttonChoosePODocument, buttonChooseInvoiceDocument, buttonChooseWarrantyDocument;
 
@@ -43,6 +49,8 @@ public class AssetMaintenanceFragment extends Fragment implements FragmentDataCo
     private DocumentItem poDocument = new DocumentItem();
     private DocumentItem invoiceDocument = new DocumentItem();
     private DocumentItem warrantyDocument = new DocumentItem();
+    private List<OptionItem> vendorList = new ArrayList<>();
+
 
     // --- Lifecycle Methods ---
     @Override
@@ -80,6 +88,8 @@ public class AssetMaintenanceFragment extends Fragment implements FragmentDataCo
         buttonChoosePODocument = view.findViewById(R.id.buttonChoosePODocument);
         buttonChooseInvoiceDocument = view.findViewById(R.id.buttonChooseInvoiceDocument);
         buttonChooseWarrantyDocument = view.findViewById(R.id.buttonChooseWarrantyDocument);
+        acVendor = view.findViewById(R.id.autoCompleteVendor);
+
     }
 
     private void initializeFilePicker() {
@@ -91,6 +101,13 @@ public class AssetMaintenanceFragment extends Fragment implements FragmentDataCo
     }
 
     private void setupListeners() {
+        acVendor.setOnItemClickListener((parent, view, position, id) -> {
+            if (position >= 0 && position < vendorList.size()) {
+                OptionItem selected = vendorList.get(position);
+                viewModel.updateField(req -> req.setVendorId(selected.getId()));
+            }
+        });
+
         buttonChoosePODocument.setOnClickListener(v -> openFilePicker(uri -> {
             poDocument = new DocumentItem(uri);
             updateDocumentUI(poDocument, textPODocumentStatus, iconPODocument);
@@ -109,11 +126,23 @@ public class AssetMaintenanceFragment extends Fragment implements FragmentDataCo
 
     private void setupObservers() {
         viewModel.getAssetData().observe(getViewLifecycleOwner(), this::displayAssetData);
+
+        viewModel.getVendorOptions().observe(getViewLifecycleOwner(), options -> {
+            if (options != null && getContext() != null) {
+                vendorList.clear();
+                vendorList.addAll(options);
+                ArrayAdapter<OptionItem> adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_dropdown_item_1line, vendorList);
+                acVendor.setAdapter(adapter);
+            }
+        });
     }
 
     private void displayAssetData(Asset asset) {
         if (asset == null) return;
 
+        if (asset.getVendor() != null) {
+            acVendor.setText(asset.getVendor().getName(), false);
+        }
 
         if (asset.getMediaFiles() != null) {
             for (AssetMediaFile media : asset.getMediaFiles()) {
