@@ -1,8 +1,6 @@
 package com.aktivo.hamster.activation;
 
-import android.Manifest;
-import android.content.pm.PackageManager;
-import android.net.Uri;
+import android.content.Intent; // Pastikan ini di-import
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ProgressBar;
@@ -13,8 +11,6 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
-import androidx.core.content.FileProvider;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -24,11 +20,7 @@ import com.aktivo.hamster.data.constant.AssetStatus;
 import com.aktivo.hamster.data.model.AssetRejected;
 import com.google.android.material.appbar.MaterialToolbar;
 
-import java.io.File;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.Locale;
 
 public class RejectedAssetActivity extends AppCompatActivity {
     private RejectedAssetViewModel viewModel;
@@ -36,27 +28,15 @@ public class RejectedAssetActivity extends AppCompatActivity {
     private RejectedAssetAdapter adapter;
     private ProgressBar progressBar;
     private TextView tvEmptyMessage;
-    private AssetRejected currentItem;
-    
-    private Uri photoUri = null;
 
-    private final ActivityResultLauncher<String> requestPermissionLauncher =
-            registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
-                if (isGranted) {
-                    launchCamera();
-                } else {
-                    Toast.makeText(this, "Izin kamera dibutuhkan untuk melanjutkan proses", Toast.LENGTH_SHORT).show();
+    private final ActivityResultLauncher<Intent> continueRejectionLauncher =
+            registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
+                if (result.getResultCode() == RESULT_OK) {
+                    Toast.makeText(this, "Memuat ulang daftar...", Toast.LENGTH_SHORT).show();
+                    viewModel.refresh();
                 }
             });
 
-    private final ActivityResultLauncher<Uri> takePictureLauncher =
-            registerForActivityResult(new ActivityResultContracts.TakePicture(), success -> {
-                if (success && photoUri != null && currentItem != null) {
-                    viewModel.continueRejection(currentItem.getId(), photoUri);
-                } else {
-                    Toast.makeText(this, "Gagal mengambil foto.", Toast.LENGTH_SHORT).show();
-                }
-            });
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,6 +50,22 @@ public class RejectedAssetActivity extends AppCompatActivity {
         setupObservers();
 
         viewModel.refresh();
+    }
+
+    private void onActionClicked(AssetRejected item) {
+        String status = item.getStatus();
+        if (item.getId() == null) {
+            Toast.makeText(this, "ID transaksi tidak valid.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if (AssetStatus.REJECTED_DOES_NOT_MEET_REQUEST.equalsIgnoreCase(status)) {
+            Intent intent = new Intent(this, ContinueRejectionActivity.class);
+            intent.putExtra(ContinueRejectionActivity.EXTRA_REJECTED_ASSET, item);
+            continueRejectionLauncher.launch(intent);
+        } else if (AssetStatus.REJECTED_WRONG_LOCATION.equalsIgnoreCase(status)) {
+            viewModel.confirmLocation(item.getId());
+        }
     }
 
     private void setupToolbar() {
@@ -114,34 +110,6 @@ public class RejectedAssetActivity extends AppCompatActivity {
         });
     }
 
-    private void onActionClicked(AssetRejected item) {
-        this.currentItem = item;
-        String status = item.getStatus();
-
-        if (AssetStatus.REJECTED_DOES_NOT_MEET_REQUEST.equalsIgnoreCase(status)) {
-            checkCameraPermissionAndLaunch();
-        } else if (AssetStatus.REJECTED_WRONG_LOCATION.equalsIgnoreCase(status)) {
-            viewModel.confirmLocation(item.getId());
-        }
-    }
-
-    private void checkCameraPermissionAndLaunch() {
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
-            launchCamera();
-        } else {
-            requestPermissionLauncher.launch(Manifest.permission.CAMERA);
-        }
-    }
-
-    private void launchCamera() {
-        File imageDir = new File(getFilesDir(), "images");
-        if (!imageDir.exists()) imageDir.mkdirs();
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.US).format(new Date());
-        File imageFile = new File(imageDir, "REJECTION_" + timeStamp + ".jpg");
-        photoUri = FileProvider.getUriForFile(this, getApplicationContext().getPackageName() + ".provider", imageFile);
-        takePictureLauncher.launch(photoUri);
-    }
-
     private void setupObservers() {
         viewModel.getIsLoading().observe(this, isLoading -> {
             progressBar.setVisibility(isLoading ? View.VISIBLE : View.GONE);
@@ -157,7 +125,7 @@ public class RejectedAssetActivity extends AppCompatActivity {
         });
 
         viewModel.getActionResult().observe(this, success -> {
-            if (success) {
+            if (success != null && success) {
                 Toast.makeText(this, "Aksi berhasil diproses.", Toast.LENGTH_SHORT).show();
                 viewModel.refresh();
             }
