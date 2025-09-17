@@ -134,7 +134,7 @@ public class ConfirmationApprovalActivity extends AppCompatActivity {
             if (success != null) {
                 if (success) {
                     Toast.makeText(this, "Approval processed successfully", Toast.LENGTH_SHORT).show();
-                    viewModel.fetchPendingApprovals();
+                    viewModel.refresh();
                 }
             }
         });

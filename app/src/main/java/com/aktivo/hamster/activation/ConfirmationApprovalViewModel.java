@@ -35,6 +35,10 @@ public class ConfirmationApprovalViewModel extends AndroidViewModel {
     private int totalPages = 1;
     private boolean isLoadingMore = false;
     private static final int PAGE_SIZE = 10;
+    private final MutableLiveData<Boolean> _actionResult = new MutableLiveData<>();
+    public LiveData<Boolean> getActionResult() {
+        return _actionResult;
+    }
 
     public ConfirmationApprovalViewModel(@NonNull Application application) {
         super(application);
