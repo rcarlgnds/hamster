@@ -671,8 +671,13 @@ public interface ApiService {
     @GET("assets/rejected")
     Call<AssetRejectedResponse> getRejectedAssets (@Query("page") int page, @Query("limit") int limit, @Query("search") String search, @Query("status") String status);
 
+    @Multipart
     @POST("asset-rejection/{id}/continue")
-    Call<RejectionResponse> continueRejection(@Path("id") String id);
+    Call<RejectionResponse> continueRejection(
+            @Path("id") String id,
+            @Part("transactionId") RequestBody transactionId,
+            @Part MultipartBody.Part photo
+    );
 
     @POST("asset-rejection/{id}/confirm-location")
     Call<RejectionResponse> confirmLocation(@Path("id") String id);

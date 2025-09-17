@@ -6,22 +6,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
-
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.aktivo.hamster.R;
 import com.aktivo.hamster.data.constant.AssetStatus;
 import com.aktivo.hamster.data.model.AssetRejected;
-
-import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
-import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-import java.util.TimeZone;
 
 public class RejectedAssetAdapter extends RecyclerView.Adapter<RejectedAssetAdapter.RejectedViewHolder> {
 
@@ -77,12 +71,16 @@ public class RejectedAssetAdapter extends RecyclerView.Adapter<RejectedAssetAdap
             holder.tvStatus.setText(R.string.status_rejected_wrong_location);
         } else if(item.getStatus().equalsIgnoreCase(AssetStatus.REJECTED_IN_LOGISTIC)) {
             holder.tvStatus.setText(R.string.status_rejected_in_logistic);
+        } else {
+            holder.tvStatus.setText(item.getStatus());
         }
 
-        if("1".equalsIgnoreCase(item.getRejectedAtStep())) {
+        if("1".equals(item.getRejectedAtStep())) {
             holder.tvRejectedBy.setText(String.format("Rejected by Head of room at: %s", formatToGmt7(item.getRejectedAt())));
-        } else if("2".equalsIgnoreCase(item.getRejectedAtStep())) {
+        } else if("2".equals(item.getRejectedAtStep())) {
             holder.tvRejectedBy.setText(String.format("Rejected by Head of FMS at: %s", formatToGmt7(item.getRejectedAt())));
+        } else {
+            holder.tvRejectedBy.setText(String.format("Rejected by: %s", item.getRejectedByPosition()));
         }
 
         String status = item.getStatus();
@@ -113,7 +111,7 @@ public class RejectedAssetAdapter extends RecyclerView.Adapter<RejectedAssetAdap
     }
 
     static class RejectedViewHolder extends RecyclerView.ViewHolder {
-        TextView tvAssetCode, tvAssetName, tvStatus, tvRejectedBy;
+        TextView tvAssetCode, tvAssetName, tvStatus, tvRejectedBy, tvRejectedAt;
         Button btnAction;
 
         public RejectedViewHolder(@NonNull View itemView) {
@@ -122,6 +120,7 @@ public class RejectedAssetAdapter extends RecyclerView.Adapter<RejectedAssetAdap
             tvAssetName = itemView.findViewById(R.id.tvAssetName);
             tvStatus = itemView.findViewById(R.id.tvStatus);
             tvRejectedBy = itemView.findViewById(R.id.tvRejectedBy);
+//            tvRejectedAt = itemView.findViewById(R.id.tvRejectedAt);
             btnAction = itemView.findViewById(R.id.btnAction);
         }
     }
