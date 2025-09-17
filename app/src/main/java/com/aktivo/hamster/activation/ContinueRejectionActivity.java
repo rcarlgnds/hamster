@@ -28,6 +28,7 @@ import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
+import com.aktivo.hamster.activation.ScannerActivity;
 
 public class ContinueRejectionActivity extends AppCompatActivity {
 
@@ -45,15 +46,15 @@ public class ContinueRejectionActivity extends AppCompatActivity {
     private final ActivityResultLauncher<Intent> scanQrCodeLauncher =
             registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
                 if (result.getResultCode() == RESULT_OK && result.getData() != null) {
-                    scannedQrCode = result.getData().getStringExtra("QR_CODE_RESULT");
-                    if (scannedQrCode != null && rejectedAsset.getAssetCode().equals(scannedQrCode)) {
+                    scannedQrCode = result.getData().getStringExtra(ScannerActivity.EXTRA_QR_CODE_RESULT);
+//                    if (scannedQrCode != null && rejectedAsset.getAssetCode().equals(scannedQrCode)) {
                         tvAssetCode.setText(scannedQrCode);
                         tvAssetCode.setVisibility(View.VISIBLE);
                         Toast.makeText(this, "QR Code cocok!", Toast.LENGTH_SHORT).show();
-                    } else {
-                        Toast.makeText(this, "QR Code tidak cocok dengan aset yang dipilih.", Toast.LENGTH_LONG).show();
-                        scannedQrCode = null;
-                    }
+//                    } else {
+//                        Toast.makeText(this, "QR Code tidak cocok dengan aset yang dipilih.", Toast.LENGTH_LONG).show();
+//                        scannedQrCode = null;
+//                    }
                     checkAllDataAndEnableButton();
                 }
             });
