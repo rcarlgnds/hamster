@@ -63,6 +63,8 @@ public class AssetMaintenanceFragment extends Fragment implements FragmentDataCo
         super.onViewCreated(view, savedInstanceState);
         viewModel = new ViewModelProvider(requireActivity()).get(AssetDetailViewModel.class);
 
+        viewModel.fetchAllOptions();
+
         initializeViews(view);
         initializeFilePicker();
         setupListeners();
