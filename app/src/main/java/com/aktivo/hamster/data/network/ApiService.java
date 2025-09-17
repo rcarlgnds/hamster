@@ -525,7 +525,7 @@ public interface ApiService {
     Call<Void> deleteNotification(@Path("id") String notificationId);
 
     // --- Vendors ---
-    @GET("vendors/options")
+    @GET("/api/vendors/options")
     Call<OptionsResponse> getVendorOptions();
 
     @GET("vendors")
