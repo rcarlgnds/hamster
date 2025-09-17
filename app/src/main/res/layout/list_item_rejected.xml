@@ -59,18 +59,6 @@
             app:layout_constraintTop_toBottomOf="@id/tvStatus"
             tools:text="Rejected by: Supervisor" />
 
-        <TextView
-            android:id="@+id/tvRejectedAt"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:textAppearance="?attr/textAppearanceBodySmall"
-            android:visibility="gone"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tvRejectedBy"
-            tools:text="Rejected at: 2025-09-12 13:00"
-            tools:visibility="visible"/>
-
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnAction"
             style="@style/Widget.MaterialComponents.Button.TextButton"
@@ -78,7 +66,7 @@
             android:layout_height="wrap_content"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tvRejectedAt"
+            app:layout_constraintTop_toBottomOf="@id/tvRejectedBy"
             android:layout_marginTop="8dp"
             tools:text="Confirm Location" />
 

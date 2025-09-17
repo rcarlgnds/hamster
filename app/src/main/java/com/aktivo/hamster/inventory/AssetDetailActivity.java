@@ -52,7 +52,6 @@ public class AssetDetailActivity extends AppCompatActivity {
         binding.viewPager.setAdapter(pagerAdapter);
         binding.viewPager.setOffscreenPageLimit(5);
 
-
         new TabLayoutMediator(binding.tabLayout, binding.viewPager, (tab, position) -> {
             switch (position) {
                 case 0: tab.setText(R.string.tab_info); break;

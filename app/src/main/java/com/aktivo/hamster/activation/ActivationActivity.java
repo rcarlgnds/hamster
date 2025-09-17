@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
@@ -245,6 +246,8 @@ public class ActivationActivity extends AppCompatActivity {
         boolean conditionsMet = scannedAssetCode != null &&
                 photoUri != null &&
                 isAssetReadyForActivation;
+
+        Log.d("activationready", String.valueOf(isAssetReadyForActivation));
         binding.btnStartActivation.setEnabled(conditionsMet);
     }
 }

@@ -83,6 +83,8 @@
     <string name="tab_finance">Keuangan</string>
     <string name="tab_documents">Dokumen</string>
     <string name="tab_review">Review</string>
+    <string name="save_draft">Simpan Draf</string>
+    <string name="save_and_confirm">Simpan &amp; Konfirmasi</string>
     <string name="save">SIMPAN</string>
 
     <string name="section_code_identification">Kode &amp; Identifikasi</string>

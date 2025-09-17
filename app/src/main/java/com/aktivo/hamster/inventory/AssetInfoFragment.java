@@ -21,9 +21,8 @@ import java.util.List;
 
 public class AssetInfoFragment extends Fragment {
     private AssetDetailViewModel viewModel;
-    private TextInputEditText etCode, etName, etSerial, etDesc, etAliasNameTeramedik, etAliasNameHamster;
+    private TextInputEditText etCode, etCode2, etCode3, etName, etSerial, etDesc, etAliasNameTeramedik, etAliasNameHamster, etType, etTotal;
     private AutoCompleteTextView acOwnership, acCategory, acSubCategory, acBrand, acCondition, acUnit;
-
     private List<OptionItem> categoryList = new ArrayList<>();
     private List<OptionItem> subCategoryList = new ArrayList<>();
     private List<OptionItem> brandList = new ArrayList<>();
@@ -48,18 +47,21 @@ public class AssetInfoFragment extends Fragment {
 
     private void initializeViews(View view) {
         etCode = view.findViewById(R.id.editTextCode);
+        etCode2 = view.findViewById(R.id.editTextCode2);
+        etCode3 = view.findViewById(R.id.editTextCode3);
         etName = view.findViewById(R.id.editTextName);
         etAliasNameTeramedik = view.findViewById(R.id.editTextAliasNameTeramedik);
         etAliasNameHamster = view.findViewById(R.id.editTextAliasNameHamster);
         etSerial = view.findViewById(R.id.editTextSerial);
         etDesc = view.findViewById(R.id.editTextDescription);
+        etType = view.findViewById(R.id.editTextType);
+        etTotal = view.findViewById(R.id.editTextTotal);
         acOwnership = view.findViewById(R.id.autoCompleteOwnership);
         acCondition = view.findViewById(R.id.autoCompleteCondition);
         acCategory = view.findViewById(R.id.autoCompleteCategory);
         acSubCategory = view.findViewById(R.id.autoCompleteSubCategory);
         acBrand = view.findViewById(R.id.autoCompleteBrand);
         acUnit = view.findViewById(R.id.autoCompleteUnit);
-
     }
 
     private void setupObservers() {
@@ -67,11 +69,15 @@ public class AssetInfoFragment extends Fragment {
             if (asset == null) return;
             isProgrammaticChange = true;
             etCode.setText(asset.getCode());
+            etCode2.setText(asset.getCode2());
+            etCode3.setText(asset.getCode3());
             etName.setText(asset.getName());
             etAliasNameTeramedik.setText(asset.getAliasNameTeramedik());
             etAliasNameHamster.setText(asset.getAliasNameHamster());
             etSerial.setText(asset.getSerialNumber());
             etDesc.setText(asset.getDescription());
+            etType.setText(asset.getType());
+            etTotal.setText(String.valueOf(asset.getTotal()));
             acOwnership.setText(asset.getOwnership(), false);
             acCondition.setText(asset.getCondition(), false);
             if (asset.getCategory() != null) acCategory.setText(asset.getCategory().getName(), false);
@@ -103,6 +109,8 @@ public class AssetInfoFragment extends Fragment {
         etCode.addTextChangedListener(new SimpleTextWatcher(text -> viewModel.updateField(req -> req.setCode(text))));
         etSerial.addTextChangedListener(new SimpleTextWatcher(text -> viewModel.updateField(req -> req.setSerialNumber(text))));
         etDesc.addTextChangedListener(new SimpleTextWatcher(text -> viewModel.updateField(req -> req.setDescription(text))));
+        etTotal.addTextChangedListener(new SimpleTextWatcher(text -> viewModel.updateField(req -> req.setTotal(Integer.valueOf(text)))));
+        etType.addTextChangedListener(new SimpleTextWatcher(text -> viewModel.updateField(req -> req.setType(text))));
 
         acOwnership.setOnItemClickListener((p, v, pos, id) -> viewModel.updateField(req -> req.setOwnership(acOwnership.getText().toString())));
         acCondition.setOnItemClickListener((p, v, pos, id) -> viewModel.updateField(req -> req.setCondition(acCondition.getText().toString())));

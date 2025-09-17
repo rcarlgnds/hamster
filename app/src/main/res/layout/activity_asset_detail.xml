@@ -62,12 +62,12 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
-            android:text="Save Draft"/>
+            android:text="@string/save_draft"/>
 
         <Button
             android:id="@+id/buttonSave"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/save"/>
+            android:text="@string/save_and_confirm"/>
     </LinearLayout>
 </LinearLayout>

@@ -73,7 +73,6 @@ public class ApprovalAdapter extends RecyclerView.Adapter<ApprovalAdapter.Approv
             tvAssetCode.setText(item.getAssetCode());
             tvAssetName.setText(item.getAssetName());
             tvRoom.setText(item.getRoom());
-//            tvRole.setText("Inventory Confirmation");
             tvRole.setVisibility(View.GONE);
 
             btnConfirmation.setOnClickListener(v -> listener.onConfirmClick(item));

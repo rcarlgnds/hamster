@@ -148,7 +148,7 @@ public class ActivationApprovalActivity extends AppCompatActivity {
         if (currentItem == null) return;
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        View dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_approval_confirmation, null);
+        View dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_approval_activation, null);
         builder.setView(dialogView);
 
         ImageView ivAssetPhoto = dialogView.findViewById(R.id.ivAssetPhoto);

@@ -14,13 +14,38 @@ import com.aktivo.hamster.R;
 import com.aktivo.hamster.data.constant.AssetStatus;
 import com.aktivo.hamster.data.model.AssetRejected;
 
+import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
+import java.util.TimeZone;
 
 public class RejectedAssetAdapter extends RecyclerView.Adapter<RejectedAssetAdapter.RejectedViewHolder> {
 
     private final List<AssetRejected> rejectedList;
     private final OnActionClickListener listener;
     private final Context context;
+    private static final ZoneId ZONE_JKT = ZoneId.of("Asia/Jakarta");
+    private static final DateTimeFormatter OUT_FMT = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss", Locale.getDefault()).withZone(ZONE_JKT);
+
+    public String formatToGmt7(String ts) {
+        if(ts == null || ts.isEmpty()) return "-";
+
+        try {
+            if (ts.matches("\\d+")) {
+                long v = Long.parseLong(ts);
+                Instant instant = (ts.length() > 12) ? Instant.ofEpochMilli(v) : Instant.ofEpochSecond(v);
+                return OUT_FMT.format(instant);
+            }
+            Instant instant = Instant.parse(ts);
+            return OUT_FMT.format(instant);
+        } catch (Exception e) {
+            return ts;
+        }
+    }
 
     public interface OnActionClickListener {
         void onActionClicked(AssetRejected item);
@@ -54,14 +79,13 @@ public class RejectedAssetAdapter extends RecyclerView.Adapter<RejectedAssetAdap
             holder.tvStatus.setText(R.string.status_rejected_in_logistic);
         }
 
-        holder.tvRejectedBy.setText(String.format("Rejected by: %s", item.getRejectedByPosition()));
-
-        if (holder.tvRejectedAt != null) {
-            holder.tvRejectedAt.setVisibility(View.GONE);
+        if("1".equalsIgnoreCase(item.getRejectedAtStep())) {
+            holder.tvRejectedBy.setText(String.format("Rejected by Head of room at: %s", formatToGmt7(item.getRejectedAt())));
+        } else if("2".equalsIgnoreCase(item.getRejectedAtStep())) {
+            holder.tvRejectedBy.setText(String.format("Rejected by Head of FMS at: %s", formatToGmt7(item.getRejectedAt())));
         }
 
         String status = item.getStatus();
-
         if (AssetStatus.REJECTED_DOES_NOT_MEET_REQUEST.equalsIgnoreCase(status)) {
             holder.btnAction.setText("Continue");
             holder.btnAction.setVisibility(View.VISIBLE);
@@ -89,7 +113,7 @@ public class RejectedAssetAdapter extends RecyclerView.Adapter<RejectedAssetAdap
     }
 
     static class RejectedViewHolder extends RecyclerView.ViewHolder {
-        TextView tvAssetCode, tvAssetName, tvStatus, tvRejectedBy, tvRejectedAt;
+        TextView tvAssetCode, tvAssetName, tvStatus, tvRejectedBy;
         Button btnAction;
 
         public RejectedViewHolder(@NonNull View itemView) {
@@ -98,7 +122,6 @@ public class RejectedAssetAdapter extends RecyclerView.Adapter<RejectedAssetAdap
             tvAssetName = itemView.findViewById(R.id.tvAssetName);
             tvStatus = itemView.findViewById(R.id.tvStatus);
             tvRejectedBy = itemView.findViewById(R.id.tvRejectedBy);
-            tvRejectedAt = itemView.findViewById(R.id.tvRejectedAt);
             btnAction = itemView.findViewById(R.id.btnAction);
         }
     }

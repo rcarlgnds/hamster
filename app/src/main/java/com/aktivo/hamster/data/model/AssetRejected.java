@@ -10,6 +10,8 @@ public class AssetRejected implements Serializable {
     private String assetCode;
     private String assetName;
     private String rejectedByPosition;
+    private String rejectedAt;
+    private String rejectedAtStep;
     private String status;
 
 
@@ -27,6 +29,14 @@ public class AssetRejected implements Serializable {
 
     public String getRejectedByPosition() {
         return rejectedByPosition;
+    }
+
+    public String getRejectedAt() {
+        return rejectedAt;
+    }
+
+    public String getRejectedAtStep() {
+        return rejectedAtStep;
     }
 
     public String getStatus() {

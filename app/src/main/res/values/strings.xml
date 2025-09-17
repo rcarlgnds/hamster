@@ -83,6 +83,8 @@
     <string name="tab_finance">Finance</string>
     <string name="tab_documents">Documents</string>
     <string name="tab_review">Review</string>
+    <string name="save_draft">Save Draft</string>
+    <string name="save_and_confirm">Save &amp; Confirm</string>
     <string name="save">SAVE</string>
 
     <string name="section_code_identification">Code &amp; Identification</string>
