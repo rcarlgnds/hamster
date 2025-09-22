@@ -350,9 +350,9 @@ public class AssetDetailViewModel extends AndroidViewModel {
         if (request.getDepreciationStartDate() != null) {
             addPart(fields, "depreciationStartDate", String.valueOf(request.getDepreciationStartDate()));
         }
-        if (request.getEffectiveUsageDate() != null) {
-            addPart(fields, "effectiveUsageDate", String.valueOf(request.getEffectiveUsageDate()));
-        }
+//        if (request.getEffectiveUsageDate() != null) {
+//            addPart(fields, "effectiveUsageDate", String.valueOf(request.getEffectiveUsageDate()));
+//        }
         if (request.getDepreciationDurationMonth() != null) {
             addPart(fields, "depreciationDurationMonth", String.valueOf(request.getDepreciationDurationMonth()));
         }

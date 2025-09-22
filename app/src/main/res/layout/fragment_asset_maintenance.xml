@@ -219,18 +219,21 @@
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
-                style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:layout_marginStart="8dp"
                 android:hint="@string/hint_warranty_status">
 
-                <AutoCompleteTextView
-                    android:id="@+id/autoCompleteWarrantyStatus"
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/editTextWarrantyStatus"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="none" />
+                    android:focusable="false"
+                    android:clickable="false"
+                    android:enabled="false"
+                    android:textColor="?attr/colorOnSurface"/>
             </com.google.android.material.textfield.TextInputLayout>
         </LinearLayout>
 

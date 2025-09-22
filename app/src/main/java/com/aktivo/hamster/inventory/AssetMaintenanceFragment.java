@@ -1,8 +1,11 @@
 package com.aktivo.hamster.inventory;
 
+import android.app.DatePickerDialog;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.OpenableColumns;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,11 +28,16 @@ import com.aktivo.hamster.R;
 import com.aktivo.hamster.data.model.Asset;
 import com.aktivo.hamster.data.model.AssetMediaFile;
 import com.aktivo.hamster.data.model.OptionItem;
+import com.aktivo.hamster.data.model.UpdateAssetRequest;
 import com.aktivo.hamster.data.network.ApiClient;
 import com.google.android.material.textfield.TextInputEditText;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.function.Consumer;
 
 public class AssetMaintenanceFragment extends Fragment implements FragmentDataCollector {
@@ -37,9 +45,11 @@ public class AssetMaintenanceFragment extends Fragment implements FragmentDataCo
     private AssetDetailViewModel viewModel;
 
     // View Components
-    private TextInputEditText etProcurementDate, etWarrantyDate, etDepreciationStart, etEffectiveActivationDate, etFunctionalTestingDate;
+    private TextInputEditText etProcurementDate, etWarrantyDate, etDepreciationStart, etEffectiveActivationDate, etFunctionalTestingDate,
+            etPurchasePrice, etPONumber, etInvoiceNumber, etDepreciationPercent, etDepreciationValue, etDepreciationDuration;
     private TextView textPODocumentStatus, textInvoiceDocumentStatus, textWarrantyDocumentStatus;
     private AutoCompleteTextView acVendor;
+    private TextInputEditText etWarrantyStatus;
     private ImageView iconPODocument, iconInvoiceDocument, iconWarrantyDocument;
     private Button buttonChoosePODocument, buttonChooseInvoiceDocument, buttonChooseWarrantyDocument;
 
@@ -50,9 +60,8 @@ public class AssetMaintenanceFragment extends Fragment implements FragmentDataCo
     private DocumentItem invoiceDocument = new DocumentItem();
     private DocumentItem warrantyDocument = new DocumentItem();
     private List<OptionItem> vendorList = new ArrayList<>();
+    private boolean isProgrammaticChange = false;
 
-
-    // --- Lifecycle Methods ---
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_asset_maintenance, container, false);
@@ -71,13 +80,19 @@ public class AssetMaintenanceFragment extends Fragment implements FragmentDataCo
         setupObservers();
     }
 
-    // --- Initialization ---
     private void initializeViews(View view) {
         etProcurementDate = view.findViewById(R.id.etProcurementDate);
         etWarrantyDate = view.findViewById(R.id.editTextWarrantyDate);
         etDepreciationStart = view.findViewById(R.id.editTextDepreciationStart);
         etEffectiveActivationDate = view.findViewById(R.id.editTextEffectiveActivationDate);
         etFunctionalTestingDate = view.findViewById(R.id.editTextFunctionalTestingDate);
+        etEffectiveActivationDate.setEnabled(false);
+        etPurchasePrice = view.findViewById(R.id.editTextPurchasePrice);
+        etPONumber = view.findViewById(R.id.editTextPONumber);
+        etInvoiceNumber = view.findViewById(R.id.editTextInvoiceNumber);
+        etDepreciationPercent = view.findViewById(R.id.editTextDepreciationPercent);
+        etDepreciationValue = view.findViewById(R.id.editTextDepreciationValue);
+        etDepreciationDuration = view.findViewById(R.id.editTextDepreciationDuration);
 
         textPODocumentStatus = view.findViewById(R.id.textPODocumentStatus);
         textInvoiceDocumentStatus = view.findViewById(R.id.textInvoiceDocumentStatus);
@@ -91,7 +106,7 @@ public class AssetMaintenanceFragment extends Fragment implements FragmentDataCo
         buttonChooseInvoiceDocument = view.findViewById(R.id.buttonChooseInvoiceDocument);
         buttonChooseWarrantyDocument = view.findViewById(R.id.buttonChooseWarrantyDocument);
         acVendor = view.findViewById(R.id.autoCompleteVendor);
-
+        etWarrantyStatus = view.findViewById(R.id.editTextWarrantyStatus);
     }
 
     private void initializeFilePicker() {
@@ -103,6 +118,9 @@ public class AssetMaintenanceFragment extends Fragment implements FragmentDataCo
     }
 
     private void setupListeners() {
+        setupDatePickers();
+//        setupTextWatchers();
+
         acVendor.setOnItemClickListener((parent, view, position, id) -> {
             if (position >= 0 && position < vendorList.size()) {
                 OptionItem selected = vendorList.get(position);
@@ -126,6 +144,46 @@ public class AssetMaintenanceFragment extends Fragment implements FragmentDataCo
         }));
     }
 
+    private void setupDatePickers() {
+        etProcurementDate.setOnClickListener(v -> showDatePickerDialog(etProcurementDate, time -> viewModel.updateField(req -> req.setProcurementDate(time))));
+        etWarrantyDate.setOnClickListener(v -> showDatePickerDialog(etWarrantyDate, time -> {
+            viewModel.updateField(req -> req.setWarrantyExpirationDate(time));
+            updateWarrantyStatus(time);
+        }));
+        etDepreciationStart.setOnClickListener(v -> showDatePickerDialog(etDepreciationStart, time -> viewModel.updateField(req -> req.setDepreciationStartDate(time))));
+//        etEffectiveActivationDate.setOnClickListener(v -> showDatePickerDialog(etEffectiveActivationDate, time -> viewModel.updateField(req -> req.setEffectiveUsageDate(time))));
+        etFunctionalTestingDate.setOnClickListener(v -> showDatePickerDialog(etFunctionalTestingDate, time -> {
+
+        }));
+    }
+
+    private void showDatePickerDialog(TextInputEditText editText, Consumer<Long> onDateSet) {
+        Calendar calendar = Calendar.getInstance();
+        new DatePickerDialog(requireContext(), (view, year, month, dayOfMonth) -> {
+            calendar.set(year, month, dayOfMonth);
+            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+            editText.setText(sdf.format(calendar.getTime()));
+            onDateSet.accept(calendar.getTimeInMillis() / 1000); // Convert to seconds
+        }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH)).show();
+    }
+
+    private void setupTextWatchers() {
+        etPurchasePrice.addTextChangedListener(new SimpleTextWatcher(text -> {
+            if (!text.isEmpty()) viewModel.updateField(req -> req.setPurchasePrice(Double.parseDouble(text)));
+        }));
+        etPONumber.addTextChangedListener(new SimpleTextWatcher(text -> viewModel.updateField(req -> req.setPoNumber(text))));
+        etInvoiceNumber.addTextChangedListener(new SimpleTextWatcher(text -> viewModel.updateField(req -> req.setInvoiceNumber(text))));
+        etDepreciationPercent.addTextChangedListener(new SimpleTextWatcher(text -> {
+            if (!text.isEmpty()) viewModel.updateField(req -> req.setDepreciation(Double.parseDouble(text)));
+        }));
+        etDepreciationValue.addTextChangedListener(new SimpleTextWatcher(text -> {
+            if (!text.isEmpty()) viewModel.updateField(req -> req.setDepreciationValue(Double.parseDouble(text)));
+        }));
+        etDepreciationDuration.addTextChangedListener(new SimpleTextWatcher(text -> {
+            if (!text.isEmpty()) viewModel.updateField(req -> req.setDepreciationDurationMonth(Integer.parseInt(text)));
+        }));
+    }
+
     private void setupObservers() {
         viewModel.getAssetData().observe(getViewLifecycleOwner(), this::displayAssetData);
 
@@ -141,10 +199,24 @@ public class AssetMaintenanceFragment extends Fragment implements FragmentDataCo
 
     private void displayAssetData(Asset asset) {
         if (asset == null) return;
+        isProgrammaticChange = true;
 
-        if (asset.getVendor() != null) {
-            acVendor.setText(asset.getVendor().getName(), false);
+        if (asset.getProcurementDate() != null) etProcurementDate.setText(formatDate(asset.getProcurementDate()));
+        if (asset.getPurchasePrice() != null) etPurchasePrice.setText(String.valueOf(asset.getPurchasePrice()));
+        if (asset.getVendor() != null) acVendor.setText(asset.getVendor().getName(), false);
+        etPONumber.setText(asset.getPoNumber());
+
+        etInvoiceNumber.setText(asset.getInvoiceNumber());
+        if (asset.getWarrantyExpirationDate() != null) {
+            etWarrantyDate.setText(formatDate(asset.getWarrantyExpirationDate()));
+            updateWarrantyStatus(asset.getWarrantyExpirationDate());
         }
+
+        if (asset.getDepreciation() != null) etDepreciationPercent.setText(String.valueOf(asset.getDepreciation()));
+        if (asset.getDepreciationValue() != null) etDepreciationValue.setText(String.valueOf(asset.getDepreciationValue()));
+        if (asset.getDepreciationStartDate() != null) etDepreciationStart.setText(formatDate(asset.getDepreciationStartDate()));
+        if (asset.getDepreciationDurationMonth() != null) etDepreciationDuration.setText(String.valueOf(asset.getDepreciationDurationMonth()));
+        if (asset.getEffectiveUsageDate() != null) etEffectiveActivationDate.setText(formatDate(asset.getEffectiveUsageDate()));
 
         if (asset.getMediaFiles() != null) {
             for (AssetMediaFile media : asset.getMediaFiles()) {
@@ -166,9 +238,25 @@ public class AssetMaintenanceFragment extends Fragment implements FragmentDataCo
             }
         }
         updateAllDocumentUIs();
+
+        isProgrammaticChange = false;
     }
 
-    // --- UI Update Logic ---
+    private String formatDate(Long timestamp) {
+        if (timestamp == null) return "";
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+        return sdf.format(new Date(timestamp * 1000));
+    }
+
+    private void updateWarrantyStatus(Long expirationTimestamp) {
+        if (expirationTimestamp == null) {
+            etWarrantyStatus.setText("Inactive");
+            return;
+        }
+        boolean isActive = (expirationTimestamp * 1000) > System.currentTimeMillis();
+        etWarrantyStatus.setText(isActive ? "Active" : "Inactive");
+    }
+
     private void updateAllDocumentUIs() {
         updateDocumentUI(poDocument, textPODocumentStatus, iconPODocument);
         updateDocumentUI(invoiceDocument, textInvoiceDocumentStatus, iconInvoiceDocument);
@@ -185,7 +273,6 @@ public class AssetMaintenanceFragment extends Fragment implements FragmentDataCo
         }
     }
 
-    // --- File Picker Logic ---
     private void openFilePicker(Consumer<Uri> callback) {
         this.currentFileCallback = callback;
         String[] mimeTypes = {"image/jpeg", "image/png", "application/pdf"};
@@ -213,10 +300,43 @@ public class AssetMaintenanceFragment extends Fragment implements FragmentDataCo
         callback.accept(uri);
     }
 
-    // --- Data Collection for Saving ---
     @Override
     public void collectDataForSave() {
         if (viewModel == null) return;
+
+        viewModel.updateField(req -> {
+            String purchasePriceStr = etPurchasePrice.getText().toString();
+            if (!purchasePriceStr.isEmpty()) {
+                req.setPurchasePrice(Double.parseDouble(purchasePriceStr));
+            } else {
+                req.setPurchasePrice(null);
+            }
+            req.setPoNumber(etPONumber.getText().toString());
+
+            req.setInvoiceNumber(etInvoiceNumber.getText().toString());
+
+            String depreciationPercentStr = etDepreciationPercent.getText().toString();
+            if (!depreciationPercentStr.isEmpty()) {
+                req.setDepreciation(Double.parseDouble(depreciationPercentStr));
+            } else {
+                req.setDepreciation(null);
+            }
+
+            String depreciationValueStr = etDepreciationValue.getText().toString();
+            if (!depreciationValueStr.isEmpty()) {
+                req.setDepreciationValue(Double.parseDouble(depreciationValueStr));
+            } else {
+                req.setDepreciationValue(null);
+            }
+
+            String depreciationDurationStr = etDepreciationDuration.getText().toString();
+            if (!depreciationDurationStr.isEmpty()) {
+                req.setDepreciationDurationMonth(Integer.parseInt(depreciationDurationStr));
+            } else {
+                req.setDepreciationDurationMonth(null);
+            }
+        });
+
         viewModel.updateMaintenanceDocuments(
                 poDocument.isNew() ? poDocument.localUri : null,
                 invoiceDocument.isNew() ? invoiceDocument.localUri : null,
@@ -230,7 +350,6 @@ public class AssetMaintenanceFragment extends Fragment implements FragmentDataCo
         });
     }
 
-    // --- Helper Class & Method ---
     private static class DocumentItem {
         Uri localUri;
         String remoteUrl;
@@ -259,5 +378,17 @@ public class AssetMaintenanceFragment extends Fragment implements FragmentDataCo
             }
             return originalName != null ? originalName : "File lama";
         }
+    }
+
+    private class SimpleTextWatcher implements TextWatcher {
+        private final Consumer<String> onTextChanged;
+        SimpleTextWatcher(Consumer<String> onTextChanged) { this.onTextChanged = onTextChanged; }
+        @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+        @Override public void onTextChanged(CharSequence s, int start, int before, int count) {
+            if (!isProgrammaticChange) {
+                onTextChanged.accept(s.toString());
+            }
+        }
+        @Override public void afterTextChanged(Editable s) {}
     }
 }
