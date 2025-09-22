@@ -119,7 +119,7 @@ public class AssetMaintenanceFragment extends Fragment implements FragmentDataCo
 
     private void setupListeners() {
         setupDatePickers();
-//        setupTextWatchers();
+        setupTextWatchers();
 
         acVendor.setOnItemClickListener((parent, view, position, id) -> {
             if (position >= 0 && position < vendorList.size()) {
@@ -304,38 +304,38 @@ public class AssetMaintenanceFragment extends Fragment implements FragmentDataCo
     public void collectDataForSave() {
         if (viewModel == null) return;
 
-        viewModel.updateField(req -> {
-            String purchasePriceStr = etPurchasePrice.getText().toString();
-            if (!purchasePriceStr.isEmpty()) {
-                req.setPurchasePrice(Double.parseDouble(purchasePriceStr));
-            } else {
-                req.setPurchasePrice(null);
-            }
-            req.setPoNumber(etPONumber.getText().toString());
+        UpdateAssetRequest request = new UpdateAssetRequest();
+        String purchasePriceStr = etPurchasePrice.getText().toString();
+        if (!purchasePriceStr.isEmpty()) {
+            request.setPurchasePrice(Double.parseDouble(purchasePriceStr));
+        } else {
+            request.setPurchasePrice(null);
+        }
+        request.setPoNumber(etPONumber.getText().toString());
+        request.setInvoiceNumber(etInvoiceNumber.getText().toString());
 
-            req.setInvoiceNumber(etInvoiceNumber.getText().toString());
+        String depreciationPercentStr = etDepreciationPercent.getText().toString();
+        if (!depreciationPercentStr.isEmpty()) {
+            request.setDepreciation(Double.parseDouble(depreciationPercentStr));
+        } else {
+            request.setDepreciation(null);
+        }
 
-            String depreciationPercentStr = etDepreciationPercent.getText().toString();
-            if (!depreciationPercentStr.isEmpty()) {
-                req.setDepreciation(Double.parseDouble(depreciationPercentStr));
-            } else {
-                req.setDepreciation(null);
-            }
+        String depreciationValueStr = etDepreciationValue.getText().toString();
+        if (!depreciationValueStr.isEmpty()) {
+            request.setDepreciationValue(Double.parseDouble(depreciationValueStr));
+        } else {
+            request.setDepreciationValue(null);
+        }
 
-            String depreciationValueStr = etDepreciationValue.getText().toString();
-            if (!depreciationValueStr.isEmpty()) {
-                req.setDepreciationValue(Double.parseDouble(depreciationValueStr));
-            } else {
-                req.setDepreciationValue(null);
-            }
+        String depreciationDurationStr = etDepreciationDuration.getText().toString();
+        if (!depreciationDurationStr.isEmpty()) {
+            request.setDepreciationDurationMonth(Integer.parseInt(depreciationDurationStr));
+        } else {
+            request.setDepreciationDurationMonth(null);
+        }
 
-            String depreciationDurationStr = etDepreciationDuration.getText().toString();
-            if (!depreciationDurationStr.isEmpty()) {
-                req.setDepreciationDurationMonth(Integer.parseInt(depreciationDurationStr));
-            } else {
-                req.setDepreciationDurationMonth(null);
-            }
-        });
+        viewModel.updateMaintenanceData(request);
 
         viewModel.updateMaintenanceDocuments(
                 poDocument.isNew() ? poDocument.localUri : null,
