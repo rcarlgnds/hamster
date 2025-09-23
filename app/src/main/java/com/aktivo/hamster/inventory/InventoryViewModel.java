@@ -32,6 +32,8 @@ public class InventoryViewModel extends AndroidViewModel {
     private int totalPages = 1;
     private boolean isLoadingMore = false;
     private static final int PAGE_SIZE = 10;
+
+    // Properti untuk pencarian biasa
     private String currentQuery = "";
     private String currentStatus = "All";
 
@@ -41,6 +43,13 @@ public class InventoryViewModel extends AndroidViewModel {
     private final MutableLiveData<List<OptionItem>> buildingOptions = new MutableLiveData<>();
     private final MutableLiveData<List<OptionItem>> floorOptions = new MutableLiveData<>();
     private final MutableLiveData<List<OptionItem>> roomOptions = new MutableLiveData<>();
+    private String advancedSearchName = "";
+    private String advancedSearchHospitalId = "";
+    private String advancedSearchBuildingId = "";
+    private String advancedSearchFloorId = "";
+    private String advancedSearchRoomId = "";
+    private boolean isAdvancedSearchActive = false;
+
 
     public LiveData<List<Asset>> getAssetList() { return filteredAssetList; }
     public LiveData<Boolean> getIsLoading() { return isLoading; }
@@ -154,7 +163,7 @@ public class InventoryViewModel extends AndroidViewModel {
                         originalAssetList.clear();
                     }
                     originalAssetList.addAll(newAssets);
-                    filteredAssetList.setValue(new ArrayList<>(originalAssetList));
+                    applyActiveFilters();
                     currentPage++;
 
                 } else {
@@ -170,33 +179,6 @@ public class InventoryViewModel extends AndroidViewModel {
         });
     }
 
-    public void advancedSearch(String name, String hospitalId, String buildingId, String floorId, String roomId) {
-        List<Asset> results = originalAssetList.stream()
-                .filter(asset -> {
-                    boolean nameMatch = (name == null || name.isEmpty()) ||
-                            (asset.getName() != null && asset.getName().toLowerCase().contains(name.toLowerCase()));
-
-                    boolean locationMatch;
-                    if (hospitalId == null || hospitalId.isEmpty()) {
-                        locationMatch = true;
-                    } else {
-                        locationMatch = asset.getRoom() != null &&
-                                asset.getRoom().getFloor() != null &&
-                                asset.getRoom().getFloor().getBuilding() != null &&
-                                asset.getRoom().getFloor().getBuilding().getHospitalId() != null &&
-                                asset.getRoom().getFloor().getBuilding().getHospitalId().equals(hospitalId) &&
-                                (buildingId == null || buildingId.isEmpty() || asset.getRoom().getFloor().getBuildingId().equals(buildingId)) &&
-                                (floorId == null || floorId.isEmpty() || asset.getRoom().getFloorId().equals(floorId)) &&
-                                (roomId == null || roomId.isEmpty() || asset.getRoomId().equals(roomId));
-                    }
-
-                    return nameMatch && locationMatch;
-                })
-                .collect(Collectors.toList());
-
-        filteredAssetList.setValue(results);
-    }
-
     public void loadMoreItems() {
         if (!isLoadingMore) {
             fetchAssets();
@@ -208,50 +190,120 @@ public class InventoryViewModel extends AndroidViewModel {
         totalPages = 1;
         originalAssetList.clear();
         filteredAssetList.setValue(new ArrayList<>());
+
+        isAdvancedSearchActive = false;
+        currentQuery = "";
+        currentStatus = "All";
+        advancedSearchName = "";
+        advancedSearchHospitalId = "";
+        advancedSearchBuildingId = "";
+        advancedSearchFloorId = "";
+        advancedSearchRoomId = "";
+
         fetchAssets();
     }
 
 
     public void searchAssets(String query) {
+        isAdvancedSearchActive = false;
         currentQuery = query;
-        filterAssets();
+        applyActiveFilters();
     }
 
     public void filterByStatus(String status) {
+        isAdvancedSearchActive = false;
         currentStatus = status;
-        filterAssets();
+        applyActiveFilters();
     }
 
-    private void filterAssets() {
+    public void advancedSearch(String name, String hospitalId, String buildingId, String floorId, String roomId) {
+        currentQuery = "";
+        currentStatus = "All";
+
+        isAdvancedSearchActive = true;
+        advancedSearchName = name;
+        advancedSearchHospitalId = hospitalId;
+        advancedSearchBuildingId = buildingId;
+        advancedSearchFloorId = floorId;
+        advancedSearchRoomId = roomId;
+
+        applyActiveFilters();
+    }
+
+    private void applyActiveFilters() {
         if (originalAssetList == null) return;
 
-        List<Asset> fullyFilteredList = new ArrayList<>(originalAssetList);
+        List<Asset> results;
 
-        if (currentStatus != null && !currentStatus.equalsIgnoreCase("All")) {
-            String lowerCaseStatus = currentStatus.toLowerCase();
-            fullyFilteredList = fullyFilteredList.stream()
-                    .filter(asset -> asset.getStatus() != null && asset.getStatus().equalsIgnoreCase(lowerCaseStatus))
-                    .collect(Collectors.toList());
+        if (isAdvancedSearchActive) {
+            results = originalAssetList.stream().filter(asset -> {
+                // name filter
+                boolean nameMatch = (advancedSearchName == null || advancedSearchName.isEmpty()) ||
+                        (asset.getName() != null &&
+                                asset.getName().toLowerCase().contains(advancedSearchName.toLowerCase()));
+
+                // hospital filter
+                boolean hospitalMatch = (advancedSearchHospitalId == null || advancedSearchHospitalId.isEmpty()) ||
+                        (asset.getRoom() != null &&
+                                asset.getRoom().getFloor() != null &&
+                                asset.getRoom().getFloor().getBuilding() != null &&
+                                asset.getRoom().getFloor().getBuilding().getHospital() != null &&
+                                advancedSearchHospitalId.equals(asset.getRoom().getFloor().getBuilding().getHospital().getId()));
+
+                // building filter
+                boolean buildingMatch = (advancedSearchBuildingId == null || advancedSearchBuildingId.isEmpty()) ||
+                        (asset.getRoom() != null &&
+                                asset.getRoom().getFloor() != null &&
+                                asset.getRoom().getFloor().getBuilding() != null &&
+                                advancedSearchBuildingId.equals(asset.getRoom().getFloor().getBuilding().getId()));
+
+                // floor filter
+                boolean floorMatch = (advancedSearchFloorId == null || advancedSearchFloorId.isEmpty()) ||
+                        (asset.getRoom() != null &&
+                                asset.getRoom().getFloor() != null &&
+                                advancedSearchFloorId.equals(asset.getRoom().getFloor().getId()));
+
+                // room filter
+                boolean roomMatch = (advancedSearchRoomId == null || advancedSearchRoomId.isEmpty()) ||
+                        (asset.getRoom() != null &&
+                                advancedSearchRoomId.equals(asset.getRoom().getId()));
+
+                return nameMatch && hospitalMatch && buildingMatch && floorMatch && roomMatch;
+            }).collect(Collectors.toList());
+        } else {
+            results = new ArrayList<>(originalAssetList);
+            if (currentStatus != null && !currentStatus.equalsIgnoreCase("All")) {
+                results = results.stream()
+                        .filter(asset -> asset.getStatus() != null &&
+                                asset.getStatus().equalsIgnoreCase(currentStatus))
+                        .collect(Collectors.toList());
+            }
+            if (currentQuery != null && !currentQuery.trim().isEmpty()) {
+                String lowerCaseQuery = currentQuery.toLowerCase();
+                results = results.stream()
+                        .filter(asset -> (asset.getCode() != null && asset.getCode().toLowerCase().contains(lowerCaseQuery)) ||
+                                (asset.getName() != null && asset.getName().toLowerCase().contains(lowerCaseQuery)) ||
+                                (asset.getRoom() != null && asset.getRoom().getFloor() != null &&
+                                        asset.getRoom().getFloor().getBuilding() != null &&
+                                        asset.getRoom().getFloor().getBuilding().getHospital() != null &&
+                                        asset.getRoom().getFloor().getBuilding().getHospital().getName().toLowerCase().contains(lowerCaseQuery)) ||
+                                (asset.getRoom() != null && asset.getRoom().getFloor() != null &&
+                                        asset.getRoom().getFloor().getBuilding() != null &&
+                                        asset.getRoom().getFloor().getBuilding().getName().toLowerCase().contains(lowerCaseQuery)) ||
+                                (asset.getRoom() != null && asset.getRoom().getFloor() != null &&
+                                        asset.getRoom().getFloor().getName().toLowerCase().contains(lowerCaseQuery)) ||
+                                (asset.getRoom() != null && asset.getRoom().getName().toLowerCase().contains(lowerCaseQuery)) ||
+                                (asset.getStatus() != null && asset.getStatus().toLowerCase().contains(lowerCaseQuery)) ||
+                                (asset.getOwnership() != null && asset.getOwnership().toLowerCase().contains(lowerCaseQuery)) ||
+                                (asset.getCategory() != null && asset.getCategory().getName().toLowerCase().contains(lowerCaseQuery)) ||
+                                (asset.getSubcategory() != null && asset.getSubcategory().getName().toLowerCase().contains(lowerCaseQuery)) ||
+                                (asset.getBrand() != null && asset.getBrand().getName().toLowerCase().contains(lowerCaseQuery)) ||
+                                (asset.getCondition() != null && asset.getCondition().toLowerCase().contains(lowerCaseQuery)))
+                        .collect(Collectors.toList());
+            }
         }
-
-        if (currentQuery != null && !currentQuery.trim().isEmpty()) {
-            String lowerCaseQuery = currentQuery.toLowerCase();
-            fullyFilteredList = fullyFilteredList.stream()
-                    .filter(asset -> (asset.getCode() != null && asset.getCode().toLowerCase().contains(lowerCaseQuery)) ||
-                            (asset.getName() != null && asset.getName().toLowerCase().contains(lowerCaseQuery)) ||
-                            (asset.getRoom() != null && asset.getRoom().getFloor() != null && asset.getRoom().getFloor().getBuilding() != null && asset.getRoom().getFloor().getBuilding().getHospital() != null && asset.getRoom().getFloor().getBuilding().getHospital().getName().toLowerCase().contains(lowerCaseQuery)) ||
-                            (asset.getRoom() != null && asset.getRoom().getFloor() != null && asset.getRoom().getFloor().getBuilding() != null && asset.getRoom().getFloor().getBuilding().getName().toLowerCase().contains(lowerCaseQuery)) ||
-                            (asset.getRoom() != null && asset.getRoom().getFloor() != null && asset.getRoom().getFloor().getName().toLowerCase().contains(lowerCaseQuery)) ||
-                            (asset.getRoom() != null && asset.getRoom().getName().toLowerCase().contains(lowerCaseQuery)) ||
-                            (asset.getStatus() != null && asset.getStatus().toLowerCase().contains(lowerCaseQuery)) ||
-                            (asset.getOwnership() != null && asset.getOwnership().toLowerCase().contains(lowerCaseQuery)) ||
-                            (asset.getCategory() != null && asset.getCategory().getName().toLowerCase().contains(lowerCaseQuery)) ||
-                            (asset.getSubcategory() != null && asset.getSubcategory().getName().toLowerCase().contains(lowerCaseQuery)) ||
-                            (asset.getBrand() != null && asset.getBrand().getName().toLowerCase().contains(lowerCaseQuery)) ||
-                            (asset.getCondition() != null && asset.getCondition().toLowerCase().contains(lowerCaseQuery)))
-                    .collect(Collectors.toList());
-        }
-
-        filteredAssetList.setValue(fullyFilteredList);
+        filteredAssetList.setValue(results);
     }
+
+
 }
