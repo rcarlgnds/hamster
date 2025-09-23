@@ -18,6 +18,8 @@ import com.aktivo.hamster.data.network.ApiService;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -26,6 +28,7 @@ public class ActivationApprovalViewModel extends AndroidViewModel {
 
     private final ApiService apiService;
     private final MutableLiveData<List<ApprovalItem>> approvalList = new MutableLiveData<>();
+    private List<ApprovalItem> originalApprovalList = new ArrayList<>();
     private final MutableLiveData<ActivationDetailData> activationDetails = new MutableLiveData<>();
     private final MutableLiveData<Boolean> isLoading = new MutableLiveData<>(false);
     private final MutableLiveData<String> errorMessage = new MutableLiveData<>();
@@ -35,6 +38,7 @@ public class ActivationApprovalViewModel extends AndroidViewModel {
     private int totalPages = 1;
     private boolean isLoadingMore = false;
     private static final int PAGE_SIZE = 10;
+    private String currentSearchQuery = "";
 
     public ActivationApprovalViewModel(@NonNull Application application) {
         super(application);
@@ -60,15 +64,12 @@ public class ActivationApprovalViewModel extends AndroidViewModel {
                 if (response.isSuccessful() && response.body() != null && response.body().getData() != null) {
                     totalPages = response.body().getData().getPagination().getTotalPages();
                     List<ApprovalItem> newItems = response.body().getData().getData();
-                    List<ApprovalItem> currentList = approvalList.getValue();
-                    if (currentList == null) {
-                        currentList = new ArrayList<>();
-                    }
+
                     if (currentPage == 1) {
-                        currentList.clear();
+                        originalApprovalList.clear();
                     }
-                    currentList.addAll(newItems);
-                    approvalList.setValue(currentList);
+                    originalApprovalList.addAll(newItems);
+                    filterApprovalList();
                     currentPage++;
                 } else {
                     handleApiError(response, "Failed to load approvals.");
@@ -84,6 +85,27 @@ public class ActivationApprovalViewModel extends AndroidViewModel {
         });
     }
 
+    public void search(String query) {
+        currentSearchQuery = query;
+        filterApprovalList();
+    }
+
+    private void filterApprovalList() {
+        if (originalApprovalList == null) return;
+
+        List<ApprovalItem> filteredList = new ArrayList<>(originalApprovalList);
+
+        if (currentSearchQuery != null && !currentSearchQuery.isEmpty()) {
+            String lowerCaseQuery = currentSearchQuery.toLowerCase();
+            filteredList = filteredList.stream()
+                    .filter(item -> (item.getAssetName() != null && item.getAssetName().toLowerCase().contains(lowerCaseQuery)) ||
+                            (item.getAssetCode() != null && item.getAssetCode().toLowerCase().contains(lowerCaseQuery)))
+                    .collect(Collectors.toList());
+        }
+
+        approvalList.setValue(filteredList);
+    }
+
     public void loadMoreItems() {
         if (!isLoadingMore) {
             fetchPendingApprovals();
@@ -93,6 +115,7 @@ public class ActivationApprovalViewModel extends AndroidViewModel {
     public void refresh() {
         currentPage = 1;
         totalPages = 1;
+        originalApprovalList.clear();
         approvalList.setValue(new ArrayList<>());
         fetchPendingApprovals();
     }

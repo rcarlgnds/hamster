@@ -14,6 +14,7 @@ import com.aktivo.hamster.data.model.AssetRejected;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -47,7 +48,7 @@ public class RejectedAssetAdapter extends RecyclerView.Adapter<RejectedAssetAdap
 
     public RejectedAssetAdapter(Context context, List<AssetRejected> rejectedList, OnActionClickListener listener) {
         this.context = context;
-        this.rejectedList = rejectedList;
+        this.rejectedList = new ArrayList<>(rejectedList);
         this.listener = listener;
     }
 

@@ -6,6 +6,8 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -21,8 +23,13 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.aktivo.hamster.R;
 import com.aktivo.hamster.data.model.Asset;
+import com.aktivo.hamster.data.model.OptionItem;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class InventoryActivity extends AppCompatActivity {
 
@@ -32,6 +39,11 @@ public class InventoryActivity extends AppCompatActivity {
     private InventoryAdapter adapter;
     private LinearLayout layoutEmpty;
     private FloatingActionButton fabSearch;
+
+    private List<OptionItem> hospitalList = new ArrayList<>();
+    private List<OptionItem> buildingList = new ArrayList<>();
+    private List<OptionItem> floorList = new ArrayList<>();
+    private List<OptionItem> roomList = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -132,8 +144,119 @@ public class InventoryActivity extends AppCompatActivity {
         } else if (itemId == android.R.id.home) {
             finish();
             return true;
+        } else if (itemId == R.id.action_advanced_search) {
+            showAdvancedSearchDialog();
+            return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void showAdvancedSearchDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        LayoutInflater inflater = this.getLayoutInflater();
+        View dialogView = inflater.inflate(R.layout.dialog_advanced_search, null);
+        builder.setView(dialogView);
+
+        final AlertDialog dialog = builder.create();
+
+        TextInputEditText etSearchQuery = dialogView.findViewById(R.id.editTextSearchQuery);
+        AutoCompleteTextView spinnerHospital = dialogView.findViewById(R.id.spinnerHospital);
+        AutoCompleteTextView spinnerBuilding = dialogView.findViewById(R.id.spinnerBuilding);
+        AutoCompleteTextView spinnerFloor = dialogView.findViewById(R.id.spinnerFloor);
+        AutoCompleteTextView spinnerRoom = dialogView.findViewById(R.id.spinnerRoom);
+        TextInputLayout layoutBuilding = dialogView.findViewById(R.id.layoutSpinnerBuilding);
+        TextInputLayout layoutFloor = dialogView.findViewById(R.id.layoutSpinnerFloor);
+        TextInputLayout layoutRoom = dialogView.findViewById(R.id.layoutSpinnerRoom);
+        Button btnCancel = dialogView.findViewById(R.id.buttonCancel);
+        Button btnSearch = dialogView.findViewById(R.id.buttonSearch);
+
+        final String[] selectedHospitalId = {null};
+        final String[] selectedBuildingId = {null};
+        final String[] selectedFloorId = {null};
+        final String[] selectedRoomId = {null};
+
+        viewModel.getHospitalOptions().observe(this, options -> {
+            hospitalList = options;
+            ArrayAdapter<OptionItem> adapter = new ArrayAdapter<>(this, android.R.layout.simple_dropdown_item_1line, hospitalList);
+            spinnerHospital.setAdapter(adapter);
+        });
+
+        viewModel.getBuildingOptions().observe(this, options -> {
+            buildingList = options;
+            ArrayAdapter<OptionItem> adapter = new ArrayAdapter<>(this, android.R.layout.simple_dropdown_item_1line, buildingList);
+            spinnerBuilding.setAdapter(adapter);
+        });
+
+        viewModel.getFloorOptions().observe(this, options -> {
+            floorList = options;
+            ArrayAdapter<OptionItem> adapter = new ArrayAdapter<>(this, android.R.layout.simple_dropdown_item_1line, floorList);
+            spinnerFloor.setAdapter(adapter);
+        });
+
+        viewModel.getRoomOptions().observe(this, options -> {
+            roomList = options;
+            ArrayAdapter<OptionItem> adapter = new ArrayAdapter<>(this, android.R.layout.simple_dropdown_item_1line, roomList);
+            spinnerRoom.setAdapter(adapter);
+        });
+
+        viewModel.fetchHospitalOptions();
+
+        spinnerHospital.setOnItemClickListener((parent, view, position, id) -> {
+            OptionItem selected = hospitalList.get(position);
+            selectedHospitalId[0] = selected.getId();
+            viewModel.fetchBuildingOptions(selected.getId());
+
+            spinnerBuilding.setText("", false);
+            selectedBuildingId[0] = null;
+            spinnerFloor.setText("", false);
+            selectedFloorId[0] = null;
+            spinnerRoom.setText("", false);
+            selectedRoomId[0] = null;
+
+            layoutBuilding.setVisibility(View.VISIBLE);
+            layoutFloor.setVisibility(View.GONE);
+            layoutRoom.setVisibility(View.GONE);
+        });
+
+        spinnerBuilding.setOnItemClickListener((parent, view, position, id) -> {
+            OptionItem selected = buildingList.get(position);
+            selectedBuildingId[0] = selected.getId();
+            viewModel.fetchFloorOptions(selected.getId());
+
+            spinnerFloor.setText("", false);
+            selectedFloorId[0] = null;
+            spinnerRoom.setText("", false);
+            selectedRoomId[0] = null;
+
+            layoutFloor.setVisibility(View.VISIBLE);
+            layoutRoom.setVisibility(View.GONE);
+        });
+
+        spinnerFloor.setOnItemClickListener((parent, view, position, id) -> {
+            OptionItem selected = floorList.get(position);
+            selectedFloorId[0] = selected.getId();
+            viewModel.fetchRoomOptions(selected.getId());
+
+            spinnerRoom.setText("", false);
+            selectedRoomId[0] = null;
+
+            layoutRoom.setVisibility(View.VISIBLE);
+        });
+
+        spinnerRoom.setOnItemClickListener((parent, view, position, id) -> {
+            OptionItem selected = roomList.get(position);
+            selectedRoomId[0] = selected.getId();
+        });
+
+        btnCancel.setOnClickListener(v -> dialog.dismiss());
+
+        btnSearch.setOnClickListener(v -> {
+            String nameQuery = etSearchQuery.getText().toString().trim();
+            viewModel.advancedSearch(nameQuery, selectedHospitalId[0], selectedBuildingId[0], selectedFloorId[0], selectedRoomId[0]);
+            dialog.dismiss();
+        });
+
+        dialog.show();
     }
 
     private void showFilterDialog() {
