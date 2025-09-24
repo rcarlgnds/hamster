@@ -93,10 +93,23 @@ public class InventoryActivity extends AppCompatActivity {
 
         viewModel.getIsLoading().observe(this, isLoading -> {
             progressBar.setVisibility(isLoading ? View.VISIBLE : View.GONE);
+
+            if(isLoading) {
+                layoutEmpty.setVisibility(View.GONE);
+            } else {
+                boolean isEmpty = adapter.getItemCount() == 0;
+                recyclerView.setVisibility(isEmpty ? View.GONE : View.VISIBLE);
+                layoutEmpty.setVisibility(isEmpty ? View.VISIBLE : View.GONE);
+            }
+
         });
 
         viewModel.getIsError().observe(this, isError -> {
             if (isError) {
+                progressBar.setVisibility(View.GONE);
+                boolean isEmpty = adapter.getItemCount() == 0;
+                recyclerView.setVisibility(isEmpty ? View.GONE : View.VISIBLE);
+                layoutEmpty.setVisibility(isEmpty ? View.VISIBLE : View.GONE);
                 Toast.makeText(this, "Gagal memuat data", Toast.LENGTH_SHORT).show();
             }
         });

@@ -19,8 +19,11 @@ import com.aktivo.hamster.data.constant.AssetStatus;
 import com.aktivo.hamster.data.model.Asset;
 import com.google.android.material.card.MaterialCardView;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 public class InventoryAdapter extends RecyclerView.Adapter<InventoryAdapter.ViewHolder> {
 
@@ -77,19 +80,31 @@ public class InventoryAdapter extends RecyclerView.Adapter<InventoryAdapter.View
             iconCopy = itemView.findViewById(R.id.iconCopy);
         }
 
+        private String formatDate(Long timestamp) {
+            if (timestamp == null) return "";
+            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+            return sdf.format(new Date(timestamp * 1000));
+        }
+
         public void bind(final Asset asset) {
             textViewItemName.setText(asset.getName());
             textViewItemCode.setText(asset.getCode());
 
+            String activeStatus =
+                    itemView.getContext().getString(R.string.status_active) +
+                    " - " +
+                    formatDate(asset.getEffectiveUsageDate());
+
             if (AssetStatus.ACTIVE.equalsIgnoreCase(asset.getStatus())) {
-                textViewStatusBadge.setText(R.string.status_active);
+                textViewStatusBadge.setText(activeStatus);
                 textViewStatusBadge.setBackgroundResource(R.drawable.bg_badge_activate_background);
             } else if(AssetStatus.INACTIVE.equalsIgnoreCase(asset.getStatus())) {
                 textViewStatusBadge.setText(R.string.status_inactive);
                 textViewStatusBadge.setBackgroundResource(R.drawable.bg_badge_inactivate_background);
             } else if(AssetStatus.REJECTED.equalsIgnoreCase(asset.getStatus())) {
                 textViewStatusBadge.setText(R.string.status_rejected);
-                textViewStatusBadge.setBackgroundResource(R.drawable.bg_badge_inactivate_background);
+                textViewStatusBadge.setBackgroundResource(R.drawable.bg_badge_rejected_background);
+                textViewStatusBadge.setTextColor(itemView.getContext().getResources().getColor(R.color.white));
             } else if(AssetStatus.PENDING_CONFIRMATION_BY_HEAD_OF_ROOM.equalsIgnoreCase(asset.getStatus())) {
                 textViewStatusBadge.setText(R.string.status_pending_confirmation_by_head_of_room);
                 textViewStatusBadge.setBackgroundResource(R.drawable.bg_badge_inactivate_background);
@@ -98,13 +113,16 @@ public class InventoryAdapter extends RecyclerView.Adapter<InventoryAdapter.View
                 textViewStatusBadge.setBackgroundResource(R.drawable.bg_badge_inactivate_background);
             } else if(AssetStatus.REJECTED_DOES_NOT_MEET_REQUEST.equalsIgnoreCase(asset.getStatus())) {
                 textViewStatusBadge.setText(R.string.status_rejected_does_not_meet_request);
-                textViewStatusBadge.setBackgroundResource(R.drawable.bg_badge_inactivate_background);
+                textViewStatusBadge.setBackgroundResource(R.drawable.bg_badge_rejected_background);
+                textViewStatusBadge.setTextColor(itemView.getContext().getResources().getColor(R.color.white));
             } else if(AssetStatus.REJECTED_WRONG_LOCATION.equalsIgnoreCase(asset.getStatus())) {
                 textViewStatusBadge.setText(R.string.status_rejected_wrong_location);
-                textViewStatusBadge.setBackgroundResource(R.drawable.bg_badge_inactivate_background);
+                textViewStatusBadge.setBackgroundResource(R.drawable.bg_badge_rejected_background);
+                textViewStatusBadge.setTextColor(itemView.getContext().getResources().getColor(R.color.white));
             } else if(AssetStatus.REJECTED_IN_LOGISTIC.equalsIgnoreCase(asset.getStatus())) {
                 textViewStatusBadge.setText(R.string.status_rejected_in_logistic);
-                textViewStatusBadge.setBackgroundResource(R.drawable.bg_badge_inactivate_background);
+                textViewStatusBadge.setBackgroundResource(R.drawable.bg_badge_rejected_background);
+                textViewStatusBadge.setTextColor(itemView.getContext().getResources().getColor(R.color.white));
             }
 
             cardRoot.setOnClickListener(v -> {
