@@ -3,6 +3,8 @@ package com.aktivo.hamster.activation;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -17,6 +19,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SearchView;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -80,6 +83,39 @@ public class ConfirmationApprovalActivity extends AppCompatActivity {
         viewModel.refresh();
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.inventory_menu, menu);
+
+        MenuItem advancedSearchItem = menu.findItem(R.id.action_advanced_search);
+        if (advancedSearchItem != null) {
+            advancedSearchItem.setVisible(false);
+        }
+        MenuItem filterItem = menu.findItem(R.id.action_filter);
+        if (filterItem != null) {
+            filterItem.setVisible(false);
+        }
+
+        MenuItem searchItem = menu.findItem(R.id.action_search);
+        SearchView searchView = (SearchView) searchItem.getActionView();
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                viewModel.search(query);
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                viewModel.search(newText);
+                return true;
+            }
+        });
+
+        return true;
+    }
+
     private void setupToolbar() {
         MaterialToolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -121,6 +157,8 @@ public class ConfirmationApprovalActivity extends AppCompatActivity {
             recyclerView.setVisibility(isEmpty ? View.GONE : View.VISIBLE);
             if (!isEmpty) {
                 adapter.updateData(items);
+            } else {
+                adapter.updateData(new ArrayList<>());
             }
         });
 

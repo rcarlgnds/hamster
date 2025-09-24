@@ -18,6 +18,7 @@ import com.aktivo.hamster.utils.FileUtils;
 import java.util.ArrayList;
 import java.util.List;
 import java.io.File;
+import java.util.stream.Collectors;
 
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
@@ -30,10 +31,9 @@ public class RejectedAssetViewModel extends AndroidViewModel {
 
     private final ApiService apiService;
     private final MutableLiveData<List<AssetRejected>> rejectedList = new MutableLiveData<>();
-//    private final MutableLiveData<AssetRejectedDetailData> rejectedDetails = new MutableLiveData<>();
+    private List<AssetRejected> originalRejectedList = new ArrayList<>();
     private final MutableLiveData<Boolean> isLoading = new MutableLiveData<>(false);
     private final MutableLiveData<String> errorMessage = new MutableLiveData<>();
-//    private final MutableLiveData<Boolean> rejectionResult = new MutableLiveData<>();
 
     private int currentPage = 1;
     private int totalPages = 1;
@@ -137,15 +137,12 @@ public class RejectedAssetViewModel extends AndroidViewModel {
                 if(response.isSuccessful() && response.body() != null && response.body().getData() != null) {
                     totalPages = response.body().getData().getPagination().getTotalPages();
                     List<AssetRejected> newItems = response.body().getData().getData();
-                    List<AssetRejected> currentList = rejectedList.getValue();
-                    if (currentList == null) {
-                        currentList = new ArrayList<>();
-                    }
+
                     if (currentPage == 1) {
-                        currentList.clear();
+                        originalRejectedList.clear();
                     }
-                    currentList.addAll(newItems);
-                    rejectedList.setValue(currentList);
+                    originalRejectedList.addAll(newItems);
+                    filterAssets();
                     currentPage++;
                 } else {
                     handleApiError(response, "Failed to load rejected assets.");
@@ -161,6 +158,28 @@ public class RejectedAssetViewModel extends AndroidViewModel {
         });
     }
 
+    public void search(String query) {
+        currentSearchQuery = query;
+        filterAssets();
+    }
+
+    private void filterAssets() {
+        if (originalRejectedList == null) return;
+
+        List<AssetRejected> filteredList = new ArrayList<>(originalRejectedList);
+
+        if (currentSearchQuery != null && !currentSearchQuery.isEmpty()) {
+            String lowerCaseQuery = currentSearchQuery.toLowerCase();
+            filteredList = filteredList.stream()
+                    .filter(asset -> (asset.getAssetName() != null && asset.getAssetName().toLowerCase().contains(lowerCaseQuery)) ||
+                            (asset.getAssetCode() != null && asset.getAssetCode().toLowerCase().contains(lowerCaseQuery)) ||
+                            (asset.getStatus() != null && asset.getStatus().toLowerCase().contains(lowerCaseQuery)))
+                    .collect(Collectors.toList());
+        }
+
+        rejectedList.setValue(filteredList);
+    }
+
     public void loadMoreItems() {
         if (!isLoadingMore) {
             fetchRejectedAssets();
@@ -170,6 +189,7 @@ public class RejectedAssetViewModel extends AndroidViewModel {
     public void refresh() {
         currentPage = 1;
         totalPages = 1;
+        originalRejectedList.clear();
         rejectedList.setValue(new ArrayList<>());
         fetchRejectedAssets();
     }
