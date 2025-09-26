@@ -13,6 +13,7 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import androidx.appcompat.widget.SearchView;
 
+import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
@@ -39,6 +40,7 @@ public class InventoryActivity extends AppCompatActivity {
     private InventoryAdapter adapter;
     private LinearLayout layoutEmpty;
     private FloatingActionButton fabSearch;
+    private TextView tvTotalInventories;
 
     private List<OptionItem> hospitalList = new ArrayList<>();
     private List<OptionItem> buildingList = new ArrayList<>();
@@ -54,46 +56,47 @@ public class InventoryActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+        setupViews();
+        setupObservers();
+        viewModel.refreshAssets();
+    }
+
+    private void setupViews() {
+        tvTotalInventories = findViewById(R.id.tvInventoryTotal);
         progressBar = findViewById(R.id.progressBar);
         recyclerView = findViewById(R.id.recyclerViewInventory);
         layoutEmpty = findViewById(R.id.layoutEmpty);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
-                LinearLayoutManager layoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
-                if (layoutManager != null) {
-                    int visibleItemCount = layoutManager.getChildCount();
-                    int totalItemCount = layoutManager.getItemCount();
-                    int firstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition();
 
-                    if ((visibleItemCount + firstVisibleItemPosition) >= totalItemCount && firstVisibleItemPosition >= 0) {
-                        viewModel.loadMoreItems();
-                    }
+                LinearLayoutManager layoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
+
+                if (layoutManager == null || dy <= 0) return;
+
+                int last = layoutManager.findLastVisibleItemPosition();
+                int total = layoutManager.getItemCount();
+                int threshold = 4; // load when 4 from the end
+
+                if (last >= total - 1 - threshold) {
+                    viewModel.loadMoreItems();
                 }
             }
         });
 
         fabSearch = findViewById(R.id.fab_add_inventory);
-        viewModel = new ViewModelProvider(this).get(InventoryViewModel.class);
         fabSearch.setOnClickListener(v -> showSearchDialog());
-
-        setupObservers();
-        viewModel.refreshAssets();
+        viewModel = new ViewModelProvider(this).get(InventoryViewModel.class);
     }
 
     private void setupObservers() {
         viewModel.getAssetList().observe(this, assets -> {
-            if (assets == null || assets.isEmpty()) {
-                recyclerView.setVisibility(View.GONE);
-                layoutEmpty.setVisibility(View.VISIBLE);
-            } else {
-                recyclerView.setVisibility(View.VISIBLE);
-                layoutEmpty.setVisibility(View.GONE);
-            }
+            boolean empty = assets == null || assets.isEmpty();
+            recyclerView.setVisibility(empty ? View.GONE : View.VISIBLE);
+            layoutEmpty.setVisibility(empty ? View.VISIBLE : View.GONE);
 
             if (adapter == null) {
                 adapter = new InventoryAdapter(assets);
@@ -101,6 +104,11 @@ public class InventoryActivity extends AppCompatActivity {
             } else {
                 adapter.updateData(assets);
             }
+        });
+
+        viewModel.getTotalCount().observe(this, total -> {
+            if (total == null) total = 0;
+            tvTotalInventories.setText("Total: " + total);
         });
 
         viewModel.getIsLoading().observe(this, isLoading -> {

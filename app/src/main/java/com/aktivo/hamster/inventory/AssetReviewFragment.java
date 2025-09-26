@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.Toast;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -36,6 +37,7 @@ public class AssetReviewFragment extends Fragment implements FragmentDataCollect
     private DocumentAdapter licenseAdapter, userManualAdapter, customAdapter;
 
     // Views
+    private Button btnChooseLicense, btnChooseUserManual, btnChooseCustomDoc, btnAddCustomDoc;
     private TextInputEditText etCustomDocName;
     private TextInputLayout tilCustomDocName;
 
@@ -67,6 +69,11 @@ public class AssetReviewFragment extends Fragment implements FragmentDataCollect
     }
 
     private void initializeViews(View view) {
+        btnChooseLicense = view.findViewById(R.id.btnChooseLicense);
+        btnChooseUserManual = view.findViewById(R.id.btnChooseUserManual);
+        btnAddCustomDoc = view.findViewById(R.id.btnAddCustomDoc);
+        btnChooseCustomDoc = view.findViewById(R.id.btnChooseCustomFile);
+
         etCustomDocName = view.findViewById(R.id.etCustomDocName);
         tilCustomDocName = view.findViewById(R.id.tilCustomDocName);
     }
@@ -179,6 +186,30 @@ public class AssetReviewFragment extends Fragment implements FragmentDataCollect
                 userManualAdapter.notifyDataSetChanged();
                 customAdapter.notifyDataSetChanged();
             }
+
+            viewModel.getIsEditable().observe(getViewLifecycleOwner(), isEditable -> {
+                if (Boolean.TRUE.equals(isEditable)) {
+                    if (licenseAdapter != null)    licenseAdapter.setEditable(isEditable);
+                    if (userManualAdapter != null) userManualAdapter.setEditable(isEditable);
+                    if (customAdapter != null)     customAdapter.setEditable(isEditable);
+
+                    etCustomDocName.setEnabled(isEditable);
+                    btnChooseLicense.setEnabled(isEditable);
+                    btnChooseUserManual.setEnabled(isEditable);
+                    btnAddCustomDoc.setEnabled(isEditable);
+                    btnChooseCustomDoc.setEnabled(isEditable);
+                } else {
+                    if (licenseAdapter != null)    licenseAdapter.setEditable(isEditable);
+                    if (userManualAdapter != null) userManualAdapter.setEditable(isEditable);
+                    if (customAdapter != null)     customAdapter.setEditable(isEditable);
+
+                    etCustomDocName.setEnabled(isEditable);
+                    btnChooseLicense.setEnabled(isEditable);
+                    btnChooseUserManual.setEnabled(isEditable);
+                    btnAddCustomDoc.setEnabled(isEditable);
+                    btnChooseCustomDoc.setEnabled(isEditable);
+                }
+            });
         });
     }
 

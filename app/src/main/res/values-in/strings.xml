@@ -83,6 +83,7 @@
     <string name="tab_finance">Keuangan</string>
     <string name="tab_documents">Dokumen</string>
     <string name="tab_review">Review</string>
+    <string name="register">Daftar</string>
     <string name="save_draft">Simpan Draf</string>
     <string name="save_and_confirm">Simpan &amp; Konfirmasi</string>
     <string name="save">SIMPAN</string>
@@ -164,6 +165,8 @@
     <string name="role">Peranan</string>
     <string name="location">Lokasi</string>
     <string name="button_confirmation">Konfirmasi</string>
+    <string name="button_commissioning">Commissioning</string>
+    <string name="button_work_order">Konfirmasi</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>

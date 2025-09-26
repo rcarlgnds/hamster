@@ -137,6 +137,21 @@ public class AssetDocumentsFragment extends Fragment implements FragmentDataColl
     // --- ViewModel Observers ---
     private void setupObservers() {
         viewModel.getAssetData().observe(getViewLifecycleOwner(), this::displayAssetMedia);
+
+        viewModel.getIsEditable().observe(getViewLifecycleOwner(), isEditable -> {
+            if (Boolean.TRUE.equals(isEditable)) {
+                if(photosAdapter != null) photosAdapter.setEditable(isEditable);
+
+                buttonAddAssetPhoto.setEnabled(isEditable);
+                buttonAddAssetPhoto.setVisibility(View.VISIBLE);
+                buttonTakeSerialPhoto.setEnabled(isEditable);
+                buttonTakeSerialPhoto.setVisibility(View.VISIBLE);
+            } else {
+                if(photosAdapter != null) photosAdapter.setEditable(isEditable);
+                buttonAddAssetPhoto.setVisibility(View.GONE);
+                buttonTakeSerialPhoto.setVisibility(View.GONE);
+            }
+        });
     }
 
     private void displayAssetMedia(Asset asset) {

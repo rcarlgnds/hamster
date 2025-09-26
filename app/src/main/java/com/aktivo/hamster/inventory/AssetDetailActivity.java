@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
@@ -19,6 +20,8 @@ import com.google.android.material.tabs.TabLayoutMediator;
 public class AssetDetailActivity extends AppCompatActivity {
 
     private static final String TAG = "AssetDetailActivity";
+    private LinearLayout llLeft, llRight;
+    private Button buttonSaveDraft, buttonSave, buttonRegister;
     private AssetDetailViewModel viewModel;
     private ActivityAssetDetailBinding binding;
     private String assetId;
@@ -46,6 +49,8 @@ public class AssetDetailActivity extends AppCompatActivity {
         if (assetId != null && savedInstanceState == null) {
             viewModel.fetchAssetById(assetId);
             viewModel.fetchAllOptions();
+            viewModel.fetchAssetIsConfirmed(assetId);
+            viewModel.setIsEditMode(false);
         }
 
         pagerAdapter = new AssetDetailPagerAdapter(this);
@@ -62,16 +67,43 @@ public class AssetDetailActivity extends AppCompatActivity {
             }
         }).attach();
 
-        Button buttonSave = findViewById(R.id.buttonSave);
-        Button buttonSaveDraft = findViewById(R.id.buttonSaveDraft);
-
-        buttonSave.setOnClickListener(v -> saveAllChanges(true));
-        buttonSaveDraft.setOnClickListener(v -> saveAllChanges(false));
-
+        setupViews();
         setupObservers();
     }
 
+    private void setupViews() {
+        llLeft = findViewById(R.id.btnLeft);
+        llRight = findViewById(R.id.btnRight);
+
+        buttonSave = findViewById(R.id.buttonSave);
+        buttonSaveDraft = findViewById(R.id.buttonSaveDraft);
+        buttonRegister = findViewById(R.id.buttonRegist);
+
+        buttonRegister.setOnClickListener(v -> {
+            Boolean currentEditable = viewModel.getIsEditable().getValue();
+            Boolean newEditable = (currentEditable == null) ? true : !currentEditable;
+            viewModel.setIsEditMode(newEditable);
+
+            llLeft.setVisibility(View.GONE);
+            llRight.setVisibility(View.VISIBLE);
+        });
+        buttonSave.setOnClickListener(v -> saveAllChanges(true));
+        buttonSaveDraft.setOnClickListener(v -> saveAllChanges(false));
+    }
+
     private void setupObservers() {
+        viewModel.getAssetConfirmed().observe(this, confirmed -> {
+            if (confirmed == null) {
+                return;
+            }
+
+            if(confirmed == true) {
+                llLeft.setVisibility(View.GONE);
+            } else if(confirmed == false) {
+                llLeft.setVisibility(View.VISIBLE);
+            }
+        });
+
         viewModel.getIsLoading().observe(this, isLoading -> {
             if (isLoading != null && isLoading) {
                 loadingIndicator.setVisibility(View.VISIBLE);
@@ -122,8 +154,9 @@ public class AssetDetailActivity extends AppCompatActivity {
     }
 
     private static class AssetDetailPagerAdapter extends FragmentStateAdapter {
-
-        public AssetDetailPagerAdapter(FragmentActivity fa) { super(fa); }
+        public AssetDetailPagerAdapter(FragmentActivity fa) {
+            super(fa);
+        }
 
         @NonNull
         @Override

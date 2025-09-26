@@ -1,15 +1,14 @@
 package com.aktivo.hamster.data.model;
 
-import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 
-public class AssetSubCategory implements Serializable {
+public class AssetUnit {
     private String id;
     private String name;
     private String code;
-    private String categoryId;
-    private AssetCategory category;
-    private List<AssetUnit> units;
+    private String subCategoryId;
+    private AssetSubCategory subCategory;
     private List<Asset> assets;
 
     // Getters
@@ -25,12 +24,12 @@ public class AssetSubCategory implements Serializable {
         return code;
     }
 
-    public String getCategoryId() {
-        return categoryId;
+    public String getSubCategoryId() {
+        return subCategoryId;
     }
 
-    public AssetCategory getCategory() {
-        return category;
+    public AssetSubCategory getSubCategory() {
+        return subCategory;
     }
 
     public List<Asset> getAssets() {

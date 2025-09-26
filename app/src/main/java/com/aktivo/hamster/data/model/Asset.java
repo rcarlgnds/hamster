@@ -17,7 +17,7 @@ public class Asset implements Serializable {
     private String categoryId;
     private String subcategoryId;
     private Integer total;
-    private String unit;
+    private String unitId;
     private String description;
     private String status;
     private String brandId;
@@ -42,12 +42,14 @@ public class Asset implements Serializable {
     private Long deletedAt;
     private String deletedBy;
     private String createdVia;
+    private Boolean isConfirmed;
     private Long createdAt;
     private Long updatedAt;
 
     // Relasi
     private AssetCategory category;
     private AssetSubCategory subcategory;
+    private AssetUnit unit;
     private Brand brand;
     private Room room;
     private SubRoom subRoom;
@@ -109,12 +111,12 @@ public class Asset implements Serializable {
         return subcategoryId;
     }
 
-    public Integer getTotal() {
-        return total;
+    public String getUnitId() {
+        return unitId;
     }
 
-    public String getUnit() {
-        return unit;
+    public Integer getTotal() {
+        return total;
     }
 
     public String getDescription() {
@@ -213,6 +215,8 @@ public class Asset implements Serializable {
         return createdVia;
     }
 
+    public Boolean getIsConfirmed() { return isConfirmed; }
+
     public Long getCreatedAt() {
         return createdAt;
     }
@@ -227,6 +231,10 @@ public class Asset implements Serializable {
 
     public AssetSubCategory getSubcategory() {
         return subcategory;
+    }
+
+    public AssetUnit getUnit() {
+        return unit;
     }
 
     public Brand getBrand() {

@@ -21,6 +21,7 @@ public class DocumentAdapter extends RecyclerView.Adapter<DocumentAdapter.Docume
     private final Context context;
     private final List<DocumentItem> documentList;
     private final DocumentClickListener listener;
+    private Boolean editable = false;
 
     public DocumentAdapter(Context context, List<DocumentItem> documentList, DocumentClickListener listener) {
         this.context = context;
@@ -35,10 +36,15 @@ public class DocumentAdapter extends RecyclerView.Adapter<DocumentAdapter.Docume
         return new DocumentViewHolder(view);
     }
 
+    public void setEditable(boolean editable) {
+        this.editable = editable;
+        notifyDataSetChanged();
+    }
+
     @Override
     public void onBindViewHolder(@NonNull DocumentViewHolder holder, int position) {
         DocumentItem item = documentList.get(position);
-        holder.bind(item, context, listener);
+        holder.bind(item, context, listener, editable);
     }
 
     @Override
@@ -59,7 +65,10 @@ public class DocumentAdapter extends RecyclerView.Adapter<DocumentAdapter.Docume
             buttonDownload = itemView.findViewById(R.id.buttonDownload);
         }
 
-        public void bind(final DocumentItem item, Context context, final DocumentClickListener listener) {
+        public void bind(final DocumentItem item,
+                         Context context,
+                         final DocumentClickListener listener,
+                         boolean editable) {
             tvDocumentName.setText(item.getFileName(context));
 
             if (item.isExisting()) {
@@ -74,6 +83,12 @@ public class DocumentAdapter extends RecyclerView.Adapter<DocumentAdapter.Docume
                 iconFileType.setImageResource(R.drawable.ic_pdf_file);
             } else {
                 iconFileType.setImageResource(R.drawable.ic_image_file);
+            }
+
+            if(Boolean.TRUE.equals(editable)) {
+                buttonDelete.setVisibility(View.VISIBLE);
+            } else {
+                buttonDelete.setVisibility(View.GONE);
             }
 
             buttonDelete.setOnClickListener(v -> listener.onDelete(item));

@@ -688,7 +688,7 @@ public interface ApiService {
     Call<Void> registerDeviceToken(@Body RegisterDeviceRequest body);
 
     @DELETE("/api/device-tokens/unregister")
-    Call<Void> unregisterDeviceToken(@Body UnregisterDeviceRequest body);
+    Call<Void> unregisterDeviceToken();
 
 //    @POST("asset-activation/settings")
 //    Call<AssetActivationSetting> createApprovalSetting(@Body CreateAssetActivationSettingRequest request);

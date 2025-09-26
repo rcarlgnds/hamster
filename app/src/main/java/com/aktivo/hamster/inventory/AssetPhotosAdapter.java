@@ -24,6 +24,7 @@ public class AssetPhotosAdapter extends RecyclerView.Adapter<AssetPhotosAdapter.
         public final Uri localUri;
         public final String remoteUrl;
         public final String mediaId;
+        private Boolean editable = false;
 
         public PhotoItem(Uri localUri) { this.localUri = localUri; this.remoteUrl = null; this.mediaId = null; }
         public PhotoItem(String remoteUrl, String mediaId) { this.localUri = null; this.remoteUrl = remoteUrl; this.mediaId = mediaId; }
@@ -40,6 +41,7 @@ public class AssetPhotosAdapter extends RecyclerView.Adapter<AssetPhotosAdapter.
     private final Context context;
     private final List<PhotoItem> photoItems;
     private final OnPhotoActionListener actionListener;
+    private Boolean editable = false;
 
     public AssetPhotosAdapter(Context context, List<PhotoItem> photoItems, OnPhotoActionListener listener) {
         this.context = context;
@@ -54,10 +56,15 @@ public class AssetPhotosAdapter extends RecyclerView.Adapter<AssetPhotosAdapter.
         return new PhotoViewHolder(view, actionListener);
     }
 
+    public void setEditable(boolean editable) {
+        this.editable = editable;
+        notifyDataSetChanged();
+    }
+
     @Override
     public void onBindViewHolder(@NonNull PhotoViewHolder holder, int position) {
         PhotoItem item = photoItems.get(position);
-        holder.bind(item, context);
+        holder.bind(item, context, editable);
     }
 
     @Override
@@ -94,12 +101,18 @@ public class AssetPhotosAdapter extends RecyclerView.Adapter<AssetPhotosAdapter.
             });
         }
 
-        public void bind(final PhotoItem item, final Context context) {
+        public void bind(final PhotoItem item, final Context context, boolean editable) {
             Glide.with(context)
                     .load(item.getModel())
                     .error(R.drawable.ic_broken_image)
                     .centerCrop()
                     .into(imageViewAsset);
+
+            if(Boolean.TRUE.equals(editable)) {
+                buttonDelete.setVisibility(View.VISIBLE);
+            } else {
+                buttonDelete.setVisibility(View.GONE);
+            }
 
             buttonView.setOnClickListener(v -> {
                 Intent intent = new Intent(context, ImagePreviewActivity.class);

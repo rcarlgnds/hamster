@@ -42,6 +42,8 @@ public class AssetDetailViewModel extends AndroidViewModel {
     private final MutableLiveData<Boolean> isSaveSuccess = new MutableLiveData<>();
     private final MutableLiveData<Boolean> isLoading = new MutableLiveData<>();
     private final MutableLiveData<String> errorMessage = new MutableLiveData<>();
+    private final MutableLiveData<Boolean> assetConfirmed = new MutableLiveData<>();
+    private final MutableLiveData<Boolean> isEditable = new MutableLiveData<>();
 
     private UpdateAssetRequest pendingUpdateRequest = new UpdateAssetRequest();
     private final List<Uri> newSerialNumberPhotoUris = new ArrayList<>();
@@ -81,6 +83,8 @@ public class AssetDetailViewModel extends AndroidViewModel {
     public LiveData<Boolean> getIsSaveSuccess() { return isSaveSuccess; }
     public LiveData<Boolean> getIsLoading() { return isLoading; }
     public LiveData<String> getErrorMessage() { return errorMessage; }
+    public LiveData<Boolean> getAssetConfirmed() { return assetConfirmed; }
+    public LiveData<Boolean> getIsEditable() { return isEditable; }
     public LiveData<List<OptionItem>> getCategoryOptions() { return categoryOptions; }
     public LiveData<List<OptionItem>> getSubCategoryOptions() { return subCategoryOptions; }
     public LiveData<List<OptionItem>> getBrandOptions() { return brandOptions; }
@@ -157,6 +161,36 @@ public class AssetDetailViewModel extends AndroidViewModel {
         });
     }
 
+    public void fetchAssetIsConfirmed(String assetId) {
+        isLoading.setValue(true);
+        apiService.getAssetById(assetId).enqueue(new Callback<AssetDetailResponse>() {
+            @Override
+            public void onResponse(@NonNull Call<AssetDetailResponse> call,
+                                   @NonNull Response<AssetDetailResponse> response) {
+                isLoading.setValue(false);
+                if (response.isSuccessful() && response.body() != null && response.body().getData() != null) {
+                    Asset asset = response.body().getData();
+                    Boolean confirmed = asset.getIsConfirmed();
+                    assetConfirmed.setValue(confirmed != null ? confirmed : false);
+                } else {
+                    errorMessage.setValue("Gagal memuat detail aset. Kode: " + response.code());
+                    assetConfirmed.setValue(null);
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<AssetDetailResponse> call, @NonNull Throwable t) {
+                isLoading.setValue(false);
+                errorMessage.setValue("Koneksi error: " + t.getMessage());
+                assetConfirmed.setValue(null);
+            }
+        });
+    }
+
+    public void setIsEditMode(boolean edit) {
+        isEditable.setValue(edit);
+    }
+
     private void initializePendingUpdate(Asset asset) {
         if (asset == null) {
             pendingUpdateRequest = new UpdateAssetRequest();
@@ -174,7 +208,7 @@ public class AssetDetailViewModel extends AndroidViewModel {
         pendingUpdateRequest.setSerialNumber(asset.getSerialNumber());
         pendingUpdateRequest.setDescription(asset.getDescription());
         pendingUpdateRequest.setTotal(asset.getTotal());
-        pendingUpdateRequest.setUnitId(asset.getUnit());
+        pendingUpdateRequest.setUnitId(asset.getUnitId());
 
         if (asset.getCategory() != null) pendingUpdateRequest.setCategoryId(asset.getCategory().getId());
         if (asset.getSubcategory() != null) pendingUpdateRequest.setSubcategoryId(asset.getSubcategory().getId());
@@ -273,8 +307,6 @@ public class AssetDetailViewModel extends AndroidViewModel {
         Log.d(TAG, "Total files to upload: " + fileParts.size());
         Log.d(TAG, "===========================================================");
 
-
-
         apiService.updateAsset(assetId, fields, fileParts).enqueue(new Callback<Asset>() {
             @Override
             public void onResponse(@NonNull Call<Asset> call, @NonNull Response<Asset> response) {
@@ -326,7 +358,6 @@ public class AssetDetailViewModel extends AndroidViewModel {
         addPart(fields, "responsibleDivisionId", request.getResponsibleDivisionId());
         addPart(fields, "responsibleWorkingUnitId", request.getResponsibleWorkingUnitId());
         addPart(fields, "responsibleUserId", request.getResponsibleUserId());
-
 
         // --- Asset Maintenance Fragment ---
         addPart(fields, "vendorId", request.getVendorId());

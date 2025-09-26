@@ -86,7 +86,6 @@ public class AssetMaintenanceFragment extends Fragment implements FragmentDataCo
         etDepreciationStart = view.findViewById(R.id.editTextDepreciationStart);
         etEffectiveActivationDate = view.findViewById(R.id.editTextEffectiveActivationDate);
         etFunctionalTestingDate = view.findViewById(R.id.editTextFunctionalTestingDate);
-        etEffectiveActivationDate.setEnabled(false);
         etPurchasePrice = view.findViewById(R.id.editTextPurchasePrice);
         etPONumber = view.findViewById(R.id.editTextPONumber);
         etInvoiceNumber = view.findViewById(R.id.editTextInvoiceNumber);
@@ -151,10 +150,6 @@ public class AssetMaintenanceFragment extends Fragment implements FragmentDataCo
             updateWarrantyStatus(time);
         }));
         etDepreciationStart.setOnClickListener(v -> showDatePickerDialog(etDepreciationStart, time -> viewModel.updateField(req -> req.setDepreciationStartDate(time))));
-//        etEffectiveActivationDate.setOnClickListener(v -> showDatePickerDialog(etEffectiveActivationDate, time -> viewModel.updateField(req -> req.setEffectiveUsageDate(time))));
-        etFunctionalTestingDate.setOnClickListener(v -> showDatePickerDialog(etFunctionalTestingDate, time -> {
-
-        }));
     }
 
     private void showDatePickerDialog(TextInputEditText editText, Consumer<Long> onDateSet) {
@@ -193,6 +188,44 @@ public class AssetMaintenanceFragment extends Fragment implements FragmentDataCo
                 vendorList.addAll(options);
                 ArrayAdapter<OptionItem> adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_dropdown_item_1line, vendorList);
                 acVendor.setAdapter(adapter);
+            }
+        });
+
+        viewModel.getIsEditable().observe(getViewLifecycleOwner(), isEditable -> {
+            if (Boolean.TRUE.equals(isEditable)) {
+                etProcurementDate.setEnabled(isEditable);
+                etPurchasePrice.setEnabled(isEditable);
+                acVendor.setEnabled(isEditable);
+                etPONumber.setEnabled(isEditable);
+                buttonChoosePODocument.setEnabled(isEditable);
+                etInvoiceNumber.setEnabled(isEditable);
+                buttonChooseInvoiceDocument.setEnabled(isEditable);
+                etWarrantyDate.setEnabled(isEditable);
+                etWarrantyStatus.setEnabled(false);
+                buttonChooseWarrantyDocument.setEnabled(isEditable);
+                etDepreciationPercent.setEnabled(isEditable);
+                etDepreciationValue.setEnabled(isEditable);
+                etDepreciationStart.setEnabled(isEditable);
+                etDepreciationDuration.setEnabled(isEditable);
+                etEffectiveActivationDate.setEnabled(false);
+                etFunctionalTestingDate.setEnabled(false);
+            } else {
+                etProcurementDate.setEnabled(isEditable);
+                etPurchasePrice.setEnabled(isEditable);
+                acVendor.setEnabled(isEditable);
+                etPONumber.setEnabled(isEditable);
+                buttonChoosePODocument.setEnabled(isEditable);
+                etInvoiceNumber.setEnabled(isEditable);
+                buttonChooseInvoiceDocument.setEnabled(isEditable);
+                etWarrantyDate.setEnabled(isEditable);
+                etWarrantyStatus.setEnabled(false);
+                buttonChooseWarrantyDocument.setEnabled(isEditable);
+                etDepreciationPercent.setEnabled(isEditable);
+                etDepreciationValue.setEnabled(isEditable);
+                etDepreciationStart.setEnabled(isEditable);
+                etDepreciationDuration.setEnabled(isEditable);
+                etEffectiveActivationDate.setEnabled(false);
+                etFunctionalTestingDate.setEnabled(false);
             }
         });
     }

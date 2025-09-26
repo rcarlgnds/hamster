@@ -83,6 +83,7 @@
     <string name="tab_finance">Finance</string>
     <string name="tab_documents">Documents</string>
     <string name="tab_review">Review</string>
+    <string name="register">Register</string>
     <string name="save_draft">Save Draft</string>
     <string name="save_and_confirm">Save &amp; Confirm</string>
     <string name="save">SAVE</string>
@@ -164,6 +165,8 @@
     <string name="role">Role</string>
     <string name="location">Location</string>
     <string name="button_confirmation">Confirmation</string>
+    <string name="button_commissioning">Commissioning</string>
+    <string name="button_work_order">Confirmation</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>

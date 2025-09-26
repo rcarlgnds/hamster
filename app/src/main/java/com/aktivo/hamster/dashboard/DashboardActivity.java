@@ -37,6 +37,8 @@ import com.google.android.material.textfield.TextInputEditText;
 import java.util.ArrayList;
 import java.util.List;
 
+import okhttp3.Route;
+
 public class DashboardActivity extends AppCompatActivity {
 
     private RecyclerView rvFeatures;
@@ -104,8 +106,11 @@ public class DashboardActivity extends AppCompatActivity {
 
     private void setupFeatures() {
         List<FeatureAdapter.Feature> features = new ArrayList<>();
+        features.add(new FeatureAdapter.Feature("Scan QR", R.drawable.ic_qr_code, Routes.SCAN_QR));
 
-        if (userHasPermission(Permissions.PERMISSION_INVENTORY_VIEW_ALL_LIST) || userHasPermission(Permissions.PERMISSION_INVENTORY_VIEW_HOSPITAL_LIST)) {
+        if (userHasAnyOfControls(Controls.CONTROL_APPROVAL_STEP_0) ||
+                userHasAnyOfControls(Controls.CONTROL_APPROVAL_STEP_1) ||
+                userHasAnyOfControls(Controls.CONTROL_APPROVAL_STEP_2)) {
             features.add(new FeatureAdapter.Feature(getString(R.string.menu_inventory), R.drawable.ic_inventory, Routes.INVENTORY));
         }
         if (userHasAnyOfControls(Controls.CONTROL_APPROVAL_STEP_0)) {

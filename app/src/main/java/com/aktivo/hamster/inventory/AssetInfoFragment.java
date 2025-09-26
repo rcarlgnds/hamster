@@ -82,21 +82,54 @@ public class AssetInfoFragment extends Fragment {
             acCondition.setText(asset.getCondition(), false);
             if (asset.getCategory() != null) acCategory.setText(asset.getCategory().getName(), false);
             if (asset.getSubcategory() != null) acSubCategory.setText(asset.getSubcategory().getName(), false);
+            if (asset.getUnit() != null) acUnit.setText(asset.getUnit().getName(), false);
             if (asset.getBrand() != null) acBrand.setText(asset.getBrand().getName(), false);
 
-            if (asset.getSubcategory() != null) {
-                acSubCategory.setText(asset.getSubcategory().getName(), false);
-                viewModel.fetchUnitOptions(asset.getSubcategory().getId());
-            }
-            acUnit.setText(asset.getUnit(), false);
-
             isProgrammaticChange = false;
+
+            viewModel.getIsEditable().observe(getViewLifecycleOwner(), isEditable -> {
+                if(Boolean.TRUE.equals(isEditable)) {
+                    etCode.setEnabled(false);
+                    etCode2.setEnabled(false);
+                    etCode3.setEnabled(false);
+                    etName.setEnabled(false);
+                    etAliasNameTeramedik.setEnabled(false);
+                    etAliasNameHamster.setEnabled(false);
+                    etSerial.setEnabled(isEditable);
+                    etDesc.setEnabled(isEditable);
+                    etType.setEnabled(isEditable);
+                    etTotal.setEnabled(isEditable);
+                    acOwnership.setEnabled(isEditable);
+                    acCondition.setEnabled(isEditable);
+                    acCategory.setEnabled(isEditable);
+                    acSubCategory.setEnabled(isEditable);
+                    acBrand.setEnabled(isEditable);
+                    acUnit.setEnabled(isEditable);
+                } else {
+                    etCode.setEnabled(isEditable);
+                    etCode2.setEnabled(isEditable);
+                    etCode3.setEnabled(isEditable);
+                    etName.setEnabled(isEditable);
+                    etAliasNameTeramedik.setEnabled(isEditable);
+                    etAliasNameHamster.setEnabled(isEditable);
+                    etSerial.setEnabled(isEditable);
+                    etDesc.setEnabled(isEditable);
+                    etType.setEnabled(isEditable);
+                    etTotal.setEnabled(isEditable);
+                    acOwnership.setEnabled(isEditable);
+                    acCondition.setEnabled(isEditable);
+                    acCategory.setEnabled(isEditable);
+                    acSubCategory.setEnabled(isEditable);
+                    acBrand.setEnabled(isEditable);
+                    acUnit.setEnabled(isEditable);
+                }
+            });
         });
 
         viewModel.getCategoryOptions().observe(getViewLifecycleOwner(), options -> populateDropdown(acCategory, options, categoryList));
         viewModel.getSubCategoryOptions().observe(getViewLifecycleOwner(), options -> populateDropdown(acSubCategory, options, subCategoryList));
-        viewModel.getBrandOptions().observe(getViewLifecycleOwner(), options -> populateDropdown(acBrand, options, brandList));
         viewModel.getUnitOptions().observe(getViewLifecycleOwner(), options -> populateDropdown(acUnit, options, unitList));
+        viewModel.getBrandOptions().observe(getViewLifecycleOwner(), options -> populateDropdown(acBrand, options, brandList));
 
         viewModel.getOwnershipOptions().observe(getViewLifecycleOwner(), options -> populateStringDropdown(acOwnership, options));
         viewModel.getConditionOptions().observe(getViewLifecycleOwner(), options -> populateStringDropdown(acCondition, options));

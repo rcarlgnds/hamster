@@ -120,6 +120,28 @@ public class AssetLocationFragment extends Fragment {
             isProgrammaticChange = false;
         });
 
+        viewModel.getIsEditable().observe(getViewLifecycleOwner(), isEditable -> {
+            if (Boolean.TRUE.equals(isEditable)) {
+                acHospital.setEnabled(isEditable);
+                acBuilding.setEnabled(isEditable);
+                acFloor.setEnabled(isEditable);
+                acRoom.setEnabled(isEditable);
+                acSubRoom.setEnabled(isEditable);
+                acDivision.setEnabled(isEditable);
+                acUnit.setEnabled(isEditable);
+                acUser.setEnabled(isEditable);
+            } else {
+                acHospital.setEnabled(isEditable);
+                acBuilding.setEnabled(isEditable);
+                acFloor.setEnabled(isEditable);
+                acRoom.setEnabled(isEditable);
+                acSubRoom.setEnabled(isEditable);
+                acDivision.setEnabled(isEditable);
+                acUnit.setEnabled(isEditable);
+                acUser.setEnabled(isEditable);
+            }
+        });
+
         observeAndPopulate(viewModel.getHospitalOptions(), acHospital, hospitalList);
         observeAndPopulate(viewModel.getBuildingOptions(), acBuilding, buildingList);
         observeAndPopulate(viewModel.getFloorOptions(), acFloor, floorList);

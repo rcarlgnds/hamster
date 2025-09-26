@@ -39,33 +39,31 @@ public class ApiClient {
         HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
         logging.setLevel(HttpLoggingInterceptor.Level.BODY);
 
-        OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
+        OkHttpClient httpClient = new OkHttpClient.Builder()
+            .addInterceptor(logging)
+            .addInterceptor(chain -> {
+                Request original = chain.request();
+                Request.Builder builder = original.newBuilder();
 
-        httpClient.addInterceptor(chain -> {
-            String token = sessionManager.getAuthToken();
-            Request original = chain.request();
-            Request.Builder requestBuilder = original.newBuilder();
+                String jwt = new SessionManager(context).getAuthToken();
+                if (jwt != null && !jwt.trim().isEmpty()) {
+                    builder.header("Authorization", "Bearer " + jwt);
+                }
 
-            if (token != null) {
-                requestBuilder.header("Authorization", "Bearer " + token);
-            }
+                return chain.proceed(builder.build());
+            })
+            .connectTimeout(30, TimeUnit.SECONDS)
+            .readTimeout(30, TimeUnit.SECONDS)
+            .writeTimeout(30, TimeUnit.SECONDS)
+            .build();
 
-            Request request = requestBuilder.build();
-            return chain.proceed(request);
-        });
-
-        httpClient.authenticator(new TokenAuthenticator(applicationContext));
-
-        httpClient.addInterceptor(logging)
-                .connectTimeout(30, TimeUnit.SECONDS)
-                .readTimeout(30, TimeUnit.SECONDS)
-                .writeTimeout(30, TimeUnit.SECONDS);
-
-        return new Retrofit.Builder()
+        Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(BASE_URL)
-                .client(httpClient.build())
+                .client(httpClient)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
+
+        return retrofit;
     }
 
     public static <S> S createService(Class<S> serviceClass) {

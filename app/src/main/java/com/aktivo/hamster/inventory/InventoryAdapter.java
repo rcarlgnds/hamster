@@ -98,9 +98,11 @@ public class InventoryAdapter extends RecyclerView.Adapter<InventoryAdapter.View
             if (AssetStatus.ACTIVE.equalsIgnoreCase(asset.getStatus())) {
                 textViewStatusBadge.setText(activeStatus);
                 textViewStatusBadge.setBackgroundResource(R.drawable.bg_badge_activate_background);
+                textViewStatusBadge.setTextColor(itemView.getContext().getResources().getColor(R.color.black));
             } else if(AssetStatus.INACTIVE.equalsIgnoreCase(asset.getStatus())) {
                 textViewStatusBadge.setText(R.string.status_inactive);
                 textViewStatusBadge.setBackgroundResource(R.drawable.bg_badge_inactivate_background);
+                textViewStatusBadge.setTextColor(itemView.getContext().getResources().getColor(R.color.black));
             } else if(AssetStatus.REJECTED.equalsIgnoreCase(asset.getStatus())) {
                 textViewStatusBadge.setText(R.string.status_rejected);
                 textViewStatusBadge.setBackgroundResource(R.drawable.bg_badge_rejected_background);
@@ -108,9 +110,11 @@ public class InventoryAdapter extends RecyclerView.Adapter<InventoryAdapter.View
             } else if(AssetStatus.PENDING_CONFIRMATION_BY_HEAD_OF_ROOM.equalsIgnoreCase(asset.getStatus())) {
                 textViewStatusBadge.setText(R.string.status_pending_confirmation_by_head_of_room);
                 textViewStatusBadge.setBackgroundResource(R.drawable.bg_badge_inactivate_background);
+                textViewStatusBadge.setTextColor(itemView.getContext().getResources().getColor(R.color.black));
             } else if(AssetStatus.PENDING_ACTIVATION_BY_HEAD_OF_FMS.equalsIgnoreCase(asset.getStatus())) {
                 textViewStatusBadge.setText(R.string.status_pending_confirmation_by_head_of_fms);
                 textViewStatusBadge.setBackgroundResource(R.drawable.bg_badge_inactivate_background);
+                textViewStatusBadge.setTextColor(itemView.getContext().getResources().getColor(R.color.black));
             } else if(AssetStatus.REJECTED_DOES_NOT_MEET_REQUEST.equalsIgnoreCase(asset.getStatus())) {
                 textViewStatusBadge.setText(R.string.status_rejected_does_not_meet_request);
                 textViewStatusBadge.setBackgroundResource(R.drawable.bg_badge_rejected_background);

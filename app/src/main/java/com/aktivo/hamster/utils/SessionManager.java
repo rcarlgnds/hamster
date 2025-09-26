@@ -32,8 +32,6 @@ public class SessionManager {
     private static final String KEY_THEME_MODE = "theme_mode";
     private static final String KEY_FCM_TOKEN = "fcmToken";
 
-
-
     private final SharedPreferences pref;
     private final SharedPreferences.Editor editor;
     private final Gson gson;
@@ -114,50 +112,45 @@ public class SessionManager {
         editor.apply();
     }
 
-    private void unregisterDeviceFromServer() {
-        FirebaseMessaging.getInstance().getToken().addOnCompleteListener(task -> {
-            if (!task.isSuccessful() || task.getResult() == null) {
-                Log.w("SessionManager", "Fetching FCM registration token failed for unregister.", task.getException());
-                return;
-            }
+    private void unregisterDeviceFromServerAndLogout() {
+        String jwt = getAuthToken();
+        if (jwt == null || jwt.trim().isEmpty()) {
+            proceedToClearAndNavigate();
+            return;
+        }
 
-            String currentToken = task.getResult();
-            Log.d("SessionManager", "Attempting to unregister token: " + currentToken);
+        ApiClient.getClient(context)
+            .create(ApiService.class)
+            .unregisterDeviceToken()
+            .enqueue(new Callback<Void>() {
+                @Override
+                public void onResponse(@NonNull Call<Void> call, @NonNull Response<Void> response) {
+                    if (response.isSuccessful()) {
+                        Log.i("SessionManager", "Token unregistered successfully from server.");
+                    } else {
+                        Log.w("SessionManager", "Unregister failed. Code: " + response.code());
+                    }
+                    proceedToClearAndNavigate();
+                }
 
-            UnregisterDeviceRequest requestBody = new UnregisterDeviceRequest(currentToken);
-
-            ApiClient.getClient(context).create(ApiService.class)
-                    .unregisterDeviceToken(requestBody)
-                    .enqueue(new Callback<Void>() {
-                        @Override
-                        public void onResponse(@NonNull Call<Void> call, @NonNull Response<Void> response) {
-                            if (response.isSuccessful()) {
-                                Log.i("SessionManager", "Token unregistered successfully from server.");
-                            } else {
-                                Log.w("SessionManager", "Failed to unregister token. Server code: " + response.code());
-                            }
-                        }
-
-                        @Override
-                        public void onFailure(@NonNull Call<Void> call, @NonNull Throwable t) {
-                            Log.e("SessionManager", "Error unregistering token.", t);
-                        }
-                    });
-        });
+                @Override
+                public void onFailure(@NonNull Call<Void> call, @NonNull Throwable t) {
+                    Log.e("SessionManager", "Error unregistering token.", t);
+                    proceedToClearAndNavigate();
+                }
+            });
     }
 
-    public void logout() {
+    private void proceedToClearAndNavigate() {
         editor.clear();
         editor.apply();
 
-        unregisterDeviceFromServer();
-
         Intent i = new Intent(context, LoginActivity.class);
-
-        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-
+        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(i);
+    }
+
+    public void logout() {
+        unregisterDeviceFromServerAndLogout();
     }
 }

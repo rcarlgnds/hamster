@@ -1,6 +1,7 @@
 package com.aktivo.hamster.inventory;
 
 import android.app.Application;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
@@ -28,8 +29,11 @@ public class InventoryViewModel extends AndroidViewModel {
 
     private final MutableLiveData<Boolean> isLoading = new MutableLiveData<>();
     private final MutableLiveData<Boolean> isError = new MutableLiveData<>();
+
+    private final MutableLiveData<Integer> totalCount = new MutableLiveData<>(0);
     private int currentPage = 1;
     private int totalPages = 1;
+    private boolean hasNextPage = true;
     private boolean isLoadingMore = false;
     private static final int PAGE_SIZE = 10;
 
@@ -50,10 +54,10 @@ public class InventoryViewModel extends AndroidViewModel {
     private String advancedSearchRoomId = "";
     private boolean isAdvancedSearchActive = false;
 
-
     public LiveData<List<Asset>> getAssetList() { return filteredAssetList; }
     public LiveData<Boolean> getIsLoading() { return isLoading; }
     public LiveData<Boolean> getIsError() { return isError; }
+    public LiveData<Integer> getTotalCount() { return totalCount; }
 
     // Getter untuk data dropdown
     public LiveData<List<OptionItem>> getHospitalOptions() { return hospitalOptions; }
@@ -139,13 +143,11 @@ public class InventoryViewModel extends AndroidViewModel {
     }
 
     public void fetchAssets() {
-        if (currentPage > totalPages) {
-            return;
-        }
+        if (!hasNextPage || isLoadingMore) return;
 
         isLoading.setValue(true);
         isLoadingMore = true;
-        isError.setValue(false);
+        isError.postValue(false);
 
         ApiService apiService = ApiClient.getClient(getApplication()).create(ApiService.class);
         Call<AssetsResponse> call = apiService.getAssets(currentPage, PAGE_SIZE);
@@ -153,25 +155,51 @@ public class InventoryViewModel extends AndroidViewModel {
         call.enqueue(new Callback<AssetsResponse>() {
             @Override
             public void onResponse(Call<AssetsResponse> call, Response<AssetsResponse> response) {
-                isLoading.setValue(false);
+                isLoading.postValue(false);
                 isLoadingMore = false;
-                if (response.isSuccessful() && response.body() != null) {
-                    totalPages = response.body().getData().getPagination().getTotalPages();
-                    List<Asset> newAssets = response.body().getData().getData();
+                Log.d("inventoryonResponse", "page=" + currentPage + " code=" + response.code());
 
-                    if (currentPage == 1) {
-                        originalAssetList.clear();
-                    }
-                    originalAssetList.addAll(newAssets);
-                    applyActiveFilters();
-                    currentPage++;
-
-                } else {
-                    isError.setValue(true);
+                if (!response.isSuccessful() || response.body() == null) {
+                    isError.postValue(true);
+                    return;
                 }
+
+                AssetsResponse body = response.body();
+                AssetsResponse.DataWrapper wrapper = body.getData();
+                Log.d("inventorywrapper", wrapper.toString());
+                if (wrapper == null) {
+                    hasNextPage = false;
+                    totalPages  = Math.max(1, totalPages);
+                    applyActiveFilters();
+                    isError.postValue(false);
+                    return;
+                }
+
+                List<Asset> pageItems = wrapper.getData() != null ? wrapper.getData() : new ArrayList<>();
+
+                AssetsResponse.Pagination pagination = wrapper.getPagination();
+                Log.d("inventorypagination", pagination.toString());
+                if (pagination != null) {
+                    hasNextPage = pagination.isHasNextPage();
+                    totalPages  = Math.max(1, pagination.getTotalPages());
+                    totalCount.postValue(pagination.getTotal());
+                } else {
+                    hasNextPage = pageItems.size() >= PAGE_SIZE;
+                    if (currentPage == 1) {
+                        totalCount.postValue(pageItems.size());
+                    }
+                }
+
+                mergeAssetsNoDup(pageItems);
+                applyActiveFilters();
+
+                if (hasNextPage) currentPage++;
+                isError.postValue(false);
             }
+
             @Override
             public void onFailure(Call<AssetsResponse> call, Throwable t) {
+                Log.d("inventoryonResponse", "page=" + currentPage + " " + t);
                 isLoading.setValue(false);
                 isLoadingMore = false;
                 isError.setValue(true);
@@ -179,15 +207,29 @@ public class InventoryViewModel extends AndroidViewModel {
         });
     }
 
-    public void loadMoreItems() {
-        if (!isLoadingMore) {
-            fetchAssets();
+    private void mergeAssetsNoDup(List<Asset> pageItems) {
+        java.util.HashSet<String> ids = new java.util.HashSet<>();
+        for (Asset a : originalAssetList) ids.add(a.getId());
+
+        for (Asset a : pageItems) {
+            if (a != null && a.getId() != null && !ids.contains(a.getId())) {
+                originalAssetList.add(a);
+                ids.add(a.getId());
+            }
         }
+    }
+
+    public void loadMoreItems() {
+        if (!isLoadingMore && hasNextPage) fetchAssets();
     }
 
     public void refreshAssets() {
         currentPage = 1;
         totalPages = 1;
+        hasNextPage = true;
+        isLoadingMore = false;
+        totalPages = 1;
+        totalCount.postValue(0);
         originalAssetList.clear();
         filteredAssetList.setValue(new ArrayList<>());
 
@@ -202,7 +244,6 @@ public class InventoryViewModel extends AndroidViewModel {
 
         fetchAssets();
     }
-
 
     public void searchAssets(String query) {
         isAdvancedSearchActive = false;
@@ -304,6 +345,4 @@ public class InventoryViewModel extends AndroidViewModel {
         }
         filteredAssetList.setValue(results);
     }
-
-
 }
