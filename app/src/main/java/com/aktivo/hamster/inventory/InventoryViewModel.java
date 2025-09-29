@@ -7,14 +7,18 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
+import com.aktivo.hamster.R;
 import com.aktivo.hamster.data.model.Asset;
 import com.aktivo.hamster.data.model.AssetsResponse;
 import com.aktivo.hamster.data.model.OptionItem;
 import com.aktivo.hamster.data.model.response.OptionsResponse;
 import com.aktivo.hamster.data.network.ApiClient;
 import com.aktivo.hamster.data.network.ApiService;
+import com.aktivo.hamster.data.constant.AssetStatus;
+
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -37,21 +41,32 @@ public class InventoryViewModel extends AndroidViewModel {
     private boolean isLoadingMore = false;
     private static final int PAGE_SIZE = 10;
 
-    // Properti untuk pencarian biasa
     private String currentQuery = "";
     private String currentStatus = "All";
 
-    // Properti  untuk Advanced Search
     private final ApiService apiService;
     private final MutableLiveData<List<OptionItem>> hospitalOptions = new MutableLiveData<>();
     private final MutableLiveData<List<OptionItem>> buildingOptions = new MutableLiveData<>();
     private final MutableLiveData<List<OptionItem>> floorOptions = new MutableLiveData<>();
     private final MutableLiveData<List<OptionItem>> roomOptions = new MutableLiveData<>();
+    private final MutableLiveData<List<OptionItem>> categoryOptions = new MutableLiveData<>();
+    private final MutableLiveData<List<OptionItem>> subCategoryOptions = new MutableLiveData<>();
+    private final MutableLiveData<List<OptionItem>> brandOptions = new MutableLiveData<>();
+    private final MutableLiveData<List<String>> ownershipOptions = new MutableLiveData<>();
+    private final MutableLiveData<List<String>> conditionOptions = new MutableLiveData<>();
+    private final MutableLiveData<List<OptionItem>> statusOptions = new MutableLiveData<>();
+
     private String advancedSearchName = "";
     private String advancedSearchHospitalId = "";
     private String advancedSearchBuildingId = "";
     private String advancedSearchFloorId = "";
     private String advancedSearchRoomId = "";
+    private String advancedSearchStatus = "";
+    private String advancedSearchOwnership = "";
+    private String advancedSearchCategoryId = "";
+    private String advancedSearchSubCategoryId = "";
+    private String advancedSearchBrandId = "";
+    private String advancedSearchCondition = "";
     private boolean isAdvancedSearchActive = false;
 
     public LiveData<List<Asset>> getAssetList() { return filteredAssetList; }
@@ -59,11 +74,16 @@ public class InventoryViewModel extends AndroidViewModel {
     public LiveData<Boolean> getIsError() { return isError; }
     public LiveData<Integer> getTotalCount() { return totalCount; }
 
-    // Getter untuk data dropdown
     public LiveData<List<OptionItem>> getHospitalOptions() { return hospitalOptions; }
     public LiveData<List<OptionItem>> getBuildingOptions() { return buildingOptions; }
     public LiveData<List<OptionItem>> getFloorOptions() { return floorOptions; }
     public LiveData<List<OptionItem>> getRoomOptions() { return roomOptions; }
+    public LiveData<List<OptionItem>> getCategoryOptions() { return categoryOptions; }
+    public LiveData<List<OptionItem>> getSubCategoryOptions() { return subCategoryOptions; }
+    public LiveData<List<OptionItem>> getBrandOptions() { return brandOptions; }
+    public LiveData<List<String>> getOwnershipOptions() { return ownershipOptions; }
+    public LiveData<List<String>> getConditionOptions() { return conditionOptions; }
+    public LiveData<List<OptionItem>> getStatusOptions() { return statusOptions; }
 
     public InventoryViewModel(@NonNull Application application) {
         super(application);
@@ -140,6 +160,75 @@ public class InventoryViewModel extends AndroidViewModel {
                 roomOptions.setValue(new ArrayList<>());
             }
         });
+    }
+
+    public void fetchCategoryOptions() {
+        apiService.getAssetCategoryOptions().enqueue(new Callback<OptionsResponse>() {
+            @Override
+            public void onResponse(Call<OptionsResponse> call, Response<OptionsResponse> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    categoryOptions.setValue(response.body().getData());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<OptionsResponse> call, Throwable t) {
+                categoryOptions.setValue(new ArrayList<>());
+            }
+        });
+    }
+
+    public void fetchSubCategoryOptions(String categoryId) {
+        if (categoryId == null) {
+            subCategoryOptions.setValue(new ArrayList<>());
+            return;
+        }
+        apiService.getAssetSubCategoryOptions(categoryId).enqueue(new Callback<OptionsResponse>() {
+            @Override
+            public void onResponse(Call<OptionsResponse> call, Response<OptionsResponse> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    subCategoryOptions.setValue(response.body().getData());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<OptionsResponse> call, Throwable t) {
+                subCategoryOptions.setValue(new ArrayList<>());
+            }
+        });
+    }
+
+    public void fetchBrandOptions() {
+        apiService.getBrandOptions().enqueue(new Callback<OptionsResponse>() {
+            @Override
+            public void onResponse(Call<OptionsResponse> call, Response<OptionsResponse> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    brandOptions.setValue(response.body().getData());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<OptionsResponse> call, Throwable t) {
+                brandOptions.setValue(new ArrayList<>());
+            }
+        });
+    }
+
+    public void fetchDropdownOptions() {
+        ownershipOptions.setValue(Arrays.asList("Owned", "Rent", "KSO"));
+        conditionOptions.setValue(Arrays.asList("Good", "Slightly Damaged", "Moderately Damaged", "Heavily Damaged"));
+
+        List<OptionItem> statusItems = new ArrayList<>();
+        Application app = getApplication();
+        statusItems.add(new OptionItem(AssetStatus.ACTIVE, app.getString(R.string.status_active)));
+        statusItems.add(new OptionItem(AssetStatus.INACTIVE, app.getString(R.string.status_inactive)));
+        statusItems.add(new OptionItem(AssetStatus.REJECTED, app.getString(R.string.status_rejected)));
+        statusItems.add(new OptionItem(AssetStatus.PENDING_CONFIRMATION_BY_HEAD_OF_ROOM, app.getString(R.string.status_pending_confirmation_by_head_of_room)));
+        statusItems.add(new OptionItem(AssetStatus.PENDING_ACTIVATION_BY_HEAD_OF_FMS, app.getString(R.string.status_pending_confirmation_by_head_of_fms)));
+        statusItems.add(new OptionItem(AssetStatus.REJECTED_DOES_NOT_MEET_REQUEST, app.getString(R.string.status_rejected_does_not_meet_request)));
+        statusItems.add(new OptionItem(AssetStatus.REJECTED_WRONG_LOCATION, app.getString(R.string.status_rejected_wrong_location)));
+        statusItems.add(new OptionItem(AssetStatus.REJECTED_IN_LOGISTIC, app.getString(R.string.status_rejected_in_logistic)));
+        statusOptions.setValue(statusItems);
     }
 
     public void fetchAssets() {
@@ -241,6 +330,12 @@ public class InventoryViewModel extends AndroidViewModel {
         advancedSearchBuildingId = "";
         advancedSearchFloorId = "";
         advancedSearchRoomId = "";
+        advancedSearchStatus = "";
+        advancedSearchOwnership = "";
+        advancedSearchCategoryId = "";
+        advancedSearchSubCategoryId = "";
+        advancedSearchBrandId = "";
+        advancedSearchCondition = "";
 
         fetchAssets();
     }
@@ -257,7 +352,7 @@ public class InventoryViewModel extends AndroidViewModel {
         applyActiveFilters();
     }
 
-    public void advancedSearch(String name, String hospitalId, String buildingId, String floorId, String roomId) {
+    public void advancedSearch(String name, String hospitalId, String buildingId, String floorId, String roomId, String status, String ownership, String categoryId, String subCategoryId, String brandId, String condition) {
         currentQuery = "";
         currentStatus = "All";
 
@@ -267,6 +362,12 @@ public class InventoryViewModel extends AndroidViewModel {
         advancedSearchBuildingId = buildingId;
         advancedSearchFloorId = floorId;
         advancedSearchRoomId = roomId;
+        advancedSearchStatus = status;
+        advancedSearchOwnership = ownership;
+        advancedSearchCategoryId = categoryId;
+        advancedSearchSubCategoryId = subCategoryId;
+        advancedSearchBrandId = brandId;
+        advancedSearchCondition = condition;
 
         applyActiveFilters();
     }
@@ -278,12 +379,10 @@ public class InventoryViewModel extends AndroidViewModel {
 
         if (isAdvancedSearchActive) {
             results = originalAssetList.stream().filter(asset -> {
-                // name filter
                 boolean nameMatch = (advancedSearchName == null || advancedSearchName.isEmpty()) ||
                         (asset.getName() != null &&
                                 asset.getName().toLowerCase().contains(advancedSearchName.toLowerCase()));
 
-                // hospital filter
                 boolean hospitalMatch = (advancedSearchHospitalId == null || advancedSearchHospitalId.isEmpty()) ||
                         (asset.getRoom() != null &&
                                 asset.getRoom().getFloor() != null &&
@@ -291,25 +390,40 @@ public class InventoryViewModel extends AndroidViewModel {
                                 asset.getRoom().getFloor().getBuilding().getHospital() != null &&
                                 advancedSearchHospitalId.equals(asset.getRoom().getFloor().getBuilding().getHospital().getId()));
 
-                // building filter
                 boolean buildingMatch = (advancedSearchBuildingId == null || advancedSearchBuildingId.isEmpty()) ||
                         (asset.getRoom() != null &&
                                 asset.getRoom().getFloor() != null &&
                                 asset.getRoom().getFloor().getBuilding() != null &&
                                 advancedSearchBuildingId.equals(asset.getRoom().getFloor().getBuilding().getId()));
 
-                // floor filter
                 boolean floorMatch = (advancedSearchFloorId == null || advancedSearchFloorId.isEmpty()) ||
                         (asset.getRoom() != null &&
                                 asset.getRoom().getFloor() != null &&
                                 advancedSearchFloorId.equals(asset.getRoom().getFloor().getId()));
 
-                // room filter
                 boolean roomMatch = (advancedSearchRoomId == null || advancedSearchRoomId.isEmpty()) ||
                         (asset.getRoom() != null &&
                                 advancedSearchRoomId.equals(asset.getRoom().getId()));
 
-                return nameMatch && hospitalMatch && buildingMatch && floorMatch && roomMatch;
+                boolean statusMatch = (advancedSearchStatus == null || advancedSearchStatus.isEmpty()) ||
+                        (asset.getStatus() != null && asset.getStatus().equalsIgnoreCase(advancedSearchStatus));
+
+                boolean ownershipMatch = (advancedSearchOwnership == null || advancedSearchOwnership.isEmpty()) ||
+                        (asset.getOwnership() != null && asset.getOwnership().equalsIgnoreCase(advancedSearchOwnership));
+
+                boolean categoryMatch = (advancedSearchCategoryId == null || advancedSearchCategoryId.isEmpty()) ||
+                        (asset.getCategory() != null && advancedSearchCategoryId.equals(asset.getCategory().getId()));
+
+                boolean subCategoryMatch = (advancedSearchSubCategoryId == null || advancedSearchSubCategoryId.isEmpty()) ||
+                        (asset.getSubcategory() != null && advancedSearchSubCategoryId.equals(asset.getSubcategory().getId()));
+
+                boolean brandMatch = (advancedSearchBrandId == null || advancedSearchBrandId.isEmpty()) ||
+                        (asset.getBrand() != null && advancedSearchBrandId.equals(asset.getBrand().getId()));
+
+                boolean conditionMatch = (advancedSearchCondition == null || advancedSearchCondition.isEmpty()) ||
+                        (asset.getCondition() != null && asset.getCondition().equalsIgnoreCase(advancedSearchCondition));
+
+                return nameMatch && hospitalMatch && buildingMatch && floorMatch && roomMatch && statusMatch && ownershipMatch && categoryMatch && subCategoryMatch && brandMatch && conditionMatch;
             }).collect(Collectors.toList());
         } else {
             results = new ArrayList<>(originalAssetList);
