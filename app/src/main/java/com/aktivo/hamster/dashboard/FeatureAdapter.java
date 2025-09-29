@@ -90,7 +90,10 @@ public class FeatureAdapter extends RecyclerView.Adapter<FeatureAdapter.FeatureV
             icon.setImageResource(feature.iconResId);
 
             itemView.setOnClickListener(v -> {
-                if (Routes.INVENTORY.equalsIgnoreCase(feature.routeKey)) {
+                if (Routes.SCAN_QR.equalsIgnoreCase(feature.routeKey)) {
+                    context.startActivity(new Intent(context, ScanQrActivity.class));
+                }
+                else if (Routes.INVENTORY.equalsIgnoreCase(feature.routeKey)) {
                     context.startActivity(new Intent(context, InventoryActivity.class));
                 }
                 else if (Routes.ACTIVATION.equalsIgnoreCase(feature.routeKey)) {

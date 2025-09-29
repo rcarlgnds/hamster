@@ -27,7 +27,7 @@ public class AssetDetailActivity extends AppCompatActivity {
     private SessionManager sessionManager;
     private AssetDetailViewModel viewModel;
     private ActivityAssetDetailBinding binding;
-    private String assetId;
+    private String assetId, assetCode;
     private LinearLayout llLeft, llRight;
     private Button buttonSaveDraft, buttonSave, buttonRegister;
     private AssetDetailPagerAdapter pagerAdapter;
@@ -52,12 +52,17 @@ public class AssetDetailActivity extends AppCompatActivity {
         }
 
         assetId = getIntent().getStringExtra("ASSET_ID");
+        assetCode = getIntent().getStringExtra("ASSET_CODE");
         viewModel = new ViewModelProvider(this).get(AssetDetailViewModel.class);
 
         if (assetId != null && savedInstanceState == null) {
             viewModel.fetchAssetById(assetId);
             viewModel.fetchAllOptions();
             viewModel.fetchAssetIsConfirmed(assetId);
+            viewModel.setIsEditMode(false);
+        } else if(assetCode != null && savedInstanceState == null) {
+            viewModel.fetchAssetByCode(assetCode);
+            viewModel.fetchAllOptions();
             viewModel.setIsEditMode(false);
         }
 

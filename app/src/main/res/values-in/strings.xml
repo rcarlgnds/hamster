@@ -171,6 +171,9 @@
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
+    <string name="scan_qr_activity">Scan QR</string>
+    <string name="scan_qr_text">Klik Tombol\n untuk memindai Kode QR!</string>
+
     <string name="title_activation">Mulai Aktivasi Asset</string>
     <string name="step_1_scan">1. Pindai Asset</string>
     <string name="button_scan_qr">Pindai Kode QR Asset</string>

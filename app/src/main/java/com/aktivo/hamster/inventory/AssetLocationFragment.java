@@ -131,7 +131,7 @@ public class AssetLocationFragment extends Fragment {
                 acUnit.setEnabled(isEditable);
                 acUser.setEnabled(isEditable);
             } else {
-                acHospital.setEnabled(isEditable);
+                acHospital.setEnabled(false);
                 acBuilding.setEnabled(isEditable);
                 acFloor.setEnabled(isEditable);
                 acRoom.setEnabled(isEditable);

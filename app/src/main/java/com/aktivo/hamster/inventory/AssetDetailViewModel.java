@@ -13,6 +13,7 @@ import com.aktivo.hamster.data.model.AssetMediaFile;
 import com.aktivo.hamster.data.model.OptionItem;
 import com.aktivo.hamster.data.model.Unit;
 import com.aktivo.hamster.data.model.UpdateAssetRequest;
+import com.aktivo.hamster.data.model.response.AssetByCodeResponse;
 import com.aktivo.hamster.data.model.response.OptionsResponse;
 import com.aktivo.hamster.data.model.response.UnitResponse;
 import com.aktivo.hamster.data.network.ApiClient;
@@ -139,6 +140,28 @@ public class AssetDetailViewModel extends AndroidViewModel {
         if (sourceList != null) {
             targetList.addAll(sourceList);
         }
+    }
+
+    public void fetchAssetByCode(String assetCode) {
+        isLoading.setValue(true);
+        apiService.getAssetByCode(assetCode).enqueue(new Callback<AssetByCodeResponse>() {
+            @Override
+            public void onResponse(@NonNull Call<AssetByCodeResponse> call, @NonNull Response<AssetByCodeResponse> response) {
+                isLoading.setValue(false);
+                if (response.isSuccessful() && response.body() != null && response.body().getData() != null) {
+                    Asset asset = response.body().getData();
+                    assetData.setValue(asset);
+                    initializePendingUpdate(asset);
+                } else {
+                    errorMessage.setValue("Gagal memuat detail aset. Kode: " + response.code());
+                }
+            }
+            @Override
+            public void onFailure(@NonNull Call<AssetByCodeResponse> call, @NonNull Throwable t) {
+                isLoading.setValue(false);
+                errorMessage.setValue("Koneksi error: " + t.getMessage());
+            }
+        });
     }
 
     public void fetchAssetById(String assetId) {

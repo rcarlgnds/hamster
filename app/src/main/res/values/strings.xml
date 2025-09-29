@@ -171,6 +171,9 @@
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
+    <string name="scan_qr_activity">Scan QR</string>
+    <string name="scan_qr_text">Click Button\n to scan QR Code!</string>
+
     <string name="title_activation">Start Asset Activation</string>
     <string name="step_1_scan">1. Scan Asset</string>
     <string name="button_scan_qr">Scan Asset QR Code</string>

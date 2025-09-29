@@ -107,7 +107,6 @@ public class DashboardActivity extends AppCompatActivity {
         tvWelcomeUser.setOnClickListener(profileClickListener);
         tvWelcomeEmail.setOnClickListener(profileClickListener);
 
-        findViewById(R.id.card_user_info).setOnClickListener(profileClickListener);
         tvGoToProfile.setOnClickListener(profileClickListener);
     }
 
