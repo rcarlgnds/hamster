@@ -471,6 +471,9 @@ public interface ApiService {
             @Part List<MultipartBody.Part> fileParts
     );
 
+    @POST("assets/register/{code}")
+    Call<Void> registerAsset(@Path("code") String assetCode);
+
     @DELETE("assets/{id}")
     Call<Void> softDeleteAsset(@Path("id") String assetId);
 

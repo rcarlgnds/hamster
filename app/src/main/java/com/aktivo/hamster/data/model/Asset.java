@@ -56,6 +56,8 @@ public class Asset implements Serializable {
     private Division responsibleDivision;
     private WorkingUnit responsibleWorkingUnit;
     private User responsibleUser;
+    private User registerUser;
+    private String registerUserId;
     private Vendor vendor;
     private Asset parent;
     private List<Asset> children;
@@ -162,6 +164,7 @@ public class Asset implements Serializable {
     public Double getPurchasePrice() {
         return purchasePrice;
     }
+    public String getRegisterUserId() {return registerUserId; }
 
     public String getVendorId() {
         return vendorId;

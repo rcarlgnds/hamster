@@ -32,7 +32,7 @@ import com.google.android.material.textfield.TextInputLayout;
 import java.util.ArrayList;
 import java.util.List;
 
-public class InventoryActivity extends AppCompatActivity {
+public class InventoryActivity extends AppCompatActivity implements InventoryAdapter.OnItemClickListener {
 
     private InventoryViewModel viewModel;
     private RecyclerView recyclerView;
@@ -105,7 +105,7 @@ public class InventoryActivity extends AppCompatActivity {
             layoutEmpty.setVisibility(empty ? View.VISIBLE : View.GONE);
 
             if (adapter == null) {
-                adapter = new InventoryAdapter(assets);
+                adapter = new InventoryAdapter(assets, this);
                 recyclerView.setAdapter(adapter);
             } else {
                 adapter.updateData(assets);
@@ -123,9 +123,11 @@ public class InventoryActivity extends AppCompatActivity {
             if(isLoading) {
                 layoutEmpty.setVisibility(View.GONE);
             } else {
-                boolean isEmpty = adapter.getItemCount() == 0;
-                recyclerView.setVisibility(isEmpty ? View.GONE : View.VISIBLE);
-                layoutEmpty.setVisibility(isEmpty ? View.VISIBLE : View.GONE);
+                if(adapter != null){
+                    boolean isEmpty = adapter.getItemCount() == 0;
+                    recyclerView.setVisibility(isEmpty ? View.GONE : View.VISIBLE);
+                    layoutEmpty.setVisibility(isEmpty ? View.VISIBLE : View.GONE);
+                }
             }
 
         });
@@ -133,10 +135,18 @@ public class InventoryActivity extends AppCompatActivity {
         viewModel.getIsError().observe(this, isError -> {
             if (isError) {
                 progressBar.setVisibility(View.GONE);
-                boolean isEmpty = adapter.getItemCount() == 0;
-                recyclerView.setVisibility(isEmpty ? View.GONE : View.VISIBLE);
-                layoutEmpty.setVisibility(isEmpty ? View.VISIBLE : View.GONE);
+                if(adapter != null) {
+                    boolean isEmpty = adapter.getItemCount() == 0;
+                    recyclerView.setVisibility(isEmpty ? View.GONE : View.VISIBLE);
+                    layoutEmpty.setVisibility(isEmpty ? View.VISIBLE : View.GONE);
+                }
                 Toast.makeText(this, "Gagal memuat data", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        viewModel.getToastMessage().observe(this, message -> {
+            if (message != null) {
+                Toast.makeText(this, message, Toast.LENGTH_LONG).show();
             }
         });
     }
@@ -420,5 +430,17 @@ public class InventoryActivity extends AppCompatActivity {
     public boolean onSupportNavigateUp() {
         finish();
         return true;
+    }
+
+    @Override
+    public void onWorkOrderClick(Asset asset) {
+        new AlertDialog.Builder(this)
+                .setTitle("Confirm Work Order")
+                .setMessage("Are you sure you want to register for this asset: " + asset.getName() + "?")
+                .setPositiveButton("Yes", (dialog, which) -> {
+                    viewModel.registerAsset(asset.getCode());
+                })
+                .setNegativeButton("No", null)
+                .show();
     }
 }

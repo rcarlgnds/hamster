@@ -4,6 +4,7 @@ import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +18,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.aktivo.hamster.R;
 import com.aktivo.hamster.data.constant.AssetStatus;
 import com.aktivo.hamster.data.model.Asset;
+import com.aktivo.hamster.data.model.User;
+import com.aktivo.hamster.utils.SessionManager;
+import com.google.android.material.button.MaterialButton;
 import com.google.android.material.card.MaterialCardView;
 
 import java.text.SimpleDateFormat;
@@ -28,10 +32,15 @@ import java.util.Locale;
 public class InventoryAdapter extends RecyclerView.Adapter<InventoryAdapter.ViewHolder> {
 
     private List<Asset> assetList;
+    private final OnItemClickListener listener;
 
-    public InventoryAdapter(List<Asset> assetList) {
-        // Initialize with a new list to prevent modification issues
+    public interface OnItemClickListener {
+        void onWorkOrderClick(Asset asset);
+    }
+
+    public InventoryAdapter(List<Asset> assetList, OnItemClickListener listener) {
         this.assetList = new ArrayList<>(assetList);
+        this.listener = listener;
     }
 
     @NonNull
@@ -44,7 +53,7 @@ public class InventoryAdapter extends RecyclerView.Adapter<InventoryAdapter.View
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Asset asset = assetList.get(position);
-        holder.bind(asset);
+        holder.bind(asset, listener);
     }
 
     @Override
@@ -70,14 +79,18 @@ public class InventoryAdapter extends RecyclerView.Adapter<InventoryAdapter.View
         TextView textViewItemCode;
         TextView textViewStatusBadge;
         ImageView iconCopy;
+        MaterialButton btnWorkOrder;
+        SessionManager sessionManager;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
+            sessionManager = new SessionManager(itemView.getContext());
             cardRoot = itemView.findViewById(R.id.card_root);
             textViewItemName = itemView.findViewById(R.id.textViewItemName);
             textViewItemCode = itemView.findViewById(R.id.textViewItemCode);
             textViewStatusBadge = itemView.findViewById(R.id.textViewStatusBadge);
             iconCopy = itemView.findViewById(R.id.iconCopy);
+            btnWorkOrder = itemView.findViewById(R.id.btnWorkOrder);
         }
 
         private String formatDate(Long timestamp) {
@@ -86,14 +99,14 @@ public class InventoryAdapter extends RecyclerView.Adapter<InventoryAdapter.View
             return sdf.format(new Date(timestamp * 1000));
         }
 
-        public void bind(final Asset asset) {
+        public void bind(final Asset asset, final OnItemClickListener listener) {
             textViewItemName.setText(asset.getName());
             textViewItemCode.setText(asset.getCode());
 
             String activeStatus =
                     itemView.getContext().getString(R.string.status_active) +
-                    " - " +
-                    formatDate(asset.getEffectiveUsageDate());
+                            " - " +
+                            formatDate(asset.getEffectiveUsageDate());
 
             if (AssetStatus.ACTIVE.equalsIgnoreCase(asset.getStatus())) {
                 textViewStatusBadge.setText(activeStatus);
@@ -127,6 +140,20 @@ public class InventoryAdapter extends RecyclerView.Adapter<InventoryAdapter.View
                 textViewStatusBadge.setText(R.string.status_rejected_in_logistic);
                 textViewStatusBadge.setBackgroundResource(R.drawable.bg_badge_rejected_background);
                 textViewStatusBadge.setTextColor(itemView.getContext().getResources().getColor(R.color.white));
+            }
+
+            User currentUser = sessionManager.getUser();
+            String currentUserId = (currentUser != null) ? currentUser.getId() : "";
+
+            boolean isConfirmed = asset.getIsConfirmed() != null && asset.getIsConfirmed();
+
+            boolean isRegistered = asset.getRegisterUserId() != null;
+
+            if (isConfirmed || isRegistered) {
+                btnWorkOrder.setEnabled(false);
+            } else {
+                btnWorkOrder.setEnabled(true);
+                btnWorkOrder.setOnClickListener(v -> listener.onWorkOrderClick(asset));
             }
 
             cardRoot.setOnClickListener(v -> {

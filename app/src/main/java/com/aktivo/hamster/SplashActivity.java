@@ -42,10 +42,10 @@ public class SplashActivity extends AppCompatActivity {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) ==
                     PackageManager.PERMISSION_GRANTED) {
-                Log.d(TAG, "Izin notifikasi sudah ada.");
+                Log.d(TAG, "Izin notifikasi dh ada.");
                 proceedToNextActivity();
             } else {
-                Log.d(TAG, "Meminta izin notifikasi...");
+                Log.d(TAG, "Asking for izin notifikasi...");
                 requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS);
             }
         } else {

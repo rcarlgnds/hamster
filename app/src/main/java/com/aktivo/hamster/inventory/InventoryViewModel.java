@@ -7,7 +7,9 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
+
 import com.aktivo.hamster.R;
+import com.aktivo.hamster.data.model.ApiError;
 import com.aktivo.hamster.data.model.Asset;
 import com.aktivo.hamster.data.model.AssetsResponse;
 import com.aktivo.hamster.data.model.OptionItem;
@@ -15,8 +17,12 @@ import com.aktivo.hamster.data.model.response.OptionsResponse;
 import com.aktivo.hamster.data.network.ApiClient;
 import com.aktivo.hamster.data.network.ApiService;
 import com.aktivo.hamster.data.constant.AssetStatus;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 
+import java.io.IOException;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -33,6 +39,8 @@ public class InventoryViewModel extends AndroidViewModel {
 
     private final MutableLiveData<Boolean> isLoading = new MutableLiveData<>();
     private final MutableLiveData<Boolean> isError = new MutableLiveData<>();
+    private final MutableLiveData<String> toastMessage = new MutableLiveData<>();
+
 
     private final MutableLiveData<Integer> totalCount = new MutableLiveData<>(0);
     private int currentPage = 1;
@@ -73,6 +81,8 @@ public class InventoryViewModel extends AndroidViewModel {
     public LiveData<Boolean> getIsLoading() { return isLoading; }
     public LiveData<Boolean> getIsError() { return isError; }
     public LiveData<Integer> getTotalCount() { return totalCount; }
+    public LiveData<String> getToastMessage() { return toastMessage; }
+
 
     public LiveData<List<OptionItem>> getHospitalOptions() { return hospitalOptions; }
     public LiveData<List<OptionItem>> getBuildingOptions() { return buildingOptions; }
@@ -246,7 +256,6 @@ public class InventoryViewModel extends AndroidViewModel {
             public void onResponse(Call<AssetsResponse> call, Response<AssetsResponse> response) {
                 isLoading.postValue(false);
                 isLoadingMore = false;
-                Log.d("inventoryonResponse", "page=" + currentPage + " code=" + response.code());
 
                 if (!response.isSuccessful() || response.body() == null) {
                     isError.postValue(true);
@@ -255,7 +264,6 @@ public class InventoryViewModel extends AndroidViewModel {
 
                 AssetsResponse body = response.body();
                 AssetsResponse.DataWrapper wrapper = body.getData();
-                Log.d("inventorywrapper", wrapper.toString());
                 if (wrapper == null) {
                     hasNextPage = false;
                     totalPages  = Math.max(1, totalPages);
@@ -267,7 +275,6 @@ public class InventoryViewModel extends AndroidViewModel {
                 List<Asset> pageItems = wrapper.getData() != null ? wrapper.getData() : new ArrayList<>();
 
                 AssetsResponse.Pagination pagination = wrapper.getPagination();
-                Log.d("inventorypagination", pagination.toString());
                 if (pagination != null) {
                     hasNextPage = pagination.isHasNextPage();
                     totalPages  = Math.max(1, pagination.getTotalPages());
@@ -370,6 +377,42 @@ public class InventoryViewModel extends AndroidViewModel {
         advancedSearchCondition = condition;
 
         applyActiveFilters();
+    }
+
+    public void registerAsset(String assetCode) {
+        isLoading.setValue(true);
+        apiService.registerAsset(assetCode).enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(@NonNull Call<Void> call, @NonNull Response<Void> response) {
+                isLoading.setValue(false);
+                if (response.isSuccessful()) {
+                    toastMessage.setValue("Asset successfully registered.");
+                    refreshAssets();
+                } else {
+                    String errorMessage = "Failed to register asset.";
+                    if (response.errorBody() != null) {
+                        try {
+                            String errorBodyString = response.errorBody().string();
+                            Gson gson = new Gson();
+                            Type type = new TypeToken<ApiError>() {}.getType();
+                            ApiError apiError = gson.fromJson(errorBodyString, type);
+                            if (apiError != null && apiError.getMessage() != null && !apiError.getMessage().isEmpty()) {
+                                errorMessage = apiError.getMessage();
+                            }
+                        } catch (IOException e) {
+                            Log.e("ViewModel", "Error parsing error body", e);
+                        }
+                    }
+                    toastMessage.setValue(errorMessage);
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<Void> call, @NonNull Throwable t) {
+                isLoading.setValue(false);
+                toastMessage.setValue("Failed to register asset: " + t.getMessage());
+            }
+        });
     }
 
     private void applyActiveFilters() {
