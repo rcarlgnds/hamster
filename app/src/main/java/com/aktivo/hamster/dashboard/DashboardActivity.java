@@ -61,7 +61,6 @@ public class DashboardActivity extends AppCompatActivity {
         ThemeSetup.applyTheme(sessionManager.getThemeMode());
         ThemeSetup.setLocale(sessionManager.getLanguage());
 
-
         binding = ActivityDashboardBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 

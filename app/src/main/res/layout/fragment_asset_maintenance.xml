@@ -136,6 +136,7 @@
             android:layout_marginBottom="24dp"/>
 
         <TextView
+            android:id="@+id/tvInvoice"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/section_warranty_invoice"
@@ -144,6 +145,7 @@
             android:layout_marginBottom="12dp"/>
 
         <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tiInvoice"
             style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -155,6 +157,7 @@
         </com.google.android.material.textfield.TextInputLayout>
 
         <TextView
+            android:id="@+id/tvInvoiceDocument"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
@@ -162,10 +165,12 @@
             android:textAppearance="?attr/textAppearanceLabelLarge"/>
 
         <com.google.android.material.card.MaterialCardView
+            android:id="@+id/cvInvoice"
             style="@style/Widget.Material3.CardView.Outlined"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp">
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="12dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -200,7 +205,6 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
             android:orientation="horizontal">
 
             <com.google.android.material.textfield.TextInputLayout
@@ -287,6 +291,7 @@
             android:layout_marginBottom="24dp"/>
 
         <TextView
+            android:id="@+id/depreciationTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/section_depreciation_info"
@@ -295,6 +300,7 @@
             android:layout_marginBottom="12dp"/>
 
         <LinearLayout
+            android:id="@+id/depreciation1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
@@ -328,6 +334,7 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/depreciation2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"

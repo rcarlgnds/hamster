@@ -14,24 +14,32 @@ import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 import com.aktivo.hamster.R;
+import com.aktivo.hamster.data.constant.Permissions;
+import com.aktivo.hamster.data.model.Permission;
+import com.aktivo.hamster.data.model.User;
 import com.aktivo.hamster.databinding.ActivityAssetDetailBinding;
+import com.aktivo.hamster.utils.SessionManager;
 import com.google.android.material.tabs.TabLayoutMediator;
 
 public class AssetDetailActivity extends AppCompatActivity {
 
     private static final String TAG = "AssetDetailActivity";
-    private LinearLayout llLeft, llRight;
-    private Button buttonSaveDraft, buttonSave, buttonRegister;
+    private SessionManager sessionManager;
     private AssetDetailViewModel viewModel;
     private ActivityAssetDetailBinding binding;
     private String assetId;
+    private LinearLayout llLeft, llRight;
+    private Button buttonSaveDraft, buttonSave, buttonRegister;
     private AssetDetailPagerAdapter pagerAdapter;
     private ProgressBar loadingIndicator;
     private View loadingScrim;
+    private Boolean viewFinancial = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        sessionManager = new SessionManager(this);
         binding = ActivityAssetDetailBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
@@ -78,6 +86,14 @@ public class AssetDetailActivity extends AppCompatActivity {
         buttonSave = findViewById(R.id.buttonSave);
         buttonSaveDraft = findViewById(R.id.buttonSaveDraft);
         buttonRegister = findViewById(R.id.buttonRegist);
+
+        if(userHasPermission(Permissions.PERMISSION_VIEW_FINANCIAL_DETAIL)) {
+            viewFinancial = true;
+            viewModel.setIsViewFinancial(viewFinancial);
+        } else {
+            viewFinancial = false;
+            viewModel.setIsViewFinancial(viewFinancial);
+        }
 
         buttonRegister.setOnClickListener(v -> {
             Boolean currentEditable = viewModel.getIsEditable().getValue();
@@ -127,6 +143,33 @@ public class AssetDetailActivity extends AppCompatActivity {
                 viewModel.clearErrorMessage();
             }
         });
+    }
+
+    private boolean userHasPermission(String requiredPermissionKey) {
+        User currentUser = sessionManager.getUser();
+
+        if (currentUser == null) {
+            Log.d("PermissionCheck", "Current user is null.");
+            return false;
+        }
+        if (currentUser.getPermissions() == null) {
+            Log.d("PermissionCheck", "Permissions list is null for user: " + currentUser.getEmail());
+            return false;
+        }
+
+        Log.d("PermissionCheck", "--- Checking Permissions for user: " + currentUser.getEmail() + " ---");
+        Log.d("PermissionCheck", "Looking for permission: '" + requiredPermissionKey + "'");
+
+        for (Permission permission : currentUser.getPermissions()) {
+            Log.d("PermissionCheck", "Found permission key: '" + permission.getKey() + "'");
+            if (requiredPermissionKey.equals(permission.getKey())) {
+                Log.d("PermissionCheck", "MATCH FOUND! Returning true.");
+                return true;
+            }
+        }
+
+        Log.d("PermissionCheck", "NO MATCH FOUND. Returning false.");
+        return false;
     }
 
     @Override

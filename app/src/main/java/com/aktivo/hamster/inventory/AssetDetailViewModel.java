@@ -44,6 +44,7 @@ public class AssetDetailViewModel extends AndroidViewModel {
     private final MutableLiveData<String> errorMessage = new MutableLiveData<>();
     private final MutableLiveData<Boolean> assetConfirmed = new MutableLiveData<>();
     private final MutableLiveData<Boolean> isEditable = new MutableLiveData<>();
+    private final MutableLiveData<Boolean> isViewFinancial = new MutableLiveData<>();
 
     private UpdateAssetRequest pendingUpdateRequest = new UpdateAssetRequest();
     private final List<Uri> newSerialNumberPhotoUris = new ArrayList<>();
@@ -85,6 +86,7 @@ public class AssetDetailViewModel extends AndroidViewModel {
     public LiveData<String> getErrorMessage() { return errorMessage; }
     public LiveData<Boolean> getAssetConfirmed() { return assetConfirmed; }
     public LiveData<Boolean> getIsEditable() { return isEditable; }
+    public LiveData<Boolean> getIsViewFinancial() { return isViewFinancial; }
     public LiveData<List<OptionItem>> getCategoryOptions() { return categoryOptions; }
     public LiveData<List<OptionItem>> getSubCategoryOptions() { return subCategoryOptions; }
     public LiveData<List<OptionItem>> getBrandOptions() { return brandOptions; }
@@ -189,6 +191,10 @@ public class AssetDetailViewModel extends AndroidViewModel {
 
     public void setIsEditMode(boolean edit) {
         isEditable.setValue(edit);
+    }
+
+    public void setIsViewFinancial(boolean viewFinancial) {
+        isViewFinancial.setValue(viewFinancial);
     }
 
     private void initializePendingUpdate(Asset asset) {

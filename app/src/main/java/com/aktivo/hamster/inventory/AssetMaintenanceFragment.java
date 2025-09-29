@@ -14,6 +14,7 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -30,7 +31,9 @@ import com.aktivo.hamster.data.model.AssetMediaFile;
 import com.aktivo.hamster.data.model.OptionItem;
 import com.aktivo.hamster.data.model.UpdateAssetRequest;
 import com.aktivo.hamster.data.network.ApiClient;
+import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -52,6 +55,10 @@ public class AssetMaintenanceFragment extends Fragment implements FragmentDataCo
     private TextInputEditText etWarrantyStatus;
     private ImageView iconPODocument, iconInvoiceDocument, iconWarrantyDocument;
     private Button buttonChoosePODocument, buttonChooseInvoiceDocument, buttonChooseWarrantyDocument;
+    private TextView tvDepreciation, tvInvoice, tvInvoiceDocument;
+    private TextInputLayout tiInvoice;
+    private MaterialCardView cvInvoice;
+    private LinearLayout depreciation1, depreciation2;
 
     // File Handling State
     private ActivityResultLauncher<String[]> filePickerLauncher;
@@ -70,8 +77,8 @@ public class AssetMaintenanceFragment extends Fragment implements FragmentDataCo
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        viewModel = new ViewModelProvider(requireActivity()).get(AssetDetailViewModel.class);
 
+        viewModel = new ViewModelProvider(requireActivity()).get(AssetDetailViewModel.class);
         viewModel.fetchAllOptions();
 
         initializeViews(view);
@@ -106,6 +113,14 @@ public class AssetMaintenanceFragment extends Fragment implements FragmentDataCo
         buttonChooseWarrantyDocument = view.findViewById(R.id.buttonChooseWarrantyDocument);
         acVendor = view.findViewById(R.id.autoCompleteVendor);
         etWarrantyStatus = view.findViewById(R.id.editTextWarrantyStatus);
+
+        tvDepreciation = view.findViewById(R.id.depreciationTitle);
+        depreciation1 = view.findViewById(R.id.depreciation1);
+        depreciation2 = view.findViewById(R.id.depreciation2);
+        tvInvoice = view.findViewById(R.id.tvInvoice);
+        tvInvoiceDocument = view.findViewById(R.id.tvInvoiceDocument);
+        tiInvoice = view.findViewById(R.id.tiInvoice);
+        cvInvoice = view.findViewById(R.id.cvInvoice);
     }
 
     private void initializeFilePicker() {
@@ -188,6 +203,31 @@ public class AssetMaintenanceFragment extends Fragment implements FragmentDataCo
                 vendorList.addAll(options);
                 ArrayAdapter<OptionItem> adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_dropdown_item_1line, vendorList);
                 acVendor.setAdapter(adapter);
+            }
+        });
+
+        viewModel.getIsViewFinancial().observe(getViewLifecycleOwner(), isViewFinancial -> {
+            Log.d("viewfinancial", isViewFinancial.toString());
+            if (Boolean.TRUE.equals(isViewFinancial)) {
+                tvDepreciation.setVisibility(View.VISIBLE);
+                depreciation1.setVisibility(View.VISIBLE);
+                depreciation2.setVisibility(View.VISIBLE);
+                etPurchasePrice.setVisibility(View.VISIBLE);
+                etInvoiceNumber.setVisibility(View.VISIBLE);
+                tvInvoice.setVisibility(View.VISIBLE);
+                tvInvoiceDocument.setVisibility(View.VISIBLE);
+                tiInvoice.setVisibility(View.VISIBLE);
+                cvInvoice.setVisibility(View.VISIBLE);
+            } else {
+                tvDepreciation.setVisibility(View.GONE);
+                depreciation1.setVisibility(View.GONE);
+                depreciation2.setVisibility(View.GONE);
+                etPurchasePrice.setVisibility(View.GONE);
+                etInvoiceNumber.setVisibility(View.GONE);
+                tvInvoice.setVisibility(View.GONE);
+                tvInvoiceDocument.setVisibility(View.GONE);
+                tiInvoice.setVisibility(View.GONE);
+                cvInvoice.setVisibility(View.GONE);
             }
         });
 
