@@ -3,7 +3,6 @@ package com.aktivo.hamster.inventory;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,11 +21,12 @@ import java.util.List;
 public class AssetInfoFragment extends Fragment {
     private AssetDetailViewModel viewModel;
     private TextInputEditText etCode, etCode2, etCode3, etName, etSerial, etDesc, etAliasNameTeramedik, etAliasNameHamster, etType, etTotal;
-    private AutoCompleteTextView acOwnership, acCategory, acSubCategory, acBrand, acCondition, acUnit;
+    private AutoCompleteTextView acOwnership, acCategory, acSubCategory, acBrand, acCondition, acUnit, acParent;
     private List<OptionItem> categoryList = new ArrayList<>();
     private List<OptionItem> subCategoryList = new ArrayList<>();
     private List<OptionItem> brandList = new ArrayList<>();
     private List<OptionItem> unitList = new ArrayList<>();
+    private List<OptionItem> parentAssetList = new ArrayList<>();
 
     private boolean isProgrammaticChange = false;
 
@@ -62,6 +62,7 @@ public class AssetInfoFragment extends Fragment {
         acSubCategory = view.findViewById(R.id.autoCompleteSubCategory);
         acBrand = view.findViewById(R.id.autoCompleteBrand);
         acUnit = view.findViewById(R.id.autoCompleteUnit);
+        acParent = view.findViewById(R.id.autoCompleteParent);
     }
 
     private void setupObservers() {
@@ -84,6 +85,7 @@ public class AssetInfoFragment extends Fragment {
             if (asset.getSubcategory() != null) acSubCategory.setText(asset.getSubcategory().getName(), false);
             if (asset.getUnit() != null) acUnit.setText(asset.getUnit().getName(), false);
             if (asset.getBrand() != null) acBrand.setText(asset.getBrand().getName(), false);
+            if (asset.getParent() != null) acParent.setText(asset.getParent().getName(), false);
 
             isProgrammaticChange = false;
 
@@ -105,6 +107,7 @@ public class AssetInfoFragment extends Fragment {
                     acSubCategory.setEnabled(isEditable);
                     acBrand.setEnabled(isEditable);
                     acUnit.setEnabled(isEditable);
+                    acParent.setEnabled(isEditable);
                 } else {
                     etCode.setEnabled(isEditable);
                     etCode2.setEnabled(isEditable);
@@ -122,6 +125,7 @@ public class AssetInfoFragment extends Fragment {
                     acSubCategory.setEnabled(isEditable);
                     acBrand.setEnabled(isEditable);
                     acUnit.setEnabled(isEditable);
+                    acParent.setEnabled(isEditable);
                 }
             });
         });
@@ -130,6 +134,7 @@ public class AssetInfoFragment extends Fragment {
         viewModel.getSubCategoryOptions().observe(getViewLifecycleOwner(), options -> populateDropdown(acSubCategory, options, subCategoryList));
         viewModel.getUnitOptions().observe(getViewLifecycleOwner(), options -> populateDropdown(acUnit, options, unitList));
         viewModel.getBrandOptions().observe(getViewLifecycleOwner(), options -> populateDropdown(acBrand, options, brandList));
+        viewModel.getParentAssetOptions().observe(getViewLifecycleOwner(), options -> populateDropdown(acParent, options, parentAssetList));
 
         viewModel.getOwnershipOptions().observe(getViewLifecycleOwner(), options -> populateStringDropdown(acOwnership, options));
         viewModel.getConditionOptions().observe(getViewLifecycleOwner(), options -> populateStringDropdown(acCondition, options));
@@ -180,9 +185,9 @@ public class AssetInfoFragment extends Fragment {
             viewModel.updateField(req -> req.setBrandId(selected.getId()));
         });
 
-        acBrand.setOnItemClickListener((parent, view, position, id) -> {
-            OptionItem selected = brandList.get(position);
-            viewModel.updateField(req -> req.setBrandId(selected.getId()));
+        acParent.setOnItemClickListener((parent, view, position, id) -> {
+            OptionItem selected = parentAssetList.get(position);
+            viewModel.updateField(req -> req.setParentId(selected.getId()));
         });
     }
 

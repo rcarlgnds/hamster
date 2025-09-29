@@ -46,6 +46,12 @@ public class InventoryActivity extends AppCompatActivity {
     private List<OptionItem> buildingList = new ArrayList<>();
     private List<OptionItem> floorList = new ArrayList<>();
     private List<OptionItem> roomList = new ArrayList<>();
+    private List<OptionItem> categoryList = new ArrayList<>();
+    private List<OptionItem> subCategoryList = new ArrayList<>();
+    private List<OptionItem> brandList = new ArrayList<>();
+    private List<String> ownershipList = new ArrayList<>();
+    private List<String> conditionList = new ArrayList<>();
+    private List<OptionItem> statusList = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,7 +85,7 @@ public class InventoryActivity extends AppCompatActivity {
 
                 int last = layoutManager.findLastVisibleItemPosition();
                 int total = layoutManager.getItemCount();
-                int threshold = 4; // load when 4 from the end
+                int threshold = 4;
 
                 if (last >= total - 1 - threshold) {
                     viewModel.loadMoreItems();
@@ -185,9 +191,16 @@ public class InventoryActivity extends AppCompatActivity {
         AutoCompleteTextView spinnerBuilding = dialogView.findViewById(R.id.spinnerBuilding);
         AutoCompleteTextView spinnerFloor = dialogView.findViewById(R.id.spinnerFloor);
         AutoCompleteTextView spinnerRoom = dialogView.findViewById(R.id.spinnerRoom);
+        AutoCompleteTextView spinnerStatus = dialogView.findViewById(R.id.spinnerStatus);
+        AutoCompleteTextView spinnerOwnership = dialogView.findViewById(R.id.spinnerOwnership);
+        AutoCompleteTextView spinnerCategory = dialogView.findViewById(R.id.spinnerCategory);
+        AutoCompleteTextView spinnerSubCategory = dialogView.findViewById(R.id.spinnerSubCategory);
+        AutoCompleteTextView spinnerBrand = dialogView.findViewById(R.id.spinnerBrand);
+        AutoCompleteTextView spinnerCondition = dialogView.findViewById(R.id.spinnerCondition);
         TextInputLayout layoutBuilding = dialogView.findViewById(R.id.layoutSpinnerBuilding);
         TextInputLayout layoutFloor = dialogView.findViewById(R.id.layoutSpinnerFloor);
         TextInputLayout layoutRoom = dialogView.findViewById(R.id.layoutSpinnerRoom);
+        TextInputLayout layoutSubCategory = dialogView.findViewById(R.id.layoutSpinnerSubCategory);
         Button btnCancel = dialogView.findViewById(R.id.buttonCancel);
         Button btnSearch = dialogView.findViewById(R.id.buttonSearch);
 
@@ -195,6 +208,12 @@ public class InventoryActivity extends AppCompatActivity {
         final String[] selectedBuildingId = {null};
         final String[] selectedFloorId = {null};
         final String[] selectedRoomId = {null};
+        final String[] selectedStatus = {null};
+        final String[] selectedOwnership = {null};
+        final String[] selectedCategoryId = {null};
+        final String[] selectedSubCategoryId = {null};
+        final String[] selectedBrandId = {null};
+        final String[] selectedCondition = {null};
 
         viewModel.getHospitalOptions().observe(this, options -> {
             hospitalList = options;
@@ -220,7 +239,46 @@ public class InventoryActivity extends AppCompatActivity {
             spinnerRoom.setAdapter(adapter);
         });
 
+        viewModel.getCategoryOptions().observe(this, options -> {
+            categoryList = options;
+            ArrayAdapter<OptionItem> adapter = new ArrayAdapter<>(this, android.R.layout.simple_dropdown_item_1line, categoryList);
+            spinnerCategory.setAdapter(adapter);
+        });
+
+        viewModel.getSubCategoryOptions().observe(this, options -> {
+            subCategoryList = options;
+            ArrayAdapter<OptionItem> adapter = new ArrayAdapter<>(this, android.R.layout.simple_dropdown_item_1line, subCategoryList);
+            spinnerSubCategory.setAdapter(adapter);
+        });
+
+        viewModel.getBrandOptions().observe(this, options -> {
+            brandList = options;
+            ArrayAdapter<OptionItem> adapter = new ArrayAdapter<>(this, android.R.layout.simple_dropdown_item_1line, brandList);
+            spinnerBrand.setAdapter(adapter);
+        });
+
+        viewModel.getStatusOptions().observe(this, options -> {
+            statusList = options;
+            ArrayAdapter<OptionItem> adapter = new ArrayAdapter<>(this, android.R.layout.simple_dropdown_item_1line, statusList);
+            spinnerStatus.setAdapter(adapter);
+        });
+
+        viewModel.getOwnershipOptions().observe(this, options -> {
+            ownershipList = options;
+            ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_dropdown_item_1line, ownershipList);
+            spinnerOwnership.setAdapter(adapter);
+        });
+
+        viewModel.getConditionOptions().observe(this, options -> {
+            conditionList = options;
+            ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_dropdown_item_1line, conditionList);
+            spinnerCondition.setAdapter(adapter);
+        });
+
         viewModel.fetchHospitalOptions();
+        viewModel.fetchCategoryOptions();
+        viewModel.fetchBrandOptions();
+        viewModel.fetchDropdownOptions();
 
         spinnerHospital.setOnItemClickListener((parent, view, position, id) -> {
             OptionItem selected = hospitalList.get(position);
@@ -269,11 +327,30 @@ public class InventoryActivity extends AppCompatActivity {
             selectedRoomId[0] = selected.getId();
         });
 
+        spinnerStatus.setOnItemClickListener((parent, view, position, id) -> selectedStatus[0] = statusList.get(position).getId());
+        spinnerOwnership.setOnItemClickListener((parent, view, position, id) -> selectedOwnership[0] = ownershipList.get(position));
+        spinnerCondition.setOnItemClickListener((parent, view, position, id) -> selectedCondition[0] = conditionList.get(position));
+        spinnerBrand.setOnItemClickListener((parent, view, position, id) -> selectedBrandId[0] = brandList.get(position).getId());
+
+        spinnerCategory.setOnItemClickListener((parent, view, position, id) -> {
+            OptionItem selected = categoryList.get(position);
+            selectedCategoryId[0] = selected.getId();
+            viewModel.fetchSubCategoryOptions(selected.getId());
+            spinnerSubCategory.setText("", false);
+            selectedSubCategoryId[0] = null;
+            layoutSubCategory.setVisibility(View.VISIBLE);
+        });
+
+        spinnerSubCategory.setOnItemClickListener((parent, view, position, id) -> {
+            OptionItem selected = subCategoryList.get(position);
+            selectedSubCategoryId[0] = selected.getId();
+        });
+
         btnCancel.setOnClickListener(v -> dialog.dismiss());
 
         btnSearch.setOnClickListener(v -> {
             String nameQuery = etSearchQuery.getText().toString().trim();
-            viewModel.advancedSearch(nameQuery, selectedHospitalId[0], selectedBuildingId[0], selectedFloorId[0], selectedRoomId[0]);
+            viewModel.advancedSearch(nameQuery, selectedHospitalId[0], selectedBuildingId[0], selectedFloorId[0], selectedRoomId[0], selectedStatus[0], selectedOwnership[0], selectedCategoryId[0], selectedSubCategoryId[0], selectedBrandId[0], selectedCondition[0]);
             dialog.dismiss();
         });
 

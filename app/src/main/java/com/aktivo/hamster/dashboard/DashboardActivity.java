@@ -50,6 +50,7 @@ public class DashboardActivity extends AppCompatActivity {
     private TextView tvWelcomeUser;
     private TextView tvWelcomeEmail;
     private TextView tvGoToProfile;
+    private ShapeableImageView ivUserAvatar;
     private ShapeableImageView ivNotification;
     private ShapeableImageView ivSettings;
 
@@ -77,8 +78,8 @@ public class DashboardActivity extends AppCompatActivity {
         tvWelcomeEmail = findViewById(R.id.tv_welcome_email);
 
         tvGoToProfile = findViewById(R.id.tv_go_to_profile);
-        tvGoToProfile.setPaintFlags(tvGoToProfile.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
 
+        ivUserAvatar = findViewById(R.id.iv_user_avatar);
         ivNotification = findViewById(R.id.iv_user_notification);
         ivSettings = findViewById(R.id.iv_settings);
     }
@@ -87,20 +88,27 @@ public class DashboardActivity extends AppCompatActivity {
     private void setupUserProfile() {
         User currentUser = sessionManager.getUser();
         if (currentUser != null) {
-            String welcomeUser = currentUser.getFirstName();
-            tvWelcomeUser.setText(welcomeUser);
+            String welcomeText = "Welcome, " + currentUser.getFirstName() + "!";
+            tvWelcomeUser.setText(welcomeText);
             tvWelcomeEmail.setText(currentUser.getEmail());
         }
 
-        tvGoToProfile.setOnClickListener(v -> {
+        View.OnClickListener profileClickListener = v -> {
             startActivity(new Intent(this, ProfileActivity.class));
-        });
+        };
 
         ivNotification.setOnClickListener(v -> {
             startActivity(new Intent(this, NotificationActivity.class));
         });
 
         ivSettings.setOnClickListener(v -> showSettingDialog());
+
+        ivUserAvatar.setOnClickListener(profileClickListener);
+        tvWelcomeUser.setOnClickListener(profileClickListener);
+        tvWelcomeEmail.setOnClickListener(profileClickListener);
+
+        findViewById(R.id.card_user_info).setOnClickListener(profileClickListener);
+        tvGoToProfile.setOnClickListener(profileClickListener);
     }
 
     private void setupFeatures() {
