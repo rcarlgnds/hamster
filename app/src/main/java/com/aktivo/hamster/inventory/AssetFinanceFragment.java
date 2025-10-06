@@ -43,7 +43,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.function.Consumer;
 
-public class AssetMaintenanceFragment extends Fragment implements FragmentDataCollector {
+public class AssetFinanceFragment extends Fragment implements FragmentDataCollector {
 
     private AssetDetailViewModel viewModel;
 
@@ -51,6 +51,7 @@ public class AssetMaintenanceFragment extends Fragment implements FragmentDataCo
     private TextInputEditText etProcurementDate, etWarrantyDate, etDepreciationStart, etEffectiveActivationDate, etFunctionalTestingDate,
             etPurchasePrice, etPONumber, etInvoiceNumber, etDepreciationPercent, etDepreciationValue, etDepreciationDuration;
     private TextView textPODocumentStatus, textInvoiceDocumentStatus, textWarrantyDocumentStatus;
+    private TextInputLayout tilVendor;
     private AutoCompleteTextView acVendor;
     private TextInputEditText etWarrantyStatus;
     private ImageView iconPODocument, iconInvoiceDocument, iconWarrantyDocument;
@@ -71,7 +72,7 @@ public class AssetMaintenanceFragment extends Fragment implements FragmentDataCo
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_asset_maintenance, container, false);
+        return inflater.inflate(R.layout.fragment_asset_finance, container, false);
     }
 
     @Override
@@ -111,6 +112,8 @@ public class AssetMaintenanceFragment extends Fragment implements FragmentDataCo
         buttonChoosePODocument = view.findViewById(R.id.buttonChoosePODocument);
         buttonChooseInvoiceDocument = view.findViewById(R.id.buttonChooseInvoiceDocument);
         buttonChooseWarrantyDocument = view.findViewById(R.id.buttonChooseWarrantyDocument);
+
+        tilVendor = view.findViewById(R.id.tilVendor);
         acVendor = view.findViewById(R.id.autoCompleteVendor);
         etWarrantyStatus = view.findViewById(R.id.editTextWarrantyStatus);
 
@@ -207,7 +210,6 @@ public class AssetMaintenanceFragment extends Fragment implements FragmentDataCo
         });
 
         viewModel.getIsViewFinancial().observe(getViewLifecycleOwner(), isViewFinancial -> {
-            Log.d("viewfinancial", isViewFinancial.toString());
             if (Boolean.TRUE.equals(isViewFinancial)) {
                 tvDepreciation.setVisibility(View.VISIBLE);
                 depreciation1.setVisibility(View.VISIBLE);
@@ -235,7 +237,24 @@ public class AssetMaintenanceFragment extends Fragment implements FragmentDataCo
             if (Boolean.TRUE.equals(isEditable)) {
                 etProcurementDate.setEnabled(isEditable);
                 etPurchasePrice.setEnabled(isEditable);
+
+                viewModel.getUnitOptions().observe(getViewLifecycleOwner(), options -> {
+                    vendorList.clear();
+                    vendorList.addAll(options);
+
+                    vendorList.clear();
+                    vendorList.addAll(options);
+                    ArrayAdapter<OptionItem> adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_dropdown_item_1line, vendorList);
+                    acVendor.setAdapter(adapter);
+                });
+                tilVendor.setEnabled(isEditable);
                 acVendor.setEnabled(isEditable);
+                acVendor.setFocusable(isEditable);
+                acVendor.setClickable(isEditable);
+                acVendor.setLongClickable(isEditable);
+                acVendor.setCursorVisible(isEditable);
+                acVendor.setOnTouchListener(null);
+
                 etPONumber.setEnabled(isEditable);
                 buttonChoosePODocument.setEnabled(isEditable);
                 etInvoiceNumber.setEnabled(isEditable);
@@ -252,7 +271,17 @@ public class AssetMaintenanceFragment extends Fragment implements FragmentDataCo
             } else {
                 etProcurementDate.setEnabled(isEditable);
                 etPurchasePrice.setEnabled(isEditable);
+
+                tilVendor.setEnabled(isEditable);
                 acVendor.setEnabled(isEditable);
+                acVendor.setFocusable(isEditable);
+                acVendor.setClickable(isEditable);
+                acVendor.setLongClickable(isEditable);
+                acVendor.setCursorVisible(isEditable);
+                acVendor.setOnTouchListener((v, event) -> true);
+                acVendor.setAdapter(null);
+                acVendor.dismissDropDown();
+
                 etPONumber.setEnabled(isEditable);
                 buttonChoosePODocument.setEnabled(isEditable);
                 etInvoiceNumber.setEnabled(isEditable);

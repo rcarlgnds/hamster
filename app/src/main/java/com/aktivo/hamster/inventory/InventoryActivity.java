@@ -436,7 +436,7 @@ public class InventoryActivity extends AppCompatActivity implements InventoryAda
     public void onWorkOrderClick(Asset asset) {
         new AlertDialog.Builder(this)
                 .setTitle("Confirm Work Order")
-                .setMessage("Are you sure you want to register for this asset: " + asset.getName() + "?")
+                .setMessage("Are you sure you want to do registration for this inventory: " + asset.getName() + "?")
                 .setPositiveButton("Yes", (dialog, which) -> {
                     viewModel.registerAsset(asset.getCode());
                 })

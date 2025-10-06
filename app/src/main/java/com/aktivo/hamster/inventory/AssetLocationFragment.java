@@ -13,12 +13,14 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProvider;
 import com.aktivo.hamster.R;
 import com.aktivo.hamster.data.model.OptionItem;
+import com.google.android.material.textfield.TextInputLayout;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class AssetLocationFragment extends Fragment {
     private AssetDetailViewModel viewModel;
+    private TextInputLayout tilHospital, tilBuilding, tilFloor, tilRoom, tilSubroom, tilRespDivision, tilRespUnit, tilRespUser;
     private AutoCompleteTextView acHospital, acBuilding, acFloor, acRoom, acSubRoom, acDivision, acUnit, acUser;
 
     private List<OptionItem> hospitalList = new ArrayList<>();
@@ -47,6 +49,15 @@ public class AssetLocationFragment extends Fragment {
     }
 
     private void initializeViews(View view) {
+        tilHospital = view.findViewById(R.id.tilHospital);
+        tilBuilding = view.findViewById(R.id.tilBuilding);
+        tilFloor = view.findViewById(R.id.tilFloor);
+        tilRoom = view.findViewById(R.id.tilRoom);
+        tilSubroom = view.findViewById(R.id.tilSubroom);
+        tilRespDivision = view.findViewById(R.id.tilRespDivision);
+        tilRespUnit = view.findViewById(R.id.tilRespUnit);
+        tilRespUser = view.findViewById(R.id.tilRespUser);
+
         acHospital = view.findViewById(R.id.autoCompleteHospital);
         acBuilding = view.findViewById(R.id.autoCompleteBuilding);
         acFloor = view.findViewById(R.id.autoCompleteFloor);
@@ -121,35 +132,165 @@ public class AssetLocationFragment extends Fragment {
         });
 
         viewModel.getIsEditable().observe(getViewLifecycleOwner(), isEditable -> {
+            // can edit
             if (Boolean.TRUE.equals(isEditable)) {
-                acHospital.setEnabled(isEditable);
-                acBuilding.setEnabled(isEditable);
-                acFloor.setEnabled(isEditable);
-                acRoom.setEnabled(isEditable);
-                acSubRoom.setEnabled(isEditable);
-                acDivision.setEnabled(isEditable);
-                acUnit.setEnabled(isEditable);
-                acUser.setEnabled(isEditable);
-            } else {
+                tilHospital.setEnabled(false);
                 acHospital.setEnabled(false);
+                acHospital.setFocusable(isEditable);
+                acHospital.setClickable(isEditable);
+                acHospital.setLongClickable(isEditable);
+                acHospital.setCursorVisible(isEditable);
+                acHospital.setOnTouchListener((v, event) -> true);
+                acHospital.setAdapter(null);
+                acHospital.dismissDropDown();
+                acHospital.setEnabled(isEditable);
+
+                observeAndPopulate(viewModel.getBuildingOptions(), acBuilding, buildingList);
+                tilBuilding.setEnabled(isEditable);
                 acBuilding.setEnabled(isEditable);
+                acBuilding.setFocusable(isEditable);
+                acBuilding.setClickable(isEditable);
+                acBuilding.setLongClickable(isEditable);
+                acBuilding.setCursorVisible(isEditable);
+                acBuilding.setOnTouchListener(null);
+
+                observeAndPopulate(viewModel.getFloorOptions(), acFloor, floorList);
+                tilFloor.setEnabled(isEditable);
                 acFloor.setEnabled(isEditable);
+                acFloor.setFocusable(isEditable);
+                acFloor.setClickable(isEditable);
+                acFloor.setLongClickable(isEditable);
+                acFloor.setCursorVisible(isEditable);
+                acFloor.setOnTouchListener(null);
+
+                observeAndPopulate(viewModel.getRoomOptions(), acRoom, roomList);
+                tilRoom.setEnabled(isEditable);
                 acRoom.setEnabled(isEditable);
+                acRoom.setFocusable(isEditable);
+                acRoom.setClickable(isEditable);
+                acRoom.setLongClickable(isEditable);
+                acRoom.setCursorVisible(isEditable);
+                acRoom.setOnTouchListener(null);
+
+                observeAndPopulate(viewModel.getSubRoomOptions(), acSubRoom, subRoomList);
+                tilSubroom.setEnabled(isEditable);
                 acSubRoom.setEnabled(isEditable);
+                acSubRoom.setFocusable(isEditable);
+                acSubRoom.setClickable(isEditable);
+                acSubRoom.setLongClickable(isEditable);
+                acSubRoom.setCursorVisible(isEditable);
+                acSubRoom.setOnTouchListener(null);
+
+                observeAndPopulate(viewModel.getDivisionOptions(), acDivision, divisionList);
+                tilRespDivision.setEnabled(isEditable);
                 acDivision.setEnabled(isEditable);
+                acDivision.setFocusable(isEditable);
+                acDivision.setClickable(isEditable);
+                acDivision.setLongClickable(isEditable);
+                acDivision.setCursorVisible(isEditable);
+                acDivision.setOnTouchListener(null);
+
+                observeAndPopulate(viewModel.getWorkingUnitOptions(), acUnit, workingUnitList);
+                tilRespUnit.setEnabled(isEditable);
                 acUnit.setEnabled(isEditable);
+                acUnit.setFocusable(isEditable);
+                acUnit.setClickable(isEditable);
+                acUnit.setLongClickable(isEditable);
+                acUnit.setCursorVisible(isEditable);
+                acUnit.setOnTouchListener(null);
+
+                observeAndPopulate(viewModel.getUserOptions(), acUser, userList);
+                tilRespUser.setEnabled(isEditable);
                 acUser.setEnabled(isEditable);
+                acUser.setFocusable(isEditable);
+                acUser.setClickable(isEditable);
+                acUser.setLongClickable(isEditable);
+                acUser.setCursorVisible(isEditable);
+                acUser.setOnTouchListener(null);
+
+            // can not edit
+            } else {
+                tilHospital.setEnabled(isEditable);
+                acHospital.setEnabled(isEditable);
+                acHospital.setFocusable(isEditable);
+                acHospital.setClickable(isEditable);
+                acHospital.setLongClickable(isEditable);
+                acHospital.setCursorVisible(isEditable);
+                acHospital.setOnTouchListener((v, event) -> true);
+                acHospital.setAdapter(null);
+                acHospital.dismissDropDown();
+
+                tilBuilding.setEnabled(isEditable);
+                acBuilding.setEnabled(isEditable);
+                acBuilding.setFocusable(isEditable);
+                acBuilding.setClickable(isEditable);
+                acBuilding.setLongClickable(isEditable);
+                acBuilding.setCursorVisible(isEditable);
+                acBuilding.setOnTouchListener((v, event) -> true);
+                acBuilding.setAdapter(null);
+                acBuilding.dismissDropDown();
+
+                tilFloor.setEnabled(isEditable);
+                acFloor.setEnabled(isEditable);
+                acFloor.setFocusable(isEditable);
+                acFloor.setClickable(isEditable);
+                acFloor.setLongClickable(isEditable);
+                acFloor.setCursorVisible(isEditable);
+                acFloor.setOnTouchListener((v, event) -> true);
+                acFloor.setAdapter(null);
+                acFloor.dismissDropDown();
+
+                tilRoom.setEnabled(isEditable);
+                acRoom.setEnabled(isEditable);
+                acRoom.setFocusable(isEditable);
+                acRoom.setClickable(isEditable);
+                acRoom.setLongClickable(isEditable);
+                acRoom.setCursorVisible(isEditable);
+                acRoom.setOnTouchListener((v, event) -> true);
+                acRoom.setAdapter(null);
+                acRoom.dismissDropDown();
+
+                tilSubroom.setEnabled(isEditable);
+                acSubRoom.setEnabled(isEditable);
+                acSubRoom.setFocusable(isEditable);
+                acSubRoom.setClickable(isEditable);
+                acSubRoom.setLongClickable(isEditable);
+                acSubRoom.setCursorVisible(isEditable);
+                acSubRoom.setOnTouchListener((v, event) -> true);
+                acSubRoom.setAdapter(null);
+                acSubRoom.dismissDropDown();
+
+                tilRespDivision.setEnabled(isEditable);
+                acDivision.setEnabled(isEditable);
+                acDivision.setFocusable(isEditable);
+                acDivision.setClickable(isEditable);
+                acDivision.setLongClickable(isEditable);
+                acDivision.setCursorVisible(isEditable);
+                acDivision.setOnTouchListener((v, event) -> true);
+                acDivision.setAdapter(null);
+                acDivision.dismissDropDown();
+
+                tilRespUnit.setEnabled(isEditable);
+                acUnit.setEnabled(isEditable);
+                acUnit.setFocusable(isEditable);
+                acUnit.setClickable(isEditable);
+                acUnit.setLongClickable(isEditable);
+                acUnit.setCursorVisible(isEditable);
+                acUnit.setOnTouchListener((v, event) -> true);
+                acUnit.setAdapter(null);
+                acUnit.dismissDropDown();
+
+                tilRespUser.setEnabled(isEditable);
+                acUser.setEnabled(isEditable);
+                acUser.setFocusable(isEditable);
+                acUser.setClickable(isEditable);
+                acUser.setLongClickable(isEditable);
+                acUser.setCursorVisible(isEditable);
+                acUser.setOnTouchListener((v, event) -> true);
+                acUser.setAdapter(null);
+                acUser.dismissDropDown();
             }
         });
-
-        observeAndPopulate(viewModel.getHospitalOptions(), acHospital, hospitalList);
-        observeAndPopulate(viewModel.getBuildingOptions(), acBuilding, buildingList);
-        observeAndPopulate(viewModel.getFloorOptions(), acFloor, floorList);
-        observeAndPopulate(viewModel.getRoomOptions(), acRoom, roomList);
-        observeAndPopulate(viewModel.getSubRoomOptions(), acSubRoom, subRoomList);
-        observeAndPopulate(viewModel.getDivisionOptions(), acDivision, divisionList);
-        observeAndPopulate(viewModel.getWorkingUnitOptions(), acUnit, workingUnitList);
-        observeAndPopulate(viewModel.getUserOptions(), acUser, userList);
     }
 
     private void observeAndPopulate(LiveData<List<OptionItem>> liveData, AutoCompleteTextView autoComplete, List<OptionItem> dataList) {

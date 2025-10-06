@@ -79,7 +79,7 @@ public class InventoryAdapter extends RecyclerView.Adapter<InventoryAdapter.View
         TextView textViewItemCode;
         TextView textViewStatusBadge;
         ImageView iconCopy;
-        MaterialButton btnWorkOrder;
+        MaterialButton btnWorkOrder, btnCommissioning;
         SessionManager sessionManager;
 
         public ViewHolder(@NonNull View itemView) {
@@ -90,6 +90,7 @@ public class InventoryAdapter extends RecyclerView.Adapter<InventoryAdapter.View
             textViewItemCode = itemView.findViewById(R.id.textViewItemCode);
             textViewStatusBadge = itemView.findViewById(R.id.textViewStatusBadge);
             iconCopy = itemView.findViewById(R.id.iconCopy);
+            btnCommissioning = itemView.findViewById(R.id.btnCommissioning);
             btnWorkOrder = itemView.findViewById(R.id.btnWorkOrder);
         }
 
@@ -150,9 +151,12 @@ public class InventoryAdapter extends RecyclerView.Adapter<InventoryAdapter.View
             boolean isRegistered = asset.getRegisterUserId() != null;
 
             if (isConfirmed || isRegistered) {
-                btnWorkOrder.setEnabled(false);
+                btnWorkOrder.setVisibility(View.GONE);
+                btnCommissioning.setVisibility(View.VISIBLE);
+                //btnCommissioning onclick do the commissioning
             } else {
-                btnWorkOrder.setEnabled(true);
+                btnWorkOrder.setVisibility(View.VISIBLE);
+                btnCommissioning.setVisibility(View.GONE);
                 btnWorkOrder.setOnClickListener(v -> listener.onWorkOrderClick(asset));
             }
 

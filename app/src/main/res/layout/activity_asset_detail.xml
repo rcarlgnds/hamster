@@ -61,7 +61,7 @@
             android:orientation="horizontal"
             android:padding="8dp"
             android:gravity="end"
-            android:visibility="visible">
+            android:visibility="gone">
 
             <Button
                 android:id="@+id/buttonRegist"

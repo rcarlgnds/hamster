@@ -41,7 +41,6 @@ public class InventoryViewModel extends AndroidViewModel {
     private final MutableLiveData<Boolean> isError = new MutableLiveData<>();
     private final MutableLiveData<String> toastMessage = new MutableLiveData<>();
 
-
     private final MutableLiveData<Integer> totalCount = new MutableLiveData<>(0);
     private int currentPage = 1;
     private int totalPages = 1;
@@ -59,6 +58,7 @@ public class InventoryViewModel extends AndroidViewModel {
     private final MutableLiveData<List<OptionItem>> roomOptions = new MutableLiveData<>();
     private final MutableLiveData<List<OptionItem>> categoryOptions = new MutableLiveData<>();
     private final MutableLiveData<List<OptionItem>> subCategoryOptions = new MutableLiveData<>();
+    private final MutableLiveData<List<OptionItem>> unitOptions = new MutableLiveData<>();
     private final MutableLiveData<List<OptionItem>> brandOptions = new MutableLiveData<>();
     private final MutableLiveData<List<String>> ownershipOptions = new MutableLiveData<>();
     private final MutableLiveData<List<String>> conditionOptions = new MutableLiveData<>();
@@ -204,6 +204,26 @@ public class InventoryViewModel extends AndroidViewModel {
             @Override
             public void onFailure(Call<OptionsResponse> call, Throwable t) {
                 subCategoryOptions.setValue(new ArrayList<>());
+            }
+        });
+    }
+
+    public void fetchUnitOptions(String subCategoryId) {
+        if (subCategoryId == null) {
+            unitOptions.setValue(new ArrayList<>());
+            return;
+        }
+        apiService.getAssetUnitOptions(subCategoryId).enqueue(new Callback<OptionsResponse>() {
+            @Override
+            public void onResponse(Call<OptionsResponse> call, Response<OptionsResponse> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    unitOptions.setValue(response.body().getData());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<OptionsResponse> call, Throwable t) {
+                unitOptions.setValue(new ArrayList<>());
             }
         });
     }
@@ -386,7 +406,7 @@ public class InventoryViewModel extends AndroidViewModel {
             public void onResponse(@NonNull Call<Void> call, @NonNull Response<Void> response) {
                 isLoading.setValue(false);
                 if (response.isSuccessful()) {
-                    toastMessage.setValue("Asset successfully registered.");
+                    toastMessage.setValue("Work Order Claimed.");
                     refreshAssets();
                 } else {
                     String errorMessage = "Failed to register asset.";

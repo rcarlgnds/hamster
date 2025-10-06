@@ -520,6 +520,9 @@ public class AssetDetailViewModel extends AndroidViewModel {
     public void fetchSubCategoryOptions(String categoryId) {
         if (categoryId != null) fetchOptions(apiService.getAssetSubCategoryOptions(categoryId), subCategoryOptions);
     }
+    public void fetchUnitOptions(String subcategoryId) {
+        if (subcategoryId != null) fetchOptions(apiService.getAssetUnitOptions(subcategoryId), unitOptions);
+    }
     public void fetchBuildingOptions(String hospitalId) {
         if (hospitalId != null) fetchOptions(apiService.getBuildingOptionsForHospital(hospitalId), buildingOptions);
     }
@@ -544,37 +547,6 @@ public class AssetDetailViewModel extends AndroidViewModel {
             @Override
             public void onFailure(@NonNull Call<OptionsResponse> call, @NonNull Throwable t) {
                 // handle error silently
-            }
-        });
-    }
-
-    public void fetchUnitOptions(String subcategoryId) {
-        if (subcategoryId == null) {
-            unitOptions.setValue(new ArrayList<>());
-            return;
-        }
-        apiService.getUnits(1, 100, subcategoryId).enqueue(new Callback<UnitResponse>() {
-            @Override
-            public void onResponse(@NonNull Call<UnitResponse> call, @NonNull Response<UnitResponse> response) {
-                if (response.isSuccessful() && response.body() != null && response.body().getData() != null) {
-                    List<Unit> units = response.body().getData().getUnits();
-                    if (units != null) {
-                        List<OptionItem> options = units.stream()
-                                .map(unit -> new OptionItem(unit.getId(), unit.getName()))
-                                .collect(Collectors.toList());
-                        unitOptions.setValue(options);
-                    } else {
-                        unitOptions.setValue(new ArrayList<>());
-                    }
-                } else {
-                    unitOptions.setValue(new ArrayList<>());
-                }
-            }
-
-            @Override
-            public void onFailure(@NonNull Call<UnitResponse> call, @NonNull Throwable t) {
-                errorMessage.setValue("Gagal memuat unit: " + t.getMessage());
-                unitOptions.setValue(new ArrayList<>());
             }
         });
     }

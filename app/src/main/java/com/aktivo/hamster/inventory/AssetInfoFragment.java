@@ -15,13 +15,18 @@ import androidx.lifecycle.ViewModelProvider;
 import com.aktivo.hamster.R;
 import com.aktivo.hamster.data.model.OptionItem;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class AssetInfoFragment extends Fragment {
     private AssetDetailViewModel viewModel;
     private TextInputEditText etCode, etCode2, etCode3, etName, etSerial, etDesc, etAliasNameTeramedik, etAliasNameHamster, etType, etTotal;
-    private AutoCompleteTextView acOwnership, acCategory, acSubCategory, acBrand, acCondition, acUnit, acParent;
+    private TextInputLayout tilOwnership, tilCategory, tilSubcategory, tilBrand, tilCondition, tilUnit, tilParent;
+    private AutoCompleteTextView acOwnership, acCondition, acCategory, acSubCategory, acBrand, acUnit, acParent;
+    private List<String> ownershipList = new ArrayList<>();
+    private List<String> conditionList = new ArrayList<>();
     private List<OptionItem> categoryList = new ArrayList<>();
     private List<OptionItem> subCategoryList = new ArrayList<>();
     private List<OptionItem> brandList = new ArrayList<>();
@@ -56,12 +61,19 @@ public class AssetInfoFragment extends Fragment {
         etDesc = view.findViewById(R.id.editTextDescription);
         etType = view.findViewById(R.id.editTextType);
         etTotal = view.findViewById(R.id.editTextTotal);
+        tilOwnership = view.findViewById(R.id.tilOwnership);
         acOwnership = view.findViewById(R.id.autoCompleteOwnership);
+        tilCondition = view.findViewById(R.id.tilCondition);
         acCondition = view.findViewById(R.id.autoCompleteCondition);
+        tilCategory = view.findViewById(R.id.tilCategory);
         acCategory = view.findViewById(R.id.autoCompleteCategory);
+        tilSubcategory = view.findViewById(R.id.tilSubcategory);
         acSubCategory = view.findViewById(R.id.autoCompleteSubCategory);
+        tilBrand = view.findViewById(R.id.tilBrand);
         acBrand = view.findViewById(R.id.autoCompleteBrand);
+        tilUnit = view.findViewById(R.id.tilUnit);
         acUnit = view.findViewById(R.id.autoCompleteUnit);
+        tilParent = view.findViewById(R.id.tilParent);
         acParent = view.findViewById(R.id.autoCompleteParent);
     }
 
@@ -97,17 +109,103 @@ public class AssetInfoFragment extends Fragment {
                     etName.setEnabled(false);
                     etAliasNameTeramedik.setEnabled(false);
                     etAliasNameHamster.setEnabled(false);
-                    etSerial.setEnabled(isEditable);
+                    etSerial.setEnabled(false);
                     etDesc.setEnabled(isEditable);
                     etType.setEnabled(isEditable);
                     etTotal.setEnabled(isEditable);
+
+                    viewModel.getOwnershipOptions().observe(getViewLifecycleOwner(), options -> {
+                        ownershipList.clear();
+                        ownershipList.addAll(options);
+                        populateStringDropdown(acOwnership, ownershipList);
+                    });
+                    tilOwnership.setEnabled(isEditable);
                     acOwnership.setEnabled(isEditable);
+                    acOwnership.setFocusable(isEditable);
+                    acOwnership.setClickable(isEditable);
+                    acOwnership.setLongClickable(isEditable);
+                    acOwnership.setCursorVisible(isEditable);
+                    acOwnership.setOnTouchListener(null);
+
+                    viewModel.getConditionOptions().observe(getViewLifecycleOwner(), options -> {
+                        conditionList.clear();
+                        conditionList.addAll(options);
+                        populateStringDropdown(acCondition, conditionList);
+                    });
+                    tilCondition.setEnabled(isEditable);
                     acCondition.setEnabled(isEditable);
+                    acCondition.setFocusable(isEditable);
+                    acCondition.setClickable(isEditable);
+                    acCondition.setLongClickable(isEditable);
+                    acCondition.setCursorVisible(isEditable);
+                    acCondition.setOnTouchListener(null);
+
+                    viewModel.getCategoryOptions().observe(getViewLifecycleOwner(), options -> {
+                        categoryList.clear();
+                        categoryList.addAll(options);
+                        populateDropdown(acCategory, options, categoryList);
+                    });
+                    tilCategory.setEnabled(isEditable);
                     acCategory.setEnabled(isEditable);
+                    acCategory.setFocusable(isEditable);
+                    acCategory.setFocusableInTouchMode(true);
+                    acCategory.setClickable(isEditable);
+                    acCategory.setLongClickable(isEditable);
+                    acCategory.setCursorVisible(isEditable);
+                    acCategory.setOnTouchListener(null);
+
+                    viewModel.getSubCategoryOptions().observe(getViewLifecycleOwner(), options -> {
+                        subCategoryList.clear();
+                        subCategoryList.addAll(options);
+                        populateDropdown(acSubCategory, options, subCategoryList);
+                    });
+                    tilSubcategory.setEnabled(isEditable);
                     acSubCategory.setEnabled(isEditable);
+                    acSubCategory.setFocusable(isEditable);
+                    acSubCategory.setClickable(isEditable);
+                    acSubCategory.setLongClickable(isEditable);
+                    acSubCategory.setCursorVisible(isEditable);
+                    acSubCategory.setOnTouchListener(null);
+
+                    viewModel.getBrandOptions().observe(getViewLifecycleOwner(), options -> {
+                        brandList.clear();
+                        brandList.addAll(options);
+                        populateDropdown(acBrand, options, brandList);
+                    });
+                    tilBrand.setEnabled(isEditable);
                     acBrand.setEnabled(isEditable);
+                    acBrand.setFocusable(isEditable);
+                    acBrand.setClickable(isEditable);
+                    acBrand.setLongClickable(isEditable);
+                    acBrand.setCursorVisible(isEditable);
+                    acBrand.setOnTouchListener(null);
+
+                    viewModel.getUnitOptions().observe(getViewLifecycleOwner(), options -> {
+                        unitList.clear();
+                        unitList.addAll(options);
+                        populateDropdown(acUnit, options, unitList);
+                    });
+                    tilUnit.setEnabled(isEditable);
                     acUnit.setEnabled(isEditable);
+                    acUnit.setFocusable(isEditable);
+                    acUnit.setClickable(isEditable);
+                    acUnit.setLongClickable(isEditable);
+                    acUnit.setCursorVisible(isEditable);
+                    acUnit.setOnTouchListener(null);
+
+                    viewModel.getParentAssetOptions().observe(getViewLifecycleOwner(), options -> {
+                        parentAssetList.clear();
+                        parentAssetList.addAll(options);
+                        populateDropdown(acParent, options, parentAssetList);
+                    });
+                    tilParent.setEnabled(isEditable);
                     acParent.setEnabled(isEditable);
+                    acParent.setFocusable(isEditable);
+                    acParent.setClickable(isEditable);
+                    acParent.setLongClickable(isEditable);
+                    acParent.setCursorVisible(isEditable);
+                    acParent.setOnTouchListener(null);
+
                 } else {
                     etCode.setEnabled(isEditable);
                     etCode2.setEnabled(isEditable);
@@ -119,25 +217,79 @@ public class AssetInfoFragment extends Fragment {
                     etDesc.setEnabled(isEditable);
                     etType.setEnabled(isEditable);
                     etTotal.setEnabled(isEditable);
+
+                    tilOwnership.setEnabled(isEditable);
                     acOwnership.setEnabled(isEditable);
+                    acOwnership.setFocusable(isEditable);
+                    acOwnership.setClickable(isEditable);
+                    acOwnership.setLongClickable(isEditable);
+                    acOwnership.setCursorVisible(isEditable);
+                    acOwnership.setOnTouchListener((v, event) -> true);
+                    acOwnership.setAdapter(null);
+                    acOwnership.dismissDropDown();
+
+                    tilCondition.setEnabled(isEditable);
                     acCondition.setEnabled(isEditable);
+                    acCondition.setFocusable(isEditable);
+                    acCondition.setClickable(isEditable);
+                    acCondition.setLongClickable(isEditable);
+                    acCondition.setCursorVisible(isEditable);
+                    acCondition.setOnTouchListener((v, event) -> true);
+                    acCondition.setAdapter(null);
+                    acCondition.showDropDown();
+
+                    tilCategory.setEnabled(isEditable);
                     acCategory.setEnabled(isEditable);
+                    acCategory.setFocusable(isEditable);
+                    acCategory.setClickable(isEditable);
+                    acCategory.setLongClickable(isEditable);
+                    acCategory.setCursorVisible(isEditable);
+                    acCategory.setOnTouchListener((v, event) -> true);
+                    acCategory.setAdapter(null);
+                    acCategory.showDropDown();
+
+                    tilSubcategory.setEnabled(isEditable);
                     acSubCategory.setEnabled(isEditable);
+                    acSubCategory.setFocusable(isEditable);
+                    acSubCategory.setClickable(isEditable);
+                    acSubCategory.setLongClickable(isEditable);
+                    acSubCategory.setCursorVisible(isEditable);
+                    acSubCategory.setOnTouchListener((v, event) -> true);
+                    acSubCategory.setAdapter(null);
+                    acSubCategory.dismissDropDown();
+
+                    tilBrand.setEnabled(isEditable);
                     acBrand.setEnabled(isEditable);
+                    acBrand.setFocusable(isEditable);
+                    acBrand.setClickable(isEditable);
+                    acBrand.setLongClickable(isEditable);
+                    acBrand.setCursorVisible(isEditable);
+                    acBrand.setOnTouchListener((v, event) -> true);
+                    acBrand.setAdapter(null);
+                    acBrand.dismissDropDown();
+
+                    tilUnit.setEnabled(isEditable);
                     acUnit.setEnabled(isEditable);
+                    acUnit.setFocusable(isEditable);
+                    acUnit.setClickable(isEditable);
+                    acUnit.setLongClickable(isEditable);
+                    acUnit.setCursorVisible(isEditable);
+                    acUnit.setOnTouchListener((v, event) -> true);
+                    acUnit.setAdapter(null);
+                    acUnit.dismissDropDown();
+
+                    tilParent.setEnabled(isEditable);
                     acParent.setEnabled(isEditable);
+                    acParent.setFocusable(isEditable);
+                    acParent.setClickable(isEditable);
+                    acParent.setLongClickable(isEditable);
+                    acParent.setCursorVisible(isEditable);
+                    acParent.setOnTouchListener((v, event) -> true);
+                    acParent.setAdapter(null);
+                    acParent.dismissDropDown();
                 }
             });
         });
-
-        viewModel.getCategoryOptions().observe(getViewLifecycleOwner(), options -> populateDropdown(acCategory, options, categoryList));
-        viewModel.getSubCategoryOptions().observe(getViewLifecycleOwner(), options -> populateDropdown(acSubCategory, options, subCategoryList));
-        viewModel.getUnitOptions().observe(getViewLifecycleOwner(), options -> populateDropdown(acUnit, options, unitList));
-        viewModel.getBrandOptions().observe(getViewLifecycleOwner(), options -> populateDropdown(acBrand, options, brandList));
-        viewModel.getParentAssetOptions().observe(getViewLifecycleOwner(), options -> populateDropdown(acParent, options, parentAssetList));
-
-        viewModel.getOwnershipOptions().observe(getViewLifecycleOwner(), options -> populateStringDropdown(acOwnership, options));
-        viewModel.getConditionOptions().observe(getViewLifecycleOwner(), options -> populateStringDropdown(acCondition, options));
     }
 
     private void setupInputListeners() {

@@ -212,7 +212,7 @@ public class AssetDetailActivity extends AppCompatActivity {
             switch (position) {
                 case 0: return new AssetInfoFragment();
                 case 1: return new AssetLocationFragment();
-                case 2: return new AssetMaintenanceFragment();
+                case 2: return new AssetFinanceFragment();
                 case 3: return new AssetDocumentsFragment();
                 case 4: return new AssetReviewFragment();
                 default: throw new IllegalStateException("Posisi fragment tidak valid: " + position);

@@ -77,6 +77,7 @@
     <string name="try_other_keywords">Try different keywords or change your filters.</string>
     <string name="failed_to_load_data">Failed to load data</string>
 
+    <string name="inventory_detail">Inventory Detail</string>
     <string name="edit_inventory_detail">Edit Inventory Detail</string>
     <string name="tab_info">Information</string>
     <string name="tab_location">Location</string>

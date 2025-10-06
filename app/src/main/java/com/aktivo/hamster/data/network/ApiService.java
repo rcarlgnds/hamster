@@ -662,6 +662,9 @@ public interface ApiService {
 
 
     // --- Unit ---
+    @GET("asset-subcategories/{id}/units/options")
+    Call<OptionsResponse> getAssetUnitOptions(@Path("id") String categoryId);
+
     @GET("units")
     Call<UnitResponse> getUnits(
             @Query("page") int page,
