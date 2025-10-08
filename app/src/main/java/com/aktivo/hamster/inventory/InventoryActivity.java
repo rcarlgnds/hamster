@@ -1,5 +1,7 @@
 package com.aktivo.hamster.inventory;
 
+import android.app.DatePickerDialog;
+import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -9,10 +11,10 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import androidx.appcompat.widget.SearchView;
-
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
@@ -29,9 +31,13 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 public class InventoryActivity extends AppCompatActivity implements InventoryAdapter.OnItemClickListener {
 
@@ -53,6 +59,8 @@ public class InventoryActivity extends AppCompatActivity implements InventoryAda
     private List<String> ownershipList = new ArrayList<>();
     private List<String> conditionList = new ArrayList<>();
     private List<OptionItem> statusList = new ArrayList<>();
+    private List<OptionItem> vendorList = new ArrayList<>();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,7 +69,9 @@ public class InventoryActivity extends AppCompatActivity implements InventoryAda
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
 
         setupViews();
         setupObservers();
@@ -152,8 +162,14 @@ public class InventoryActivity extends AppCompatActivity implements InventoryAda
         });
 
         viewModel.getToastMessage().observe(this, message -> {
-            if (message != null) {
+            if (message != null && !message.isEmpty()) {
                 Toast.makeText(this, message, Toast.LENGTH_LONG).show();
+            }
+        });
+
+        viewModel.getScheduleResult().observe(this, response -> {
+            if (response != null) {
+                Toast.makeText(this, response.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -465,6 +481,7 @@ public class InventoryActivity extends AppCompatActivity implements InventoryAda
         TextView tvDialogTitle = dialogView.findViewById(R.id.tvDialogTitle);
         TextInputEditText etScheduleDate = dialogView.findViewById(R.id.etScheduleDate);
         AutoCompleteTextView spinnerVendor = dialogView.findViewById(R.id.spinnerVendor);
+        CheckBox cbUserTraining = dialogView.findViewById(R.id.cbUserTraining);
         Button btnCancel = dialogView.findViewById(R.id.btnCancel);
         Button btnSubmit = dialogView.findViewById(R.id.btnSubmit);
 
@@ -473,33 +490,71 @@ public class InventoryActivity extends AppCompatActivity implements InventoryAda
 
         final AlertDialog dialog = builder.create();
 
+        final String[] selectedVendorId = {null};
+        final Calendar selectedDateTime = Calendar.getInstance();
+
         etScheduleDate.setOnClickListener(v -> {
-            java.util.Calendar calendar = java.util.Calendar.getInstance();
-            android.app.DatePickerDialog datePickerDialog = new android.app.DatePickerDialog(
+            Calendar calendar = Calendar.getInstance();
+            new DatePickerDialog(
                     InventoryActivity.this,
                     (view, year, month, dayOfMonth) -> {
-                        String selectedDate = dayOfMonth + "/" + (month + 1) + "/" + year;
-                        etScheduleDate.setText(selectedDate);
+                        selectedDateTime.set(Calendar.YEAR, year);
+                        selectedDateTime.set(Calendar.MONTH, month);
+                        selectedDateTime.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+
+                        new TimePickerDialog(
+                                InventoryActivity.this,
+                                (timeView, hourOfDay, minute) -> {
+                                    selectedDateTime.set(Calendar.HOUR_OF_DAY, hourOfDay);
+                                    selectedDateTime.set(Calendar.MINUTE, minute);
+
+                                    SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy, HH:mm", Locale.getDefault());
+                                    etScheduleDate.setText(sdf.format(selectedDateTime.getTime()));
+                                },
+                                calendar.get(Calendar.HOUR_OF_DAY),
+                                calendar.get(Calendar.MINUTE),
+                                true
+                        ).show();
                     },
-                    calendar.get(java.util.Calendar.YEAR),
-                    calendar.get(java.util.Calendar.MONTH),
-                    calendar.get(java.util.Calendar.DAY_OF_MONTH)
-            );
-            datePickerDialog.show();
+                    calendar.get(Calendar.YEAR),
+                    calendar.get(Calendar.MONTH),
+                    calendar.get(Calendar.DAY_OF_MONTH)
+            ).show();
         });
 
-        viewModel.fetchVendorOptions();
         viewModel.getVendorOptions().observe(this, vendors -> {
             if (vendors != null) {
-                ArrayAdapter<OptionItem> vendorAdapter = new ArrayAdapter<>(this, android.R.layout.simple_dropdown_item_1line, vendors);
+                vendorList = vendors;
+                ArrayAdapter<OptionItem> vendorAdapter = new ArrayAdapter<>(this, android.R.layout.simple_dropdown_item_1line, vendorList);
                 spinnerVendor.setAdapter(vendorAdapter);
+            }
+        });
+        viewModel.fetchVendorOptions();
+
+        spinnerVendor.setOnItemClickListener((parent, view, position, id) -> {
+            if (position >= 0 && position < vendorList.size()) {
+                selectedVendorId[0] = vendorList.get(position).getId();
             }
         });
 
         btnCancel.setOnClickListener(v -> dialog.dismiss());
 
         btnSubmit.setOnClickListener(v -> {
-            Toast.makeText(this, "Submit Installation for " + asset.getName(), Toast.LENGTH_SHORT).show();
+            String dateTimeString = etScheduleDate.getText().toString();
+            boolean isTrainingChecked = cbUserTraining.isChecked();
+
+            if (dateTimeString.isEmpty()) {
+                Toast.makeText(this, "Please select a schedule", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            if (selectedVendorId[0] == null) {
+                Toast.makeText(this, "Please select a vendor", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            long timestamp = selectedDateTime.getTimeInMillis() / 1000;
+
+            viewModel.scheduleInstallation(asset.getId(), selectedVendorId[0], timestamp, isTrainingChecked);
             dialog.dismiss();
         });
 

@@ -13,7 +13,9 @@ import com.aktivo.hamster.data.model.ApiError;
 import com.aktivo.hamster.data.model.Asset;
 import com.aktivo.hamster.data.model.AssetsResponse;
 import com.aktivo.hamster.data.model.OptionItem;
+import com.aktivo.hamster.data.model.request.ScheduleInstallationRequest;
 import com.aktivo.hamster.data.model.response.AssetCommissioningResponse;
+import com.aktivo.hamster.data.model.response.GenericSuccessResponse;
 import com.aktivo.hamster.data.model.response.OptionsResponse;
 import com.aktivo.hamster.data.network.ApiClient;
 import com.aktivo.hamster.data.network.ApiService;
@@ -43,9 +45,7 @@ public class InventoryViewModel extends AndroidViewModel {
     private final MutableLiveData<Boolean> isLoading = new MutableLiveData<>();
     private final MutableLiveData<Boolean> isError = new MutableLiveData<>();
     private final MutableLiveData<String> toastMessage = new MutableLiveData<>();
-
     private final MutableLiveData<Map<String, Boolean>> commissioningStatusMap = new MutableLiveData<>(new ConcurrentHashMap<>());
-
     private final MutableLiveData<Integer> totalCount = new MutableLiveData<>(0);
     private int currentPage = 1;
     private int totalPages = 1;
@@ -69,6 +69,8 @@ public class InventoryViewModel extends AndroidViewModel {
     private final MutableLiveData<List<String>> conditionOptions = new MutableLiveData<>();
     private final MutableLiveData<List<OptionItem>> statusOptions = new MutableLiveData<>();
     private final MutableLiveData<List<OptionItem>> vendorOptions = new MutableLiveData<>();
+    private final MutableLiveData<GenericSuccessResponse> scheduleResult = new MutableLiveData<>();
+
 
     private String advancedSearchName = "";
     private String advancedSearchHospitalId = "";
@@ -101,6 +103,7 @@ public class InventoryViewModel extends AndroidViewModel {
     public LiveData<List<String>> getConditionOptions() { return conditionOptions; }
     public LiveData<List<OptionItem>> getStatusOptions() { return statusOptions; }
     public LiveData<List<OptionItem>> getVendorOptions() { return vendorOptions; }
+    public LiveData<GenericSuccessResponse> getScheduleResult() { return scheduleResult; }
 
 
     public InventoryViewModel(@NonNull Application application) {
@@ -571,5 +574,29 @@ public class InventoryViewModel extends AndroidViewModel {
             }
         }
         filteredAssetList.setValue(results);
+    }
+
+    public void scheduleInstallation(String assetId, String vendorId, long scheduledAt, boolean alsoScheduleTraining) {
+        isLoading.setValue(true);
+        ScheduleInstallationRequest request = new ScheduleInstallationRequest(assetId, vendorId, scheduledAt, alsoScheduleTraining);
+
+        apiService.scheduleInstallation(request).enqueue(new Callback<GenericSuccessResponse>() {
+            @Override
+            public void onResponse(@NonNull Call<GenericSuccessResponse> call, @NonNull Response<GenericSuccessResponse> response) {
+                isLoading.setValue(false);
+                if (response.isSuccessful() && response.body() != null) {
+                    scheduleResult.setValue(response.body());
+                    refreshAssets();
+                } else {
+                    toastMessage.setValue("Error scheduling: " + response.code());
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<GenericSuccessResponse> call, @NonNull Throwable t) {
+                isLoading.setValue(false);
+                toastMessage.setValue("Network failure: " + t.getMessage());
+            }
+        });
     }
 }
