@@ -43,6 +43,8 @@ import com.aktivo.hamster.data.model.request.PrintByIdsRequest;
 import com.aktivo.hamster.data.model.request.PrintLabelRequest;
 import com.aktivo.hamster.data.model.request.RefreshTokenRequest;
 import com.aktivo.hamster.data.model.request.RegisterDeviceRequest;
+import com.aktivo.hamster.data.model.request.ScheduleInstallationRequest;
+import com.aktivo.hamster.data.model.request.ScheduleTrainingRequest;
 import com.aktivo.hamster.data.model.request.UnregisterDeviceRequest;
 import com.aktivo.hamster.data.model.request.UpdateAssetActivationSettingRequest;
 import com.aktivo.hamster.data.model.request.UpdateAssetCategoryRequest;
@@ -64,12 +66,14 @@ import com.aktivo.hamster.data.model.response.AssetActivationSettingResponse;
 import com.aktivo.hamster.data.model.response.AssetActivationStatusResponse;
 import com.aktivo.hamster.data.model.response.AssetByCodeResponse;
 import com.aktivo.hamster.data.model.response.AssetCategoryResponse;
+import com.aktivo.hamster.data.model.response.AssetCommissioningResponse;
 import com.aktivo.hamster.data.model.response.AssetRejectedResponse;
 import com.aktivo.hamster.data.model.response.AssetSubCategoryResponse;
 import com.aktivo.hamster.data.model.response.BrandResponse;
 import com.aktivo.hamster.data.model.response.BuildingResponse;
 import com.aktivo.hamster.data.model.response.DivisionResponse;
 import com.aktivo.hamster.data.model.response.FloorResponse;
+import com.aktivo.hamster.data.model.response.GenericSuccessResponse;
 import com.aktivo.hamster.data.model.response.HospitalResponse;
 import com.aktivo.hamster.data.model.response.MediaFileResponse;
 import com.aktivo.hamster.data.model.response.NotificationResponse;
@@ -491,6 +495,40 @@ public interface ApiService {
 
     @POST("assets/print-by-ids")
     Call<Void> printAssetLabelsByIds(@Body PrintByIdsRequest request);
+
+    @GET("asset-commissioning/{assetId}")
+    Call<AssetCommissioningResponse> getCommissioningDetails(@Path("assetId") String assetId);
+
+
+
+    // --- Asset Installation ---
+    @POST("asset-installation/schedule")
+    Call<GenericSuccessResponse> scheduleInstallation(@Body ScheduleInstallationRequest request);
+
+    @Multipart
+    @POST("asset-installation/{id}/realize")
+    Call<GenericSuccessResponse> realizeInstallation(
+            @Path("id") String installationId,
+            @Part List<MultipartBody.Part> photos,
+            @Part List<MultipartBody.Part> installationDocuments,
+            @Part List<MultipartBody.Part> functionalTestingDocuments,
+            @Part List<MultipartBody.Part> customDocuments,
+            @Part("customDocumentNames") List<String> customDocumentNames
+    );
+
+    // --- Asset Training ---
+    @POST("asset-training/schedule")
+    Call<GenericSuccessResponse> scheduleTraining(@Body ScheduleTrainingRequest request);
+
+    @Multipart
+    @POST("asset-training/{id}/realize")
+    Call<GenericSuccessResponse> realizeTraining(
+            @Path("id") String trainingId,
+            @Part List<MultipartBody.Part> photos,
+            @Part List<MultipartBody.Part> userTrainingDocuments,
+            @Part List<MultipartBody.Part> customDocuments,
+            @Part("customDocumentNames") List<String> customDocumentNames
+    );
 
 
     // --- Printer ---

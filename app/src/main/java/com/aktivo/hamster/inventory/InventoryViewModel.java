@@ -13,6 +13,7 @@ import com.aktivo.hamster.data.model.ApiError;
 import com.aktivo.hamster.data.model.Asset;
 import com.aktivo.hamster.data.model.AssetsResponse;
 import com.aktivo.hamster.data.model.OptionItem;
+import com.aktivo.hamster.data.model.response.AssetCommissioningResponse;
 import com.aktivo.hamster.data.model.response.OptionsResponse;
 import com.aktivo.hamster.data.network.ApiClient;
 import com.aktivo.hamster.data.network.ApiService;
@@ -26,6 +27,8 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 import retrofit2.Call;
@@ -40,6 +43,8 @@ public class InventoryViewModel extends AndroidViewModel {
     private final MutableLiveData<Boolean> isLoading = new MutableLiveData<>();
     private final MutableLiveData<Boolean> isError = new MutableLiveData<>();
     private final MutableLiveData<String> toastMessage = new MutableLiveData<>();
+
+    private final MutableLiveData<Map<String, Boolean>> commissioningStatusMap = new MutableLiveData<>(new ConcurrentHashMap<>());
 
     private final MutableLiveData<Integer> totalCount = new MutableLiveData<>(0);
     private int currentPage = 1;
@@ -63,6 +68,7 @@ public class InventoryViewModel extends AndroidViewModel {
     private final MutableLiveData<List<String>> ownershipOptions = new MutableLiveData<>();
     private final MutableLiveData<List<String>> conditionOptions = new MutableLiveData<>();
     private final MutableLiveData<List<OptionItem>> statusOptions = new MutableLiveData<>();
+    private final MutableLiveData<List<OptionItem>> vendorOptions = new MutableLiveData<>();
 
     private String advancedSearchName = "";
     private String advancedSearchHospitalId = "";
@@ -82,7 +88,7 @@ public class InventoryViewModel extends AndroidViewModel {
     public LiveData<Boolean> getIsError() { return isError; }
     public LiveData<Integer> getTotalCount() { return totalCount; }
     public LiveData<String> getToastMessage() { return toastMessage; }
-
+    public LiveData<Map<String, Boolean>> getCommissioningStatusMap() { return commissioningStatusMap; }
 
     public LiveData<List<OptionItem>> getHospitalOptions() { return hospitalOptions; }
     public LiveData<List<OptionItem>> getBuildingOptions() { return buildingOptions; }
@@ -94,10 +100,26 @@ public class InventoryViewModel extends AndroidViewModel {
     public LiveData<List<String>> getOwnershipOptions() { return ownershipOptions; }
     public LiveData<List<String>> getConditionOptions() { return conditionOptions; }
     public LiveData<List<OptionItem>> getStatusOptions() { return statusOptions; }
+    public LiveData<List<OptionItem>> getVendorOptions() { return vendorOptions; }
+
 
     public InventoryViewModel(@NonNull Application application) {
         super(application);
         apiService = ApiClient.getClient(application).create(ApiService.class);
+    }
+    public void fetchVendorOptions() {
+        apiService.getVendorOptions().enqueue(new Callback<OptionsResponse>() {
+            @Override
+            public void onResponse(Call<OptionsResponse> call, Response<OptionsResponse> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    vendorOptions.setValue(response.body().getData());
+                }
+            }
+            @Override
+            public void onFailure(Call<OptionsResponse> call, Throwable t) {
+                Log.e("InventoryViewModel", "Failed to fetch vendor options", t);
+            }
+        });
     }
 
     public void fetchHospitalOptions() {
@@ -294,6 +316,8 @@ public class InventoryViewModel extends AndroidViewModel {
 
                 List<Asset> pageItems = wrapper.getData() != null ? wrapper.getData() : new ArrayList<>();
 
+                fetchCommissioningStatuses(pageItems);
+
                 AssetsResponse.Pagination pagination = wrapper.getPagination();
                 if (pagination != null) {
                     hasNextPage = pagination.isHasNextPage();
@@ -323,6 +347,30 @@ public class InventoryViewModel extends AndroidViewModel {
         });
     }
 
+    private void fetchCommissioningStatuses(List<Asset> assets) {
+        for (Asset asset : assets) {
+            apiService.getCommissioningDetails(asset.getId()).enqueue(new Callback<AssetCommissioningResponse>() {
+                @Override
+                public void onResponse(Call<AssetCommissioningResponse> call, Response<AssetCommissioningResponse> response) {
+                    if (response.isSuccessful() && response.body() != null && response.body().getData() != null) {
+                        boolean isCommissioned = response.body().getData().isCommissioned();
+                        Map<String, Boolean> currentMap = commissioningStatusMap.getValue();
+                        if (currentMap != null) {
+                            currentMap.put(asset.getId(), isCommissioned);
+                            commissioningStatusMap.postValue(currentMap);
+                        }
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<AssetCommissioningResponse> call, Throwable t) {
+                    Log.e("InventoryViewModel", "Failed to get commissioning status for asset " + asset.getId(), t);
+                }
+            });
+        }
+    }
+
+
     private void mergeAssetsNoDup(List<Asset> pageItems) {
         java.util.HashSet<String> ids = new java.util.HashSet<>();
         for (Asset a : originalAssetList) ids.add(a.getId());
@@ -348,6 +396,8 @@ public class InventoryViewModel extends AndroidViewModel {
         totalCount.postValue(0);
         originalAssetList.clear();
         filteredAssetList.setValue(new ArrayList<>());
+        commissioningStatusMap.setValue(new ConcurrentHashMap<>());
+
 
         isAdvancedSearchActive = false;
         currentQuery = "";

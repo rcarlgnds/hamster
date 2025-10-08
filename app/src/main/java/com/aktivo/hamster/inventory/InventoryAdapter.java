@@ -4,7 +4,7 @@ import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,12 +13,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.aktivo.hamster.R;
 import com.aktivo.hamster.data.constant.AssetStatus;
 import com.aktivo.hamster.data.model.Asset;
-import com.aktivo.hamster.data.model.User;
 import com.aktivo.hamster.utils.SessionManager;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.card.MaterialCardView;
@@ -28,19 +28,23 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 public class InventoryAdapter extends RecyclerView.Adapter<InventoryAdapter.ViewHolder> {
 
     private List<Asset> assetList;
     private final OnItemClickListener listener;
+    private Map<String, Boolean> commissioningStatusMap;
 
     public interface OnItemClickListener {
         void onWorkOrderClick(Asset asset);
+        void onNeedInstallationClick(Asset asset);
     }
 
-    public InventoryAdapter(List<Asset> assetList, OnItemClickListener listener) {
+    public InventoryAdapter(List<Asset> assetList, OnItemClickListener listener, Map<String, Boolean> commissioningStatusMap) {
         this.assetList = new ArrayList<>(assetList);
         this.listener = listener;
+        this.commissioningStatusMap = commissioningStatusMap;
     }
 
     @NonNull
@@ -53,7 +57,8 @@ public class InventoryAdapter extends RecyclerView.Adapter<InventoryAdapter.View
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Asset asset = assetList.get(position);
-        holder.bind(asset, listener);
+        Boolean isCommissioned = commissioningStatusMap.get(asset.getId());
+        holder.bind(asset, listener, isCommissioned);
     }
 
     @Override
@@ -61,11 +66,12 @@ public class InventoryAdapter extends RecyclerView.Adapter<InventoryAdapter.View
         return assetList.size();
     }
 
-    public void updateData(List<Asset> newAssets) {
+    public void updateData(List<Asset> newAssets, Map<String, Boolean> newStatusMap) {
         this.assetList.clear();
         if (newAssets != null) {
             this.assetList.addAll(newAssets);
         }
+        this.commissioningStatusMap = newStatusMap;
         notifyDataSetChanged();
     }
 
@@ -100,7 +106,7 @@ public class InventoryAdapter extends RecyclerView.Adapter<InventoryAdapter.View
             return sdf.format(new Date(timestamp * 1000));
         }
 
-        public void bind(final Asset asset, final OnItemClickListener listener) {
+        public void bind(final Asset asset, final OnItemClickListener listener, final Boolean isCommissioned) {
             textViewItemName.setText(asset.getName());
             textViewItemCode.setText(asset.getCode());
 
@@ -143,17 +149,22 @@ public class InventoryAdapter extends RecyclerView.Adapter<InventoryAdapter.View
                 textViewStatusBadge.setTextColor(itemView.getContext().getResources().getColor(R.color.white));
             }
 
-            User currentUser = sessionManager.getUser();
-            String currentUserId = (currentUser != null) ? currentUser.getId() : "";
-
             boolean isConfirmed = asset.getIsConfirmed() != null && asset.getIsConfirmed();
-
             boolean isRegistered = asset.getRegisterUserId() != null;
 
             if (isConfirmed || isRegistered) {
                 btnWorkOrder.setVisibility(View.GONE);
                 btnCommissioning.setVisibility(View.VISIBLE);
-                //btnCommissioning onclick do the commissioning
+
+                if (isCommissioned != null && isCommissioned) {
+                    btnCommissioning.setText("Commisioned");
+                    btnCommissioning.setEnabled(false);
+                    btnCommissioning.setBackgroundColor(Color.LTGRAY);
+                } else {
+                    btnCommissioning.setText("Need Installation");
+                    btnCommissioning.setEnabled(true);
+                    btnCommissioning.setOnClickListener(v -> listener.onNeedInstallationClick(asset));
+                }
             } else {
                 btnWorkOrder.setVisibility(View.VISIBLE);
                 btnCommissioning.setVisibility(View.GONE);

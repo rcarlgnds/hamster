@@ -30,6 +30,7 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class InventoryActivity extends AppCompatActivity implements InventoryAdapter.OnItemClickListener {
@@ -105,10 +106,16 @@ public class InventoryActivity extends AppCompatActivity implements InventoryAda
             layoutEmpty.setVisibility(empty ? View.VISIBLE : View.GONE);
 
             if (adapter == null) {
-                adapter = new InventoryAdapter(assets, this);
+                adapter = new InventoryAdapter(assets, this, viewModel.getCommissioningStatusMap().getValue());
                 recyclerView.setAdapter(adapter);
             } else {
-                adapter.updateData(assets);
+                adapter.updateData(assets, viewModel.getCommissioningStatusMap().getValue());
+            }
+        });
+
+        viewModel.getCommissioningStatusMap().observe(this, statusMap -> {
+            if (adapter != null) {
+                adapter.updateData(viewModel.getAssetList().getValue(), statusMap);
             }
         });
 
@@ -442,5 +449,60 @@ public class InventoryActivity extends AppCompatActivity implements InventoryAda
                 })
                 .setNegativeButton("No", null)
                 .show();
+    }
+
+    @Override
+    public void onNeedInstallationClick(Asset asset) {
+        showInstallationDialog(asset);
+    }
+
+    private void showInstallationDialog(Asset asset) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        LayoutInflater inflater = this.getLayoutInflater();
+        View dialogView = inflater.inflate(R.layout.dialog_create_installation, null);
+        builder.setView(dialogView);
+
+        TextView tvDialogTitle = dialogView.findViewById(R.id.tvDialogTitle);
+        TextInputEditText etScheduleDate = dialogView.findViewById(R.id.etScheduleDate);
+        AutoCompleteTextView spinnerVendor = dialogView.findViewById(R.id.spinnerVendor);
+        Button btnCancel = dialogView.findViewById(R.id.btnCancel);
+        Button btnSubmit = dialogView.findViewById(R.id.btnSubmit);
+
+        String title = "Create Inventory Installation Schedule for " + asset.getCode() + " - " + asset.getName();
+        tvDialogTitle.setText(title);
+
+        final AlertDialog dialog = builder.create();
+
+        etScheduleDate.setOnClickListener(v -> {
+            java.util.Calendar calendar = java.util.Calendar.getInstance();
+            android.app.DatePickerDialog datePickerDialog = new android.app.DatePickerDialog(
+                    InventoryActivity.this,
+                    (view, year, month, dayOfMonth) -> {
+                        String selectedDate = dayOfMonth + "/" + (month + 1) + "/" + year;
+                        etScheduleDate.setText(selectedDate);
+                    },
+                    calendar.get(java.util.Calendar.YEAR),
+                    calendar.get(java.util.Calendar.MONTH),
+                    calendar.get(java.util.Calendar.DAY_OF_MONTH)
+            );
+            datePickerDialog.show();
+        });
+
+        viewModel.fetchVendorOptions();
+        viewModel.getVendorOptions().observe(this, vendors -> {
+            if (vendors != null) {
+                ArrayAdapter<OptionItem> vendorAdapter = new ArrayAdapter<>(this, android.R.layout.simple_dropdown_item_1line, vendors);
+                spinnerVendor.setAdapter(vendorAdapter);
+            }
+        });
+
+        btnCancel.setOnClickListener(v -> dialog.dismiss());
+
+        btnSubmit.setOnClickListener(v -> {
+            Toast.makeText(this, "Submit Installation for " + asset.getName(), Toast.LENGTH_SHORT).show();
+            dialog.dismiss();
+        });
+
+        dialog.show();
     }
 }

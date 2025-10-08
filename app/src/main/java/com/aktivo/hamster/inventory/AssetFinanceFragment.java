@@ -176,7 +176,7 @@ public class AssetFinanceFragment extends Fragment implements FragmentDataCollec
             calendar.set(year, month, dayOfMonth);
             SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
             editText.setText(sdf.format(calendar.getTime()));
-            onDateSet.accept(calendar.getTimeInMillis() / 1000); // Convert to seconds
+            onDateSet.accept(calendar.getTimeInMillis() / 1000);
         }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH)).show();
     }
 

@@ -46,7 +46,6 @@ public class LoginViewModel extends AndroidViewModel {
         return user;
     }
 
-    // --- ADD THIS GETTER METHOD ---
     public LiveData<String> getErrorMessage() {
         return errorMessage;
     }
@@ -70,7 +69,6 @@ public class LoginViewModel extends AndroidViewModel {
                     user.setValue(loginResponse.getData().getUser());
                     loginResult.setValue(LoginResult.SUCCESS);
                 } else {
-                    // Post specific error messages
                     errorMessage.setValue(getApplication().getString(R.string.login_failed));
                     loginResult.setValue(LoginResult.INVALID_CREDENTIALS);
                 }
@@ -78,7 +76,6 @@ public class LoginViewModel extends AndroidViewModel {
 
             @Override
             public void onFailure(@NonNull Call<LoginResponse> call, @NonNull Throwable t) {
-                // Post specific error messages
                 errorMessage.setValue("Failed to connect to the server.");
                 loginResult.setValue(LoginResult.API_ERROR);
             }
